@@ -1,0 +1,36 @@
+import java.text.SimpleDateFormat
+
+eventCompileStart = { kind ->
+
+   def versionFile = new File(kind.basedir+File.separator+'grails-app/conf/'+kind.baseName+'-version.properties')
+   println("Writing version file to:"+versionFile.getAbsolutePath())
+
+	def buildNumber = metadata.get('app.'+kind.baseName+'.buildNumber')
+
+	if (!buildNumber)
+		buildNumber = 1
+	else
+		buildNumber = Integer.valueOf(buildNumber) + 1
+
+
+	metadata.put('app.'+kind.baseName+'.buildNumber',buildNumber.toString())
+    def formatter = new SimpleDateFormat("MMM dd, yyyy")
+    def buildDate = formatter.format(new Date(System.currentTimeMillis()))
+    metadata.put('app.'+kind.baseName+'.buildDate',buildDate)
+    metadata.put('app.'+kind.baseName+'.buildProfile',grailsEnv)
+    //metadata.'app.${kind.baseName}.buildProfile' = grailsEnv
+    if (System.getProperty("BUILD_NUMBER")==null) {
+      metadata.put('app.'+kind.baseName+'.version',"2."+Integer.toString(buildNumber))
+    } else {
+      metadata.put('app.'+kind.baseName+'.version',"1."+System.getProperty("BUILD_NUMBER"))
+      //metadata.'app.${kind.baseName}.version' = "1."+System.getProperty("BUILD_NUMBER")
+    }
+    println("writing version "+metadata.get('app.'+kind.baseName+'.version'))
+    versionFile.write('version=')
+    versionFile.append(metadata.get('app.'+kind.baseName+'.version'))
+    versionFile.append("\n")
+
+	metadata.persist()
+
+	println "**** Compile Starting on App(${kind.baseName}) Version ${metadata.'app.${kind.baseName}.version'} Build #${buildNumber}"
+}

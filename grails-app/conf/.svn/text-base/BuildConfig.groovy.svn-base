@@ -1,0 +1,108 @@
+grails.war.destFile = "grails-video.war"
+grails.war.copyToWebAppLib = { args ->
+  //fileset(dir: "../build/deploy") {
+  //  include(name: "mdp2.jar")
+  //}
+}
+
+/*grails.war.resources = { stagingDir ->
+
+  File libDir = new File(stagingDir, 'WEB-INF/lib')
+
+  def deleteJars = { jarNameStart ->
+    libDir.eachFile { file ->
+      if (file.name.startsWith(jarNameStart)) {
+        file.delete()
+        println "deleted jar $file"
+      }
+    }
+  }
+
+  deleteJars 'httpcore-4.0-beta1' // unit test only
+  deleteJars 'mail-1.4'
+  deleteJars 'xbean-2.1.0'
+  //deleteJars 'junit' // unit test only
+
+}*/
+
+//grails.config.base.webXml = 'file:./src/templates/war/web.xml'
+
+grails.project.dependency.resolution = {
+  // inherit Grails' default dependencies
+  inherits("global") {
+    // uncomment to disable ehcache
+    // excludes 'ehcache'
+  }
+  log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+  repositories {
+
+    mavenLocal()
+    //mavenCentral()
+    mavenRepo "http://hudson.kpiint.com:8080/artifactory/build-dp"
+    mavenRepo "http://hudson.kpiint.com:8080/artifactory/plugins-snapshots-local"
+    mavenRepo "http://hudson.kpiint.com:8080/artifactory/plugins-releases-local"
+    mavenRepo "http://hudson.kpiint.com:8080/artifactory/pluginSnapshots"
+    mavenRepo "http://hudson.kpiint.com:8080/artifactory/pluginReleases"
+    mavenRepo "http://hudson.kpiint.com:8080/artifactory/libs-releases-local"
+    grailsPlugins()
+    grailsHome()
+    grailsRepo "http://plugins.grails.org"
+
+    // uncomment the below to enable remote dependency resolution
+    // from public Maven repositories
+    //mavenLocal()
+    mavenCentral()
+    //mavenRepo "http://snapshots.repository.codehaus.org"
+    //mavenRepo "http://repository.codehaus.org"
+    //mavenRepo "http://download.java.net/maven/2/"
+    //mavenRepo "http://repository.jboss.com/maven2/"
+  }
+  plugins {
+
+
+    /*compile 'org.grails.plugins:mdp-core:latest.snapshot'*/
+
+
+   /* build("org.grails.plugins:axis2:latest.integration") {
+      excludes "xbean-2.1.0"
+    }
+    runtime("org.grails.plugins:axis2:latest.integration") {
+      excludes "xbean-2.1.0"
+    }
+    compile("org.grails.plugins:axis2:latest.integration") {
+      excludes "xbean-2.1.0"
+    }
+    test("org.grails.plugins:axis2:latest.integration") {
+      excludes "xbean-2.1.0"
+    }
+    provided("org.grails.plugins:axis2:latest.integration") {
+      exported=false
+      excludes "xbean-2.1.0"
+    }
+*/
+   //needed for dev environment only. not for war
+    //provided 'org.grails.plugins:php:latest.integration'
+  }
+  dependencies {
+    // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
+
+    //  provided ':php:latest-integration'
+/*
+
+      runtime 'mdp2:mdp2:latest.release'
+      compile 'mdp2:mdp2:latest.release'
+      build 'mdp2:mdp2:latest.release'
+      test 'mdp2:mdp2:latest.release'
+      provided 'mdp2:mdp2:latest.release'
+*/
+
+    // runtime 'mysql:mysql-connector-java:5.1.5'
+      //compile 'mdp2:mdp2-dp:latest.integration'
+
+  }
+   grails.project.dependency.distribution = {
+        remoteRepository(id: "pluginReleases", url: "http://hudson.kpiint.com:8080/artifactory/plugins-releases-local") {
+            authentication username: "admin", password:'Tr@s#fly'
+        }
+    }
+}

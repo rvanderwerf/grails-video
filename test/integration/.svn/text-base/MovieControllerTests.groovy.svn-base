@@ -1,0 +1,6 @@
+class MovieControllerTests extends GroovyTestCase
+{
+  public void testSomething ()
+  {
+  }
+}

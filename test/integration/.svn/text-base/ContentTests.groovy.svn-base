@@ -1,0 +1,6 @@
+class ContentTests extends GroovyTestCase
+{
+  public void testSomething ()
+  {
+  }
+}

@@ -1,0 +1,83 @@
+10
+
+dir
+68115
+svn://rvanderwerf@build/techstack-external/grails-video-plugin/trunk/web-app
+svn://rvanderwerf@build
+
+
+
+2011-01-25T21:42:35.383207Z
+62149
+rvanderwerf
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+d263d2d2-eb33-0410-8606-9424f3ced3e5
+
+META-INF
+dir
+
+WEB-INF
+dir
+
+css
+dir
+
+flowplayer
+dir
+
+images
+dir
+
+index.gsp
+file
+
+
+
+
+2011-08-04T18:12:41.000000Z
+00e83af5fc5da9497431bce9bf1734c1
+2011-01-25T21:19:01.495143Z
+62145
+rvanderwerf
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+955
+
+js
+dir
+
+jw-flv
+dir
+

@@ -1,0 +1,6 @@
+class VideoTagLibTests extends GroovyTestCase {
+
+    void testSomething() {
+
+    }
+}

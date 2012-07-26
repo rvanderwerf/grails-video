@@ -1,0 +1,6 @@
+class ContentControllerTests extends GroovyTestCase
+{
+  public void testSomething ()
+  {
+  }
+}
