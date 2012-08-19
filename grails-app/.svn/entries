@@ -1,55 +1,0 @@
-10
-
-dir
-68115
-svn://rvanderwerf@build/techstack-external/grails-video-plugin/trunk/grails-app
-svn://rvanderwerf@build
-
-
-
-2011-08-24T15:34:39.460097Z
-65720
-hli
-
-
-svn:special svn:externals svn:needs-lock
-
-
-
-
-
-
-
-
-
-
-
-d263d2d2-eb33-0410-8606-9424f3ced3e5
-
-conf
-dir
-
-controllers
-dir
-
-domain
-dir
-
-i18n
-dir
-
-jobs
-dir
-
-services
-dir
-
-taglib
-dir
-
-utils
-dir
-
-views
-dir
-
