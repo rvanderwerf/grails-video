@@ -91,31 +91,31 @@ player - jwflv or flowplayer
 
 Configuration
 -------------------
-video{
-    location="/tmp/"  // or shared filesystem drive for a cluster
-    yamdi{
-        path="/usr/bin/yamdi"    // FLV metadata injector (IF TYPE= FLV)
+    video{
+        location="/tmp/"  // or shared filesystem drive for a cluster
+        yamdi{
+            path="/usr/bin/yamdi"    // FLV metadata injector (IF TYPE= FLV)
+        }
+        ffmpeg  {
+            fileExtension = "flv"  // use flv or mp4
+            conversionArgs = "-b 600k -r 24 -ar 22050 -ab 96k"
+            path="/usr/bin/ffmpeg"
+            makethumb = "-an -ss 00:00:03 -an -r 2 -vframes 1 -y -f mjpeg"
+        }
+        ffprobe {
+            path="/usr/bin/ffprobe" // finds length of movie
+            params=""
+        }
+        flowplayer {
+            version = "3.1.2" // use empty string for no version on file
+        }
+        swfobject {
+            version = "" // used for jw-flv player
+        }
+        qtfaststart {
+            path= “/usr/sbin/qtfaststart” // if type == mp4 rearrage metadata
+        }
     }
-    ffmpeg  {
-        fileExtension = "flv"  // use flv or mp4
-        conversionArgs = "-b 600k -r 24 -ar 22050 -ab 96k"
-        path="/usr/bin/ffmpeg"
-        makethumb = "-an -ss 00:00:03 -an -r 2 -vframes 1 -y -f mjpeg"
-    }
-    ffprobe {
-        path="/usr/bin/ffprobe" // finds length of movie
-        params=""
-    }
-    flowplayer {
-        version = "3.1.2" // use empty string for no version on file
-    }
-    swfobject {
-        version = "" // used for jw-flv player
-    }
-    qtfaststart {
-        path= “/usr/sbin/qtfaststart” // if type == mp4 rearrage metadata
-    }
-}
 
 Flowplayer Plugins
 
