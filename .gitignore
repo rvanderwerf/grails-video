@@ -2,10 +2,8 @@
 *Db.properties
 *Db.script
 .settings
-eclipse
-stacktrace.log
+*.log
 target
-/plugins
-/web-app/plugins
-/web-app/WEB-INF/classes
-.svn
+*.zip
+plugin.xml
+web-app/WEB-INF
