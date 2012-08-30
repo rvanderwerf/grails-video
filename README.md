@@ -1,7 +1,7 @@
 grails-video plugin
 ===================================================
 
-Grails Video Plugin, picked up and enhanced from original Cantina Consulting pre-1.0 Grails Plugin (Compatible with Grails 2.x)
+Grails Video Plugin, picked up and enhanced from original Cantina Consulting pre-1.0 Grails Plugin (Now compatible with Grails 2.x)
 
 Video Plugin History –
 	Abandonware created by Cantina Consulting made for Grails 1.0 RC1 - 2007
@@ -9,6 +9,24 @@ Video Plugin History –
 Also fixed streaming, used Tomcat byte range support so mp4 streaming will work
 	Fixed up for Grails 2.0.x by Ryan – 2012
 	Updated to use JWFLV 5.10
+
+
+
+You can help!
+==============
+Currently we need someone more familiar with flowplayer to upgrade the taglib to use the current version, which has
+changed significantly.
+
+
+TODOS:
+- cleanup MovieController to put streaming logic into service
+- toggle related binary-based domain object so actual videos can be stored in DB (or no-SQL db) instead of FS
+- toggle temp files being stored in working table in database, to avoid needing shared filesystem to process videos
+- cleanup quartz deps in BuildConfig.grovy
+- update html and styles on admin screens
+- write actual unit tests
+- convert taglibs to use gsp includes for flowplayer/jw-flv html
+
 
 
 Security: Override either of these actions In MovieController
