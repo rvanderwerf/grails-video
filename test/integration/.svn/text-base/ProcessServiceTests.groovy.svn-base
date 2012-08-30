@@ -1,6 +1,0 @@
-class ProcessServiceTests extends GroovyTestCase {
-
-    void testSomething() {
-
-    }
-}

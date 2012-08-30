@@ -1,6 +1,0 @@
-class VideoServiceTests extends GroovyTestCase {
-
-    void testSomething() {
-
-    }
-}
