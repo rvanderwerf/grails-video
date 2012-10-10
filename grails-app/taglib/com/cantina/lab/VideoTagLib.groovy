@@ -22,6 +22,7 @@ package com.cantina.lab
  *
  * @author Matt Chisholm
  * @author Adam Stachelek
+ * @author Ryan Vanderwerf
  */
 class VideoTagLib {
 
@@ -32,21 +33,9 @@ class VideoTagLib {
 
 	def includes = { attrs ->
 
-		def meta = grailsApplication.metadata
-		def prefix = meta["app.name"]
-		if (prefix == '/') {
-			prefix = ""
-		}
-		else {
-			if (!prefix.startsWith("/")) {
-				prefix = "/" + prefix
-			}
-		}
-		if (pluginContextPath?.length() > 0 && pluginContextPath != '/') {
-			prefix += pluginContextPath
-		}
+
 		out << """\
-            <script type='text/javascript' src='${prefix}/jw-flv/swfobject.js'></script>
+            <script type='text/javascript' src='${g.createLink(uri:'/jw-flv/swfobject.js')}'></script>
 """
 	}
 
@@ -60,7 +49,10 @@ class VideoTagLib {
 		def meta = grailsApplication.metadata
 
 		def prefix = meta["app.name"]
-		if (prefix == '/') {
+        if (!prefix) {
+            prefix = ""
+        }
+        if (prefix == '/') {
 			prefix = ""
 		}
 		else {
@@ -86,7 +78,7 @@ class VideoTagLib {
                     <a href='http://www.macromedia.com/go/getflashplayer'>Get Flash</a> to see this player.
                     </p>
                     <script type='text/javascript'>
-                    var so = new SWFObject('${prefix}/jw-flv/player.swf','${playerId}','320','260','7');
+                    var so = new SWFObject('${g.createLink(uri:'/jw-flv/player.swf')}','${playerId}','320','260','7');
                     so.addVariable('file','${g.createLink(action: 'streamflv', id: movie.id)}');
                     so.addParam('allowfullscreen','true');
                     so.addVariable('streamscript','${g.createLink(action: 'streamflv', id: movie.id)}');
@@ -101,7 +93,7 @@ class VideoTagLib {
                     <a href='http://www.macromedia.com/go/getflashplayer'>Get Flash</a> to see this player.
                     </p>
                     <script type='text/javascript'>
-                    var so = new SWFObject('${prefix}/jw-flv/player.swf','${playerId}','320','260','7');
+                    var so = new SWFObject('${g.createLink(uri:'/jw-flv/player.swf')}','${playerId}','320','260','7');
                     so.addParam('allowfullscreen','true');
                     so.addVariable('file','${g.createLink(action: 'display', id: movie.id)}');
                     so.addVariable('image','${g.createLink(action: 'thumb', id: movie.id)}');
@@ -120,7 +112,7 @@ class VideoTagLib {
 
 			if (stream == 'true') {
 				out << """\
-                <object type="application/x-shockwave-flash" data="${prefix}/flowplayer/FlowPlayer.swf"
+                <object type="application/x-shockwave-flash" data="${g.createLink(uri:'/flowplayer/FlowPlayer.swf')}"
                     width="320" height="262" id="${playerId}">
                     <param name="allowScriptAccess" value="sameDomain" />
                     <param name="movie" value="${g.createLinkTo(dir: pluginContextPath, file: 'flowplayer/FlowPlayer.swf')}" />
@@ -133,7 +125,7 @@ class VideoTagLib {
 			}
 			else {
 				out << """\
-                <object type="application/x-shockwave-flash" data="${prefix}/flowplayer/FlowPlayer.swf"
+                <object type="application/x-shockwave-flash" data="${g.createLink(uri:'/flowplayer/FlowPlayer.swf')}"
                     width="320" height="262" id="${playerId}">
                     <param name="allowScriptAccess" value="sameDomain" />
                     <param name="movie" value="${g.createLinkTo(dir: pluginContextPath, file: 'flowplayer/FlowPlayer.swf')}" />

@@ -51,7 +51,7 @@ class MovieController {
 
 	def list = {
 		if (!params.max) params.max = 10
-		[movieList: Movie.list(params)]
+		[movieList: Movie.list(params),movieInstanceTotal:Movie.count()]
 	}
 
 	def show = {

@@ -6,4 +6,4 @@
 target
 *.zip
 plugin.xml
-web-app/WEB-INF
+web-app/WEB-INF/tld

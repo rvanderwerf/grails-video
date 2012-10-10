@@ -18,13 +18,14 @@
 package com.cantina.lab
 
 import org.springframework.beans.factory.InitializingBean
-import org.springframework.transaction.annotation.Transactional
+
 
 /**
  * Manages video assets.
  *
  * @author Matt Chisholm
  * @author Adam Stachelek
+ * @author Ryan Vanderwerf
  */
 class VideoService implements InitializingBean {
 
@@ -94,10 +95,12 @@ class VideoService implements InitializingBean {
 		success
 	}
 
-	@Transactional
+
 	void putMovie(Movie movie) {
-		movie.status = Movie.STATUS_NEW
-		movie.save()
+            Movie.withTransaction {
+            movie.status = Movie.STATUS_NEW
+            movie.save()
+        }
 	}
 
 	void deleteMovie(Movie movie) {
@@ -112,11 +115,13 @@ class VideoService implements InitializingBean {
 		if (file.exists()) file.delete()
 	}
 
-	@Transactional
+
 	void convertVideo(Movie movie) {
 
-		movie.status = Movie.STATUS_INPROGRESS
-		movie.save(flush: true)
+        Movie.withTransaction {
+            movie.status = Movie.STATUS_INPROGRESS
+            movie.save(flush: true)
+        }
 
 		File vid = new File(movie.pathMaster)
 
@@ -149,7 +154,9 @@ class VideoService implements InitializingBean {
 			movie.status = Movie.STATUS_FAILED
 		}
 
-		movie.save()
+        Movie.withTransaction() {
+		    movie.save()
+        }
 	}
 
 	void convertNewVideo() {

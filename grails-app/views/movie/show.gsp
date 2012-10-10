@@ -18,7 +18,7 @@
         </div>
     <script type="text/javascript">
         jwplayer("container").setup({
-            flashplayer: "/video/jw-flv/player.swf"
+            flashplayer: "${g.createLink(uri:'/jw-flv/player.swf')}"
         });
     </script>
 
@@ -115,9 +115,9 @@
                                     <tr>
                                         <td>jwflw 5.10</td>
                                         <td>
-                                            <script type="text/javascript" src="/video/jw-flv/jwplayer.js"></script>
+                                            <script type="text/javascript" src="${g.createLink(uri:'/jw-flv/jwplayer.js')}"></script>
                                             <video class="jwplayer" src="${g.createLink(action: 'streamflv', id: movie.id)}"
-                                                   poster="/video/jw-flv/preview.jpg"></video>
+                                                   poster="${g.createLink(uri:'/jw-flv/preview.jpg')}"></video>
 
                                         </td>
                                     </tr>

@@ -4,7 +4,7 @@ dataSource {
 	username = 'sa'
 	password = ''
 	dbCreate = 'update'
-	url = 'jdbc:h2:mem:testDb'
+	url = 'jdbc:h2:mem:testDb;MVCC=TRUE'
 }
 
 hibernate {

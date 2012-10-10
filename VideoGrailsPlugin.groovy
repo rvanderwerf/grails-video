@@ -33,14 +33,16 @@ This plugin is written for the Grails web application framework, and intends to 
 * Host, manage and display video assets
 * Provide an easy mechanism to convert standard movie formats Quicktime, MPEG, etc. to the flash movie format FLV
 * Perform movie conversions (i.e. MPEG -> FLV) or (MPEG -> MP4) asynchronously
-* Provide options for JW-FLV or
+* Provide options for JW-FLV or Flowplayer
 *
 
 This plugin uses serveral utilities to work with video assets. Please see https://github.com/rvanderwerf/grails-video for more information.
 '''
 
 	def license = 'APACHE'
-	def developers = [[name: 'Cantina Consulting <www.cantinaconsulting.com>', email: 'info@cantinaconsulting.com']]
+	def developers = [
+            [name:  'Ryan Vanderwerf', email: 'rvanderwerf@gmail.com'],
+            [name: 'Cantina Consulting <www.cantinaconsulting.com>', email: 'info@cantinaconsulting.com']]
 //	def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPVIDEO'] TODO
 	def scm = [url: 'https://github.com/rvanderwerf/grails-video']
 }
