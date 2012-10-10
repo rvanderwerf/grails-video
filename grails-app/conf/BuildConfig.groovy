@@ -18,7 +18,10 @@ grails.project.dependency.resolution = {
 		compile(":hibernate:$grailsVersion") {
 			export = false
 		}
-
+        compile(":jquery:1.7.1") {
+            export = false
+        }
 		compile ':quartz:1.0-RC2'
+        runtime(":resources:1.2.RC2")
 	}
 }
