@@ -1,37 +1,24 @@
-grails.war.destFile = "grails-video.war"
-grails.war.copyToWebAppLib = { args ->
-
-}
+grails.project.work.dir = 'target'
+grails.project.source.level = 1.6
 
 grails.project.dependency.resolution = {
-  // inherit Grails' default dependencies
-  inherits("global") {
-    // uncomment to disable ehcache
-    // excludes 'ehcache'
-  }
-  log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
-  repositories {
 
-    mavenLocal()
+	inherits 'global'
+	log 'warn'
 
+	repositories {
+		grailsCentral()
+	}
 
-    grailsPlugins()
-    grailsHome()
-    grailsRepo "http://plugins.grails.org"
+	plugins {
+		build(':release:2.0.4', ':rest-client-builder:1.0.2') {
+			export = false
+		}
 
+		compile(":hibernate:$grailsVersion") {
+			export = false
+		}
 
-    mavenCentral()
-
-  }
-  plugins {
-
-
-
-  }
-  dependencies {
-    // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
-
-
-  }
-
+		compile ':quartz:1.0-RC2'
+	}
 }
