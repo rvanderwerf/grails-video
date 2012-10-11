@@ -1,7 +1,7 @@
 GrailsVideoPseudoStreamer plugin
 ===================================================
 
-Grails Video Plugin, picked up and enhanced from original Cantina Consulting pre-1.0 Grails Plugin (Now compatible with Grails 2.x)
+GrailsVideoPseudoStreamer(GVPS) Plugin, picked up and enhanced from original Cantina Consulting pre-1.0 Grails Plugin (Now compatible with Grails 2.x)
 
 Video Plugin History –
 	Abandonware created by Cantina Consulting made for Grails 1.0 RC1 - 2007
@@ -9,6 +9,8 @@ Video Plugin History –
 Also fixed streaming, used Tomcat byte range support so mp4 streaming will work
 	Fixed up for Grails 2.0.x by Ryan – 2012
 	Updated to use JWFLV 5.10
+	Refactor MovieController, moved relevant streaming code to service
+	Renamed plugin
 
 
 
@@ -19,13 +21,12 @@ changed significantly.
 
 
 TODOS:
-- cleanup MovieController to put streaming logic into service
 - toggle related binary-based domain object so actual videos can be stored in DB (or no-SQL db) instead of FS
 - toggle temp files being stored in working table in database, to avoid needing shared filesystem to process videos
-- cleanup quartz deps in BuildConfig.grovy
 - update html and styles on admin screens
 - write actual unit tests
 - convert taglibs to use gsp includes for flowplayer/jw-flv html
+- add support for latest flowplayer versions
 
 
 
@@ -48,7 +49,7 @@ ex. conversionArgs = "-b 600k -r 24 -ar 22050 -ab 96k"
 
 Managing Video formats
 Shells and runs ffmpeg to transcode video into common format
-Users can upload anything you can throw at ffmpeg, the most common video transcoding engine available (You can plug something else in without too much trouble)
+Users can upload anything you can throw at ffmpeg, the most common video transcoding engine available (You can plug something else in without tversoo much trouble)
 Uses YAMDI to extract metadata from video
 Uses ffprobe to extract mp4 data from footer and move to front of file to make streaming work
 Has support out of the box for Flowplayer and Jw-Flv
