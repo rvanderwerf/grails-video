@@ -1,4 +1,4 @@
-grails-video plugin
+GrailsVideoPseudoStreamer plugin
 ===================================================
 
 Grails Video Plugin, picked up and enhanced from original Cantina Consulting pre-1.0 Grails Plugin (Now compatible with Grails 2.x)

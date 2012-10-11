@@ -19,13 +19,13 @@
  * Contact rvanderwerf@gmail.com
  */
 
-class VideoGrailsPlugin {
+class GvpsGrailsPlugin {
 
 	def version = "0.2"
 	def grailsVersion = '2.0 > *'
 	def author = "Ryan Vanderwerf"
 	def authorEmail = "rvanderwerf@gmail.com"
-	def title = "Video Plugin"
+	def title = "GVPS(Grails Video Pseudo Streamer) Plugin"
 	def documentation = "https://github.com/rvanderwerf/grails-video"
 	def description = '''\
 This plugin is written for the Grails web application framework, and intends to make it relatively easy to host videos. The goals of this plugin are as follows:
