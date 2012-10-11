@@ -7,7 +7,7 @@
 	<head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<title><g:layoutTitle default="Grails"/></title>
+		<title><g:layoutTitle default="GVPS(Grails Video Pseudo Streamer)"/></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
 		<link rel="apple-touch-icon" href="${resource(dir: 'images', file: 'apple-touch-icon.png')}">
@@ -64,7 +64,8 @@
     </head>
 	<body>
     %{--<r:layoutResources />--}%
-		<div id="grailsLogo" role="banner"><a href="http://www.reachforce.com"><img src="${resource(dir: 'images', file: 'logosm.png')}" alt="ReachForce"/></a></div>
+		<div id="grailsLogo" role="banner"><a href="http://www.reachforce.com"><img src="${resource(dir: 'images', file: 'logosm.png')}" alt="GVPS(Grails Video Pseudo Streamer)"/></a>
+        GVPS(Grails Video Pseudo Streamer)</div>
     <div id="menu">
         <sec:ifLoggedIn>
             Logged in as <sec:username/> (<g:link controller='logout'>Logout</g:link>)
