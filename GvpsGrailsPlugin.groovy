@@ -22,7 +22,7 @@
 class GvpsGrailsPlugin {
 
 	def version = "0.2"
-	def grailsVersion = '2.0 > *'
+	def grailsVersion = '1.3.4 > *'
 	def author = "Ryan Vanderwerf"
 	def authorEmail = "rvanderwerf@gmail.com"
 	def title = "GVPS(Grails Video Pseudo Streamer) Plugin"
@@ -43,6 +43,6 @@ This plugin uses serveral utilities to work with video assets. Please see https:
 	def developers = [
             [name:  'Ryan Vanderwerf', email: 'rvanderwerf@gmail.com'],
             [name: 'Cantina Consulting <www.cantinaconsulting.com>', email: 'info@cantinaconsulting.com']]
-//	def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPVIDEO'] TODO
+//	def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPGVPS'] TODO
 	def scm = [url: 'https://github.com/rvanderwerf/grails-video']
 }
