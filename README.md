@@ -53,6 +53,7 @@ Override streamflv action with Spring Security:
 Override display action (MP4) with Spring Security
 ---------------------------------------------------
 --MovieController.groovy
+
     @Secured(["isAuthenticated()"])
     def display = {
 
