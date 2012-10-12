@@ -10,6 +10,7 @@ Grails 2.x:
 
 add plugin to BuildConfig.groovy
 
+================
 plugins {
     compile ":gvps:0.2"
 }
