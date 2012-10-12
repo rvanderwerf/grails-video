@@ -26,6 +26,40 @@ use the VideoService and call streaming methods directly: streamflv or streamMp4
 a quartz job will launch to convert the videos to FLV or MP4 (depending on what you configured). From there you can stream from your own code using the VideoService, use the taglibs (listed below),
 or override the MovieController.
 
+Examples
+=================================
+Stream movie using JW-FLV in pseudo streaming mode:
+
+    <vid:display movie='${movie}' player="jwflv" stream='true'/>
+
+
+Stream movie using Flowplayer in pseudo streaming mode:
+    <vid:display movie='${movie}' player="flowplayer" stream='true'/>
+
+
+Override streamflv action with Spring Security:
+------------------------------------------------
+--MovieController.groovy
+
+    @Secured(["isAuthenticated()"])
+    def streamflv = {
+
+            def movie = Movie.get(params.id)
+            if (movie.status != Movie.STATUS_CONVERTED) return
+
+            videoService.streamflv(params,request,response,movie) // you can call this directly if you want from any controller you wish
+        }
+
+Override display action (MP4) with Spring Security
+---------------------------------------------------
+--MovieController.groovy
+    def display = {
+
+            def movie = Movie.get(params.id)
+            if (movie.status != movie.STATUS_CONVERTED) return
+
+            videoService.streamMp4(params, request, response, movie) // you can call this directly if you want from any controller you wish
+        }
 
 Configuration
 ==================================
