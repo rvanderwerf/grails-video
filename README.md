@@ -34,6 +34,7 @@ Stream movie using JW-FLV in pseudo streaming mode:
 
 
 Stream movie using Flowplayer in pseudo streaming mode:
+
     <vid:display movie='${movie}' player="flowplayer" stream='true'/>
 
 
