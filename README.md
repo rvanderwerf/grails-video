@@ -10,15 +10,15 @@ Grails 2.x:
 
 add plugin to BuildConfig.groovy
 
-==================================
-plugins{
-    compile ":gvps:0.2"
-}
+
+    plugins{
+        compile ":gvps:0.2"
+    }
 
 
 Grails 1.3.x:
 
-install-plugin gvps
+    install-plugin gvps
 
 Next follow configuration steps below. You must have ffmpeg installed at the very least. If you want only FLV support, you must also have yamdi and ffprobe installed.
 For MP4 support you must also have qtfaststart installed. Once you have it installed, you can use it in two ways: override MovieController class, add security around the actions, or simply
@@ -72,10 +72,10 @@ FFMpeg (bundles with libavcodec) – quick overview
 Parameters may vary based on version you are using
 
 ex. conversionArgs = "-b 600k -r 24 -ar 22050 -ab 96k"
-“-b 600k” set video bitrate of video to 600kbps
-“-r 24” set framerate to 24 fps
-“-ar 22050” audio sampling frequency rate
-“-ab 96k” audio bit rate
+    “-b 600k” set video bitrate of video to 600kbps
+    “-r 24” set framerate to 24 fps
+    “-ar 22050” audio sampling frequency rate
+    “-ab 96k” audio bit rate
 
 Managing Video formats
 ============================
@@ -119,10 +119,10 @@ Or use taglib of plugin:
 
 Parameters:
 
-movie - movie domain object
-id -id of movie object
-stream - true/false stream or download
-player - jwflv or flowplayer
+    movie - movie domain object
+    id -id of movie object
+    stream - true/false stream or download
+    player - jwflv or flowplayer
 
 
 
@@ -135,10 +135,10 @@ Or Use taglib of plugin: (currently uses older version of flowplayer)
 
 Parameters:
 
-movie - movie domain object
-id -id of movie object
-stream - true/false stream or download
-player - jwflv or flowplayer
+    movie - movie domain object
+    id -id of movie object
+    stream - true/false stream or download
+    player - jwflv or flowplayer
 
 
 
