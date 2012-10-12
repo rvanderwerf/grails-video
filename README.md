@@ -169,19 +169,19 @@ TODOS:
 More Information
 ==============================
 
-https://github.com/rvanderwerf/grails-video
-http://terracotta.org/downloads/open-source/catalog
-http://flowplayer.org/
-http://www.longtailvideo.com/players/jw-flv-player/
-http://ffmpeg.org/
-http://code.google.com/p/flowplayer-plugins/
+    https://github.com/rvanderwerf/grails-video
+    http://terracotta.org/downloads/open-source/catalog
+    http://flowplayer.org/
+    http://www.longtailvideo.com/players/jw-flv-player/
+    http://ffmpeg.org/
+    http://code.google.com/p/flowplayer-plugins/
 
 
 Contact Me - questions? I may have answers :)
 ================================
-Via twitter: https://twitter.com/RyanVanderwerf
-Google+/email: rvanderwerf@gmail.com
-Blog: http://rvanderwerf.blogspot.com
+    Via twitter: https://twitter.com/RyanVanderwerf
+    Google+/email: rvanderwerf@gmail.com
+    Blog: http://rvanderwerf.blogspot.com
 
 
 
