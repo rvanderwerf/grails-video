@@ -23,5 +23,7 @@ grails.project.dependency.resolution = {
         }
 		compile ':quartz:1.0-RC2'
         runtime(":resources:1.2.RC2")
-	}
+        runtime(":release:2.0.4")
+        test(":spock:0.6")
+    }
 }

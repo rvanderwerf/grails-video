@@ -14,14 +14,18 @@
 		<link rel="apple-touch-icon" sizes="114x114" href="${resource(dir: 'images', file: 'apple-touch-icon-retina.png')}">
 		<link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}" type="text/css">
 		<link rel="stylesheet" href="${resource(dir: 'css', file: 'mobile.css')}" type="text/css">
+
         <g:layoutHead/>
+
         <g:javascript library="jquery" plugin="jquery"/>
-        %{--<g:javascript src="jquery/jquery-1.7.1.js"/>--}%
+
 
             <r:require module="jquery"/>
-            %{--<r:require module="jquery-ui"/>--}%
+
 
         <r:layoutResources />
+        <vid:includes player="jwflv"/>
+        <vid:includes player="flowplayer"/>
         <style type="text/css">
             #grailsLogo {
                 background-color: #abbf78;
@@ -67,15 +71,9 @@
 		<div id="grailsLogo" role="banner"><a href="http://www.reachforce.com"><img src="${resource(dir: 'images', file: 'logosm.png')}" alt="GVPS(Grails Video Pseudo Streamer)"/></a>
         GVPS(Grails Video Pseudo Streamer)</div>
     <div id="menu">
-        <sec:ifLoggedIn>
-            Logged in as <sec:username/> (<g:link controller='logout'>Logout</g:link>)
-        </sec:ifLoggedIn>
-        <sec:ifNotLoggedIn>
-            <a href='#' id='loginLink'>Login</a>
-        </sec:ifNotLoggedIn>
 
-        <nav:render group="top"/>
-        <nav:renderSubItems group="top"/>
+
+
     </div>
 
         <g:layoutBody/>

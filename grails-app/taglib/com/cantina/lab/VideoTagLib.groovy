@@ -32,11 +32,23 @@ class VideoTagLib {
 	private static final String TYPE_JWFLV = "jwflv"
 
 	def includes = { attrs ->
-
-
+        def player = attrs.player
+        if (player == TYPE_JWFLV) {
 		out << """\
+            <script type='text/javascript' src='${g.createLink(uri:'/jw-flv/jwplayer.js')}'></script>
             <script type='text/javascript' src='${g.createLink(uri:'/jw-flv/swfobject.js')}'></script>
+
 """
+        }
+        if (player == TYPE_FLOWPLAYER) {
+            out << """\
+
+            <script src='http://releases.flowplayer.org/5.0.0/flowplayer.min.js'></script>
+            <link rel='stylesheet' type='text/css' href='http://releases.flowplayer.org/5.0.0/skin/minimalist.css' />
+"""
+
+        }
+
 	}
 
 	def display = { attrs ->
@@ -46,7 +58,25 @@ class VideoTagLib {
 		def player = attrs.player
 		def stream = attrs.stream
 
-		def meta = grailsApplication.metadata
+
+        if (!attrs.width) {
+            if (grailsApplication?.config?.video?.player?.width) {
+                attrs.width = grailsApplication?.config?.video?.player?.width
+            } else {
+                attrs.width = '320'
+            }
+
+        }
+        if (!attrs.height) {
+            if (grailsApplication?.config?.video?.player?.height) {
+                attrs.height = grailsApplication?.config?.video?.player?.height
+            } else {
+                attrs.height = '260'
+            }
+
+        }
+
+        def meta = grailsApplication.metadata
 
 		def prefix = meta["app.name"]
         if (!prefix) {
@@ -78,7 +108,7 @@ class VideoTagLib {
                     <a href='http://www.macromedia.com/go/getflashplayer'>Get Flash</a> to see this player.
                     </p>
                     <script type='text/javascript'>
-                    var so = new SWFObject('${g.createLink(uri:'/jw-flv/player.swf')}','${playerId}','320','260','7');
+                    var so = new SWFObject('${g.createLink(uri:'/jw-flv/player.swf')}','${playerId}',${attrs.width},${attrs.height},'7');
                     so.addVariable('file','${g.createLink(action: 'streamflv', id: movie.id)}');
                     so.addParam('allowfullscreen','true');
                     so.addVariable('streamscript','${g.createLink(action: 'streamflv', id: movie.id)}');
@@ -93,7 +123,7 @@ class VideoTagLib {
                     <a href='http://www.macromedia.com/go/getflashplayer'>Get Flash</a> to see this player.
                     </p>
                     <script type='text/javascript'>
-                    var so = new SWFObject('${g.createLink(uri:'/jw-flv/player.swf')}','${playerId}','320','260','7');
+                    var so = new SWFObject('${g.createLink(uri:'/jw-flv/player.swf')}','${playerId}',${attrs.width},${attrs.height},'7');
                     so.addParam('allowfullscreen','true');
                     so.addVariable('file','${g.createLink(action: 'display', id: movie.id)}');
                     so.addVariable('image','${g.createLink(action: 'thumb', id: movie.id)}');
@@ -113,7 +143,7 @@ class VideoTagLib {
 			if (stream == 'true') {
 				out << """\
                 <object type="application/x-shockwave-flash" data="${g.createLink(uri:'/flowplayer/FlowPlayer.swf')}"
-                    width="320" height="262" id="${playerId}">
+                    width="${attrs.width}" height="${attrs.height}" id="${playerId}">
                     <param name="allowScriptAccess" value="sameDomain" />
                     <param name="movie" value="${g.createLinkTo(dir: pluginContextPath, file: 'flowplayer/FlowPlayer.swf')}" />
                     <param name="quality" value="high" />
@@ -126,7 +156,7 @@ class VideoTagLib {
 			else {
 				out << """\
                 <object type="application/x-shockwave-flash" data="${g.createLink(uri:'/flowplayer/FlowPlayer.swf')}"
-                    width="320" height="262" id="${playerId}">
+                    width="${attrs.width}" height="${attrs.height}" id="${playerId}">
                     <param name="allowScriptAccess" value="sameDomain" />
                     <param name="movie" value="${g.createLinkTo(dir: pluginContextPath, file: 'flowplayer/FlowPlayer.swf')}" />
                     <param name="quality" value="high" />

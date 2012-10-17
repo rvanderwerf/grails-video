@@ -12,7 +12,7 @@ add plugin to BuildConfig.groovy
 
 
     plugins{
-        compile ":gvps:0.2"
+        compile ":gvps:0.3"
     }
 
 
@@ -205,12 +205,26 @@ TODOS:
 
 More Information
 ==============================
+    Updated slides from SpringOne2GX
 
+    https://github.com/rvanderwerf/grails-video/doc/streaming-grails-slides-v2.pdf
+
+    Source:
     https://github.com/rvanderwerf/grails-video
+
+    Terracotta;
     http://terracotta.org/downloads/open-source/catalog
+
+    Flowplayer:
     http://flowplayer.org/
+
+    JWPlayer
     http://www.longtailvideo.com/players/jw-flv-player/
+
+    FFMpeg
     http://ffmpeg.org/
+
+    Flowplayer plugins
     http://code.google.com/p/flowplayer-plugins/
 
 

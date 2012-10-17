@@ -4,8 +4,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="layout" content="main" />
         <title>Show Movie</title>
-        
-        <vid:includes/>
+        <!-- usually you use one or the other here -->
+
       %{--<script type="text/javascript" src="/site/js/flowplayer/flowplayer-3.2.4.min.js"></script>
       <script type="text/javascript" src="/site/js/flowplayer/flowplayer.ipad-3.2.1.js"></script>--}%
 
@@ -108,19 +108,39 @@
                                         <vid:display movie='${movie}' player="flowplayer" stream='true'/>
                                         </td>
                                         <td> Full file download (flowplayer): <br/>
-                                        <vid:display movie='${movie}' player="flowplayer" stream='false'/>
+                                        <vid:display height="260" width="320" movie='${movie}' player="flowplayer" stream='false'/>
                                         </td>
                                     </tr>
 
                                     <tr>
-                                        <td>jwflw 5.10</td>
+                                        <td>jwflw captions plugin</td>
                                         <td>
-                                            <script type="text/javascript" src="${g.createLink(uri:'/jw-flv/jwplayer.js')}"></script>
-                                            <video class="jwplayer" src="${g.createLink(action: 'streamflv', id: movie.id)}"
-                                                   poster="${g.createLink(uri:'/jw-flv/preview.jpg')}"></video>
+                                            <p id="container">loading jw-flv player with captions</p>
+
+                                            <script type="text/javascript">
+                                            jwplayer("container").setup({
+                                            file: "${g.createLink(action: 'streamflv', id: movie.id)}",
+                                            flashplayer: "${g.createLink(uri:'/jw-flv/player.swf')}",
+                                            height: 260,
+                                            streamscript: "${g.createLink(action: 'streamflv', id: movie.id)}",
+                                            provider: "http",
+                                            streambuffer: 900,
+                                            image: "${g.createLink(action: 'thumb', id: movie.id)}",
+                                            plugins: {
+                                            "captions-2": {
+                                            file: "${g.createLink(uri:'/assets/caption.srt')}"
+                                            }
+                                            },
+                                            width:320
+                                            });
+                                        </script>
+                                           %{-- <script type="text/javascript" src="${g.createLink(uri:'/jw-flv/jwplayer.js')}"></script>
+                                            <video class="container" src="${g.createLink(action: 'streamflv', id: movie.id)}"
+                                                   poster="${g.createLink(action:'thumb',id:movie.id)}"></video>--}%
 
                                         </td>
                                     </tr>
+
                                 </table>
                             </td>
                             

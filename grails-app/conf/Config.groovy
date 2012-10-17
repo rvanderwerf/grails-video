@@ -9,14 +9,18 @@ log4j = {
 video {
 
     location="/tmp/"
-
+    player.height = '260'
+    player.width =  '320'
     yamdi {
         path="/usr/bin/yamdi"
     }
 
     ffmpeg {
-        fileExtension = "flv"
-        conversionArgs = "-b 600k -r 24 -ar 22050 -ab 96k"
+        fileExtension = "mp4"
+        //fileExtension = "flv"
+
+        //conversionArgs = "-b 600k -r 24 -ar 22050 -ab 96k"
+        conversionArgs = "-b 600k -r 24 -ar 44100 -ab 128k"
         path="/usr/bin/ffmpeg"
         makethumb = "-an -ss 00:00:03 -an -r 2 -vframes 1 -y -f mjpeg"
     }

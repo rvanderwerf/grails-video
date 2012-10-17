@@ -78,7 +78,9 @@ class VideoService implements InitializingBean {
 		}
 		else if (convertedMovieFileExtension == "mp4") {
 
-			String convertCmd = "${mvals.ffmpeg.path} -i ${sourceVideo.absolutePath} ${mvals.ffmpeg.conversionArgs} ${targetVideo.absolutePath}"
+			def convertCmd = "${mvals.ffmpeg.path}"
+
+            convertCmd+= " -i ${sourceVideo.absolutePath} ${mvals.ffmpeg.conversionArgs} ${targetVideo.absolutePath}"
 			String metadataCmd = "${mvals.qtfaststart.path} ${targetVideo.absolutePath} ${targetVideo.absolutePath}.1"
 			String deleteCmd = "rm -rf ${targetVideo.absolutePath}"
 			String renameCmd = "mv ${targetVideo.absolutePath}.1 ${targetVideo.absolutePath}"
@@ -167,7 +169,7 @@ class VideoService implements InitializingBean {
 
 		log.debug "Found ${results.size()} movie(s) to convert"
 
-		//TODO: kick off coversions in parallel
+		//TODO: kick off coversions in parallel   - create quartz job upon upload instead of polling
 		for (Movie movie in results) {
 			log.debug "Converting movie with key $movie.key"
 			convertVideo movie

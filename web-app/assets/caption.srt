@@ -1,0 +1,16 @@
+1
+00:00:08,000 --> 00:00:10,000
+What the heck is this?
+
+2
+00:00:17,500 --> 00:00:20,500
+Weird, what kind of bird is this?
+
+3
+00:00:21,000 --> 00:00:22,500
+Ouch! Who threw that?
+
+4
+00:00:45,000 --> 00:00:55,000
+Wow this rabbit
+is rather large.

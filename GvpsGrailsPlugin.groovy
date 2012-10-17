@@ -21,7 +21,7 @@
 
 class GvpsGrailsPlugin {
 
-	def version = "0.2"
+	def version = "0.3"
 	def grailsVersion = '1.3.4 > *'
 	def author = "Ryan Vanderwerf"
 	def authorEmail = "rvanderwerf@gmail.com"
