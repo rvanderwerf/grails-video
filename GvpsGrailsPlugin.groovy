@@ -34,7 +34,6 @@ This plugin is written for the Grails web application framework, and intends to 
 * Provide an easy mechanism to convert standard movie formats Quicktime, MPEG, etc. to the flash movie format FLV
 * Perform movie conversions (i.e. MPEG -> FLV) or (MPEG -> MP4) asynchronously
 * Provide options for JW-FLV or Flowplayer
-*
 
 This plugin uses serveral utilities to work with video assets. Please see https://github.com/rvanderwerf/grails-video for more information.
 '''
