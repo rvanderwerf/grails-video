@@ -1,0 +1,33 @@
+
+The operation of the @gvps@ plugin is configured in a stanza within the @Config.groovy@ file. The primary items to be configured are whether the plugin will work with FLV or MP4 files and the locations of the helper programs (see [Prerequisites|guide:prerequisites]. 
+
+A sample configuration is as follows.
+
+{code}
+video {
+    location = "/tmp/"  // location for storage of videos, can be on a shared drive
+    yamdi {
+        path = "/usr/bin/yamdi"    // FLV metadata injector (IF TYPE= FLV)
+    }
+    ffmpeg {
+        fileExtension = "flv"  // use flv or mp4
+        conversionArgs = "-b 600k -r 24 -ar 22050 -ab 96k"
+        path = "/usr/bin/ffmpeg"
+        makethumb = "-an -ss 00:00:03 -an -r 2 -vframes 1 -y -f mjpeg"
+    }
+    ffprobe {
+        path = "/usr/bin/ffprobe" // finds length of movie
+        params = ""
+    }
+    flowplayer {
+        version = "3.1.2" // use empty string for no version on file
+    }
+    swfobject {
+        version = "" // used for jw-flv player, empty to not specify version
+    }
+    qtfaststart {
+        path = "/usr/sbin/qtfaststart" // if type == mp4 used to rearrange metadata
+    }
+}
+{code}
+

@@ -1,0 +1,19 @@
+
+This section will guide you through creating a basic application to store and stream videos. It assumes that the [Prerequesites|guide:Prerequisites] are installed on the server where the Grails application is running.
+
+h2. Installing the plugin.
+
+For Grails 2.x add the following to @BuildConfig.groovy@:
+
+{code}
+grails.project.dependency.resolution = {
+  plugins {
+    compile ":gvps:0.3"
+  }
+}
+{code}
+
+For earlier versions, execute @install-plugin gvps@.
+
+h2. Configuration.
+
