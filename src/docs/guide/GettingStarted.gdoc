@@ -17,3 +17,42 @@ For earlier versions, execute @install-plugin gvps@.
 
 h2. Configuration.
 
+The plugin is configured using a block in the @Config.groovy@ file. Insert the following:
+
+{code}
+video {
+    location = "/tmp/"  // location for storage of videos, can be on a shared drive
+    yamdi {
+        path = "/usr/bin/yamdi"    // FLV metadata injector (IF TYPE= FLV)
+    }
+    ffmpeg {
+        fileExtension = "flv"  // use flv or mp4
+        conversionArgs = "-b 600k -r 24 -ar 22050 -ab 96k"
+        path = "/usr/bin/ffmpeg"
+        makethumb = "-an -ss 00:00:03 -an -r 2 -vframes 1 -y -f mjpeg"
+    }
+    ffprobe {
+        path = "/usr/bin/ffprobe" // finds length of movie
+        params = ""
+    }
+    flowplayer {
+        version = "3.1.2" // use empty string for no version on file
+    }
+    swfobject {
+        version = "" // used for jw-flv player, empty to not specify version
+    }
+    qtfaststart {
+        path = "/usr/sbin/qtfaststart" // if type == mp4 used to rearrange metadata
+    }
+}
+{code}
+
+This may require several adjustments depending on your operating system. Be sure to set the yamdi, ffmpeg, ffprobe, and qtfaststart paths to point to the binary executables on your system. Also set the location property to a directory which you have write privileges on (the system tmp directory will normally have global write permissions). 
+
+h3. Run the application.
+
+At this point, you should have a basic running application which will allow creation, conversion, and viewing of videos. First run the application with @grails run-app@, then access the MovieController to create a video. This should then appear in the @Movie List@ and be viewable.
+
+
+
+
