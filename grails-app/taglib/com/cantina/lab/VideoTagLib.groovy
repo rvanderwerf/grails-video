@@ -23,6 +23,7 @@ package com.cantina.lab
  * @author Matt Chisholm
  * @author Adam Stachelek
  * @author Ryan Vanderwerf
+ * @author Peter N. Steinmetz
  */
 class VideoTagLib {
 
@@ -35,8 +36,8 @@ class VideoTagLib {
         def player = attrs.player
         if (player == TYPE_JWFLV) {
 		out << """\
-            <script type='text/javascript' src='${g.createLink(uri:'/jw-flv/jwplayer.js')}'></script>
-            <script type='text/javascript' src='${g.createLink(uri:'/jw-flv/swfobject.js')}'></script>
+            <script type='text/javascript' src='${r.resource(plugin:'gvps',dir:'jw-flv',file:'jwplayer.js')}'></script>
+            <script type='text/javascript' src='${r.resource(plugin:'gvps',dir:'jw-flv',file:'swfobject.js')}'></script>
 
 """
         }
@@ -108,7 +109,7 @@ class VideoTagLib {
                     <a href='http://www.macromedia.com/go/getflashplayer'>Get Flash</a> to see this player.
                     </p>
                     <script type='text/javascript'>
-                    var so = new SWFObject('${g.createLink(uri:'/jw-flv/player.swf')}','${playerId}',${attrs.width},${attrs.height},'7');
+                    var so = new SWFObject('${r.resource(plugin:'gvps',dir:'jw-flv',file:'player.swf')}','${playerId}',${attrs.width},${attrs.height},'7');
                     so.addVariable('file','${g.createLink(action: 'streamflv', id: movie.id)}');
                     so.addParam('allowfullscreen','true');
                     so.addVariable('streamscript','${g.createLink(action: 'streamflv', id: movie.id)}');
@@ -123,7 +124,7 @@ class VideoTagLib {
                     <a href='http://www.macromedia.com/go/getflashplayer'>Get Flash</a> to see this player.
                     </p>
                     <script type='text/javascript'>
-                    var so = new SWFObject('${g.createLink(uri:'/jw-flv/player.swf')}','${playerId}',${attrs.width},${attrs.height},'7');
+                    var so = new SWFObject('${r.resource(plugin:'gvps',dir:'jw-flv',file:'player.swf')}','${playerId}',${attrs.width},${attrs.height},'7');
                     so.addParam('allowfullscreen','true');
                     so.addVariable('file','${g.createLink(action: 'display', id: movie.id)}');
                     so.addVariable('image','${g.createLink(action: 'thumb', id: movie.id)}');
@@ -142,10 +143,10 @@ class VideoTagLib {
 
 			if (stream == 'true') {
 				out << """\
-                <object type="application/x-shockwave-flash" data="${g.createLink(uri:'/flowplayer/FlowPlayer.swf')}"
+                <object type="application/x-shockwave-flash" data="${r.resource(plugin:'gvps',dir:'flowplay',file:'FlowPlayer.swf')}"
                     width="${attrs.width}" height="${attrs.height}" id="${playerId}">
                     <param name="allowScriptAccess" value="sameDomain" />
-                    <param name="movie" value="${g.createLinkTo(dir: pluginContextPath, file: 'flowplayer/FlowPlayer.swf')}" />
+                    <param name="movie" value="${r.resource(plugin:'gvps',dir:'flowplayer', file: 'FlowPlayer.swf')}" />
                     <param name="quality" value="high" />
                     <param name="scale" value="noScale" />
                     <param name="wmode" value="transparent" />
@@ -155,10 +156,10 @@ class VideoTagLib {
 			}
 			else {
 				out << """\
-                <object type="application/x-shockwave-flash" data="${g.createLink(uri:'/flowplayer/FlowPlayer.swf')}"
+                <object type="application/x-shockwave-flash" data="${r.resource(plugin:'gvps',dir:'flowplayer',file:'FlowPlayer.swf')}"
                     width="${attrs.width}" height="${attrs.height}" id="${playerId}">
                     <param name="allowScriptAccess" value="sameDomain" />
-                    <param name="movie" value="${g.createLinkTo(dir: pluginContextPath, file: 'flowplayer/FlowPlayer.swf')}" />
+                    <param name="movie" value="${r.resource(plugin:'gvps',dir:'flowplayer',file:'FlowPlayer.swf')}" />
                     <param name="quality" value="high" />
                     <param name="scale" value="noScale" />
                     <param name="wmode" value="transparent" />
