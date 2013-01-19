@@ -4,11 +4,56 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="layout" content="main" />
         <title>Show Movie</title>
+        
         <!-- usually you use one or the other here -->
+        <script type="text/javascript" src="/site/js/flowplayer/flowplayer-3.2.4.min.js"></script>
+        %{--<script type="text/javascript" src="/site/js/flowplayer/flowplayer.ipad-3.2.1.js"></script>--}%
 
-      %{--<script type="text/javascript" src="/site/js/flowplayer/flowplayer-3.2.4.min.js"></script>
-      <script type="text/javascript" src="/site/js/flowplayer/flowplayer.ipad-3.2.1.js"></script>--}%
-
+        <!-- For admin interface to work in other applications, includes must be here. Should likely
+             be moved into a resources module so layoutResources picks it up. -->
+        <vid:includes player="jwflv"/>
+        <vid:includes player="flowplayer"/>
+        <!-- Stylesheet for admin interface should likely be moved to a file. -->
+        <style type="text/css">
+            #grailsLogo {
+                background-color: #abbf78;
+                height: 112px
+            }
+            body {
+                line-height: normal;
+                font-size: 16px;
+                background: #ffffff;
+                color: #333333;
+                margin: 0 auto;
+                max-width: 1024px;
+                overflow-x: hidden; /* prevents box-shadow causing a horizontal scrollbar in firefox when viewport < 960px wide */
+                   -moz-box-shadow: 0 0 0.3em #255b17;
+                -webkit-box-shadow: 0 0 0.3em #255b17;
+                        box-shadow: 0 0 0.3em #255b17;
+            }
+            .nav {
+                margin-bottom: 0;
+                margin-left: 0;
+            }
+            li {
+                line-height: normal;
+            }
+            ul {
+                margin: 0;
+            }
+            h1 {
+                color: #48802C;
+                font-weight: normal;
+                font-size: 1.25em;
+            }
+            h1, h2, h3, h4, h5, h6 {
+                line-height: 1.1;
+            }
+            a:link {
+                text-decoration: underline;
+            }
+        </style>
+        
     </head>
     <body>
         <div class="nav">
