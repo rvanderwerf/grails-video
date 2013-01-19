@@ -1,0 +1,11 @@
+
+This plugin provides facilities for converting video formats and streaming videos from a Grails application.
+
+To do so, it provides the following primary functions:
+
+# A @Movie@ domain object to represent movies which are stored on the local file system.
+# A tag library to display videos on a page as well as include required libraries.
+# Controllers and views for uploading, managing, and showing movies.
+# A @VideoService@ to manage movie files stored on the file system, convert movie formats, and stream their contents to clients.
+
+These functions provide a ready-to-use package for uploading and streaming videos from your Grails application. 
