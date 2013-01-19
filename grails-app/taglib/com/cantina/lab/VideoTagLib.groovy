@@ -143,7 +143,7 @@ class VideoTagLib {
 
 			if (stream == 'true') {
 				out << """\
-                <object type="application/x-shockwave-flash" data="${r.resource(plugin:'gvps',dir:'flowplay',file:'FlowPlayer.swf')}"
+                <object type="application/x-shockwave-flash" data="${r.resource(plugin:'gvps',dir:'flowplayer',file:'FlowPlayer.swf')}"
                     width="${attrs.width}" height="${attrs.height}" id="${playerId}">
                     <param name="allowScriptAccess" value="sameDomain" />
                     <param name="movie" value="${r.resource(plugin:'gvps',dir:'flowplayer', file: 'FlowPlayer.swf')}" />
