@@ -5,10 +5,6 @@
         <meta name="layout" content="main" />
         <title>Show Movie</title>
         
-        <!-- usually you use one or the other here -->
-        <script type="text/javascript" src="/site/js/flowplayer/flowplayer-3.2.4.min.js"></script>
-        %{--<script type="text/javascript" src="/site/js/flowplayer/flowplayer.ipad-3.2.1.js"></script>--}%
-
         <!-- For admin interface to work in other applications, includes must be here. Should likely
              be moved into a resources module so layoutResources picks it up. -->
         <vid:includes player="jwflv"/>
@@ -63,7 +59,7 @@
         </div>
     <script type="text/javascript">
         jwplayer("container").setup({
-            flashplayer: "${g.createLink(uri:'/jw-flv/player.swf')}"
+            flashplayer: "${r.resource(plugin:'gvps',dir:'jw-flv',file:'player.swf')}"
         });
     </script>
 
@@ -165,7 +161,7 @@
                                             <script type="text/javascript">
                                             jwplayer("container").setup({
                                             file: "${g.createLink(action: 'streamflv', id: movie.id)}",
-                                            flashplayer: "${g.createLink(uri:'/jw-flv/player.swf')}",
+                                            flashplayer: "${r.resource(plugin:'gvps',dir:'jw-flv',file:'player.swf')}",
                                             height: 260,
                                             streamscript: "${g.createLink(action: 'streamflv', id: movie.id)}",
                                             provider: "http",
@@ -173,13 +169,13 @@
                                             image: "${g.createLink(action: 'thumb', id: movie.id)}",
                                             plugins: {
                                             "captions-2": {
-                                            file: "${g.createLink(uri:'/assets/caption.srt')}"
+                                            file: "${r.resource(plugin:'gvps',dir:'assets',file:'caption.srt')}"
                                             }
                                             },
                                             width:320
                                             });
                                         </script>
-                                           %{-- <script type="text/javascript" src="${g.createLink(uri:'/jw-flv/jwplayer.js')}"></script>
+                                           %{-- <script type="text/javascript" src="${r.resource(plugin:'gvps',dir:'jw-flv',file:'jwplayer.js')}"></script>
                                             <video class="container" src="${g.createLink(action: 'streamflv', id: movie.id)}"
                                                    poster="${g.createLink(action:'thumb',id:movie.id)}"></video>--}%
 
