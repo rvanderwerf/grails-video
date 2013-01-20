@@ -1,0 +1,36 @@
+
+h1. Movie Domain object.
+
+The @com.cantina.lab.Movie@ object is the primary domain class used by this plugin and maintains information concerning movie files on disk in the database.
+
+h2. Fields.
+
+The objects stored in the database do not use versioning and their primary database key is the @video_key@ column.
+
+Other fields of the object are:
+
+{table}
+ *Field Name* | *Description*
+ url | relative URI for serving this movie
+ title | title of the movie
+ fileName | name of the file on disk
+ description | brief description of the movie
+ size | size of movie in bytes
+ createDate | date the movie was created
+ createdBy | author of the movie
+ pathFlv | path to converted version of the file
+ pathThumb | path to the thumbnail file in jpg format
+ pathMaster | path to the file in original format
+ contentType | content type of the movie, can be flv or mp4
+ contentTypeMaster | original content type of the movie
+ key | a unique identifier for the converted file when stored on disk
+ status | current status of the file, can be 'blank', 'removed', 'new', 'inprogress', 'converted', or 'failed
+{table}
+
+The @theFile@ field is presently unused but is intended for possible future storage of the video file contents in the database.
+
+h2. Operation.
+
+When a @Movie@ object is created, it's status is initially set to @'blank'@.
+
+When the @newFile@ method is called on a Movie object the @pathMaster@ and @size@ fields are populated and the @status@ field is set to @'new'@.
