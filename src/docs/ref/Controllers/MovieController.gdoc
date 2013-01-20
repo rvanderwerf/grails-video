@@ -1,7 +1,7 @@
 
 h1. MovieController.
 
-The @com.cantina.lab.MovieController@ and its associated views provide an administrative interface for {Movie|Domain} objects. 
+The @com.cantina.lab.MovieController@ and its associated views provide an administrative interface for [Movie|Domain] objects. 
 
 h2. Actions.
 

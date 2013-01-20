@@ -9,3 +9,9 @@ To do so, it provides the following primary functions:
 # A @VideoService@ to manage movie files stored on the file system, convert movie formats, and stream their contents to clients.
 
 These functions provide a ready-to-use package for uploading and streaming videos from your Grails application. 
+
+Most video formats which are understood by the [ffmpeg|http://ffmpeg.org] program can be uploaded and will be converted into the flv and mp4 formats used by the plugin to serve content. 
+
+h3. Credits.
+
+This plugin was originally developed as the Cantina Consulting pre-1.0 Grails Plugin, and was converted to be compatible with Grails 2 by Ryan Vanderwerf and Burt Beckwith.

@@ -1,7 +1,7 @@
 
-h1. Movie Domain object.
+h1. Movie domain object.
 
-The @com.cantina.lab.Movie@ object is the primary domain class used by this plugin and maintains information concerning movie files on disk in the database.
+The @com.cantina.lab.Movie@ object is the primary domain object used by the @gvps@ plugin and maintains information concerning movie files.
 
 h2. Fields.
 
@@ -24,7 +24,7 @@ Other fields of the object are:
  contentType | content type of the movie, can be flv or mp4
  contentTypeMaster | original content type of the movie
  key | a unique identifier for the converted file when stored on disk
- status | current status of the file, can be 'blank', 'removed', 'new', 'inprogress', 'converted', or 'failed
+ status | current status of the file, can be 'blank', 'removed', 'new', 'inprogress', 'converted', or 'failed'
 {table}
 
 The @theFile@ field is presently unused but is intended for possible future storage of the video file contents in the database.

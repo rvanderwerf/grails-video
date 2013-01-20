@@ -1,5 +1,5 @@
 
-The gvps video plugin uses several helper applications to perform functions such as converting videos or retrieving information about the video files. 
+The @gvps@ plugin uses several helper applications to perform functions such as converting videos or retrieving information about the video files. 
 
 # @ffmpeg@. This is a widely used video format conversion program which is available at [ffmpeg.org|http://ffmpeg.org]. It is available in package format for most major operating systems and distributions. This program is required to convert videos using the gvps plugin.
 
