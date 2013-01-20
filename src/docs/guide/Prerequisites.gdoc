@@ -1,13 +1,13 @@
 
 The gvps video plugin uses several helper applications to perform functions such as converting videos or retrieving information about the video files. 
 
-# ffmpeg. This is a widely used video format conversion program which is available at [ffmpeg.org|http://ffmpeg.org]. It is available in package format for most major operating systems and distributions. This program is required to convert videos using the gvps plugin.
+# @ffmpeg@. This is a widely used video format conversion program which is available at [ffmpeg.org|http://ffmpeg.org]. It is available in package format for most major operating systems and distributions. This program is required to convert videos using the gvps plugin.
 
-# ffprobe. This program, which is normally installed along with @ffmpeg@, retrieves metadata, such as length, for a video file. It is required to convert videos using the gvps plugin.
+# @ffprobe@. This program, which is normally installed along with @ffmpeg@, retrieves metadata, such as length, for a video file. It is required to convert videos using the gvps plugin.
 
-# qt-faststart. This program is an optional install included with the source of the ffmpeg program. It is often available as a separate package. It is required if the @gvps@ plugin will be serving MP4 files.
+# @qt-faststart@. This program is an optional install included with the source of the ffmpeg program. It is often available as a separate package. It is required if the @gvps@ plugin will be serving MP4 files.
 
-# yamdi. This program injects metadata into FLV video files. It is available at [yamdi.sourceforge.net|http://yamdi.sourceforge.net] and is often available in packaged form. It is required if the @gvps@ plugin will be serving FLV files.
+# @yamdi@. This program injects metadata into FLV video files. It is available at [yamdi.sourceforge.net|http://yamdi.sourceforge.net] and is often available in packaged form. It is required if the @gvps@ plugin will be serving FLV files.
 
 The location of each of these helper programs in configured in a stanza of the BuildConfig.groovy file. See [Configuration|guide:configuration] for details.
 
