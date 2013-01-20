@@ -10,6 +10,9 @@ To do so, it provides the following primary functions:
 
 These functions provide a ready-to-use package for uploading and streaming videos from your Grails application. 
 
+Two video player libraries are presently supported. The 
+[JW-FLV player|http://www.longtailvideo.com/players/jw-flv-player/] is used to serve content in flv files, whereas the [Flowplayer|http://flowplayer.org/] is used to serve content in mp4 files. 
+
 Most video formats which are understood by the [ffmpeg|http://ffmpeg.org] program can be uploaded and will be converted into the flv and mp4 formats used by the plugin to serve content. 
 
 h3. Credits.
