@@ -1,0 +1,3 @@
+
+The @gvps@ plugin provides a {services|VideoService} service object with methods to convert and serve video files. It can be injected into a controller with a statement like @def videoService@.
+
