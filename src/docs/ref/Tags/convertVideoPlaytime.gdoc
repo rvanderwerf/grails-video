@@ -1,0 +1,21 @@
+h1. vid:convertVideoPlaytime Tag
+
+This tag is placed in the body of a gsp to display the playtime of a video in a readable form.
+
+{code:xml}
+<html>
+  <body>
+    <p>Video length is 
+	  <vid:convertToVideoPlaytime time="3661"/>
+	  </p>
+	</body>
+</html>
+{code}
+
+h2. Attributes.
+
+* time - Required. Length of the video in decimal seconds.
+
+h2. Operation. 
+
+Outputs the time as a string of the form "0 days 1 hour 5 minutes 1 second".
