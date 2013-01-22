@@ -35,6 +35,9 @@ class VideoTagLib {
 	 * Render scripts and links to include appropriate player libraries.
 	 * 
 	 * @attr player (required). one of 'jwflv' or 'flowplayer'
+	 * 
+	 * :TODO: Should likely be replaced by resources modules which are then available 
+	 * to the application.
 	 */
 	def includes = { attrs ->
         def player = attrs.player
@@ -167,7 +170,7 @@ class VideoTagLib {
 	 * @attr time length in seconds
 	 */
 	def convertVideoPlaytime = { attrs, body ->
-		def num = attrs.time
+		def num = Double.parseDouble(attrs.time)
 
 		int minutes = num / 60 //automatically cast to int
 		int seconds = num - minutes * 60 //subtract off whole minutes
