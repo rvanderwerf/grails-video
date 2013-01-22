@@ -1,4 +1,4 @@
-/* Copyright 2006-2012 the original author or authors.
+/* Copyright 2006-2013 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,13 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * For more information please visit www.cantinaconsulting.com
- * or email info@cantinaconsulting.com
+ * For more information please visit http://grails.org/plugin/gvps.
  */
 package com.cantina.lab
 
 /**
- * Displays video assets.
+ * Tag library for gvps plugin, mostly for rendering movies.
  *
  * @author Matt Chisholm
  * @author Adam Stachelek
@@ -32,26 +31,36 @@ class VideoTagLib {
 	private static final String TYPE_FLOWPLAYER = "flowplayer"
 	private static final String TYPE_JWFLV = "jwflv"
 
+	/**
+	 * Render scripts and links to include appropriate player libraries.
+	 * 
+	 * @attr player (required). one of 'jwflv' or 'flowplayer'
+	 */
 	def includes = { attrs ->
         def player = attrs.player
         if (player == TYPE_JWFLV) {
 		out << """\
             <script type='text/javascript' src='${r.resource(plugin:'gvps',dir:'jw-flv',file:'jwplayer.js')}'></script>
             <script type='text/javascript' src='${r.resource(plugin:'gvps',dir:'jw-flv',file:'swfobject.js')}'></script>
-
 """
         }
         if (player == TYPE_FLOWPLAYER) {
             out << """\
-
             <script src='http://releases.flowplayer.org/5.0.0/flowplayer.min.js'></script>
             <link rel='stylesheet' type='text/css' href='http://releases.flowplayer.org/5.0.0/skin/minimalist.css' />
 """
-
         }
 
 	}
 
+	/**
+	 * Render script to display movie.
+	 * 
+	 * @attr id (optional) id of Movie object to render script for.
+	 * @attr movie (optional) object to render script for. movie or id must be provided.
+	 * @attr player (required) which player to use, must be 'jwflv' or 'flowplayer'
+	 * @attr stream (optional) true if should stream data, otherwise will be downloaded
+	 */
 	def display = { attrs ->
 
 		def movieId = attrs.id
@@ -76,25 +85,7 @@ class VideoTagLib {
             }
 
         }
-
-        def meta = grailsApplication.metadata
-
-		def prefix = meta["app.name"]
-        if (!prefix) {
-            prefix = ""
-        }
-        if (prefix == '/') {
-			prefix = ""
-		}
-		else {
-			if (!prefix.startsWith("/")) {
-				prefix = "/" + prefix
-			}
-		}
-		if (pluginContextPath?.length() > 0 && pluginContextPath != '/') {
-			prefix += pluginContextPath
-		}
-
+		
 		if (player == TYPE_JWFLV) {
 			if (movie.status != Movie.STATUS_CONVERTED) {
 				out << "<p><b>FLV CONVERSION IN PROGRESS - Please refresh page</b></p>"
@@ -135,7 +126,7 @@ class VideoTagLib {
 		}
 		else if (player == TYPE_FLOWPLAYER) {
 			if (movie.status != Movie.STATUS_CONVERTED) {
-				out << "<p><b>FLV CONVERSION IN PROGRESS - Please refresh page</b></p>"
+				out << "<p><b>MP4 CONVERSION IN PROGRESS - Please refresh page</b></p>"
 				return
 			}
 
@@ -170,6 +161,11 @@ class VideoTagLib {
 		}
 	}
 
+	/**
+	 * Convert video length in seconds to human readable form.
+	 * 
+	 * @attr time length in seconds
+	 */
 	def convertVideoPlaytime = { attrs, body ->
 		def num = attrs.time
 
