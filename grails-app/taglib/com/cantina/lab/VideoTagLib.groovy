@@ -170,7 +170,9 @@ class VideoTagLib {
 	 * @attr time length in seconds
 	 */
 	def convertVideoPlaytime = { attrs, body ->
-		def num = Double.parseDouble(attrs.time)
+		def num
+		if (attrs.time instanceof java.lang.Number) num = attrs.time
+		else num = Double.parseDouble(attrs.time)
 
 		int minutes = num / 60 //automatically cast to int
 		int seconds = num - minutes * 60 //subtract off whole minutes
