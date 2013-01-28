@@ -160,10 +160,10 @@
 
                                             <script type="text/javascript">
                                             jwplayer("container").setup({
-                                            file: "${g.createLink(action: 'streamflv', id: movie.id)}",
+                                            file: "${g.createLink(action: 'streamFlv', id: movie.id)}",
                                             flashplayer: "${r.resource(plugin:'gvps',dir:'jw-flv',file:'player.swf')}",
                                             height: 260,
-                                            streamscript: "${g.createLink(action: 'streamflv', id: movie.id)}",
+                                            streamscript: "${g.createLink(action: 'streamFlv', id: movie.id)}",
                                             provider: "http",
                                             streambuffer: 900,
                                             image: "${g.createLink(action: 'thumb', id: movie.id)}",
@@ -175,9 +175,6 @@
                                             width:320
                                             });
                                         </script>
-                                           %{-- <script type="text/javascript" src="${r.resource(plugin:'gvps',dir:'jw-flv',file:'jwplayer.js')}"></script>
-                                            <video class="container" src="${g.createLink(action: 'streamFlv', id: movie.id)}"
-                                                   poster="${g.createLink(action:'thumb',id:movie.id)}"></video>--}%
 
                                         </td>
                                     </tr>

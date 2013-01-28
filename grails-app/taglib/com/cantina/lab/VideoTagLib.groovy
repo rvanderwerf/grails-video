@@ -145,7 +145,7 @@ class VideoTagLib {
                     <param name="scale" value="noScale" />
                     <param name="wmode" value="transparent" />
                     <param name="flashvars"
-                    value="config={streamingServer:'lighttpd',videoFile:'${g.createLink(action: 'streamflv', id: movie.id, controller: 'movie')}',autoPlay:false,showPlayListButtons:true,initialScale:'fit'}" />
+                    value="config={streamingServer:'lighttpd',videoFile:'${g.createLink(action: 'streamMp4', id: movie.id, controller: 'movie')}',autoPlay:false,showPlayListButtons:true,initialScale:'fit'}" />
                 </object>"""
 			}
 			else {
@@ -158,7 +158,7 @@ class VideoTagLib {
                     <param name="scale" value="noScale" />
                     <param name="wmode" value="transparent" />
                     <param name="flashvars"
-                    value="config={autoPlay:false,showPlayListButtons:true,videoFile:'${g.createLink(action: 'display', id: movie.id)}',initialScale:'fit'}" />
+                    value="config={autoPlay:false,showPlayListButtons:true,videoFile:'${g.createLink(action: 'streamMp4', id: movie.id)}',initialScale:'fit'}" />
                 </object>"""
 			}
 		}
