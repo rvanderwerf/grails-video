@@ -48,10 +48,7 @@ class VideoTagLib {
 """
         }
         if (player == TYPE_FLOWPLAYER) {
-            out << """\
-            <script type='text/javascript' src="${r.resource(plugin:'gvps',dir:'flowplayer',file:'flowplayer.min.js')}"></script>
-            <link rel='stylesheet' type='text/css' href="${r.resource(plugin:'gvps',dir:'flowplayer/skin',file:'minimalist.css')}" />
-"""
+			// do nothing because we are using version 3 files served off the file system in the display tag
         }
 
 	}
