@@ -176,7 +176,7 @@
                                             });
                                         </script>
                                            %{-- <script type="text/javascript" src="${r.resource(plugin:'gvps',dir:'jw-flv',file:'jwplayer.js')}"></script>
-                                            <video class="container" src="${g.createLink(action: 'streamflv', id: movie.id)}"
+                                            <video class="container" src="${g.createLink(action: 'streamFlv', id: movie.id)}"
                                                    poster="${g.createLink(action:'thumb',id:movie.id)}"></video>--}%
 
                                         </td>
