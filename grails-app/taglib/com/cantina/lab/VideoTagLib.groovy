@@ -43,14 +43,14 @@ class VideoTagLib {
         def player = attrs.player
         if (player == TYPE_JWFLV) {
 		out << """\
-            <script type='text/javascript' src='${r.resource(plugin:'gvps',dir:'jw-flv',file:'jwplayer.js')}'></script>
-            <script type='text/javascript' src='${r.resource(plugin:'gvps',dir:'jw-flv',file:'swfobject.js')}'></script>
+            <script type='text/javascript' src="${r.resource(plugin:'gvps',dir:'jw-flv',file:'jwplayer.js')}"></script>
+            <script type='text/javascript' src="${r.resource(plugin:'gvps',dir:'jw-flv',file:'swfobject.js')}"></script>
 """
         }
         if (player == TYPE_FLOWPLAYER) {
             out << """\
-            <script src='http://releases.flowplayer.org/5.0.0/flowplayer.min.js'></script>
-            <link rel='stylesheet' type='text/css' href='http://releases.flowplayer.org/5.0.0/skin/minimalist.css' />
+            <script type='text/javascript' src="${r.resource(plugin:'gvps',dir:'flowplayer',file:'flowplayer.min.js')}"></script>
+            <link rel='stylesheet' type='text/css' href="${r.resource(plugin:'gvps',dir:'flowplayer/skin',file:'minimalist.css')}" />
 """
         }
 
@@ -104,9 +104,9 @@ class VideoTagLib {
                     </p>
                     <script type='text/javascript'>
                     var so = new SWFObject('${r.resource(plugin:'gvps',dir:'jw-flv',file:'player.swf')}','${playerId}',${attrs.width},${attrs.height},'7');
-                    so.addVariable('file','${g.createLink(action: 'streamflv', id: movie.id)}');
+                    so.addVariable('file','${g.createLink(action: 'streamFlv', id: movie.id)}');
                     so.addParam('allowfullscreen','true');
-                    so.addVariable('streamscript','${g.createLink(action: 'streamflv', id: movie.id)}');
+                    so.addVariable('streamscript','${g.createLink(action: 'streamFlv', id: movie.id)}');
                     so.addVariable('image','${g.createLink(action: 'thumb', id: movie.id)}');
                     so.addVariable('provider','http');
                     so.write('${playerId}');
@@ -120,7 +120,7 @@ class VideoTagLib {
                     <script type='text/javascript'>
                     var so = new SWFObject('${r.resource(plugin:'gvps',dir:'jw-flv',file:'player.swf')}','${playerId}',${attrs.width},${attrs.height},'7');
                     so.addParam('allowfullscreen','true');
-                    so.addVariable('file','${g.createLink(action: 'display', id: movie.id)}');
+                    so.addVariable('file','${g.createLink(action: 'streamMp4', id: movie.id)}');
                     so.addVariable('image','${g.createLink(action: 'thumb', id: movie.id)}');
                     so.addVariable('provider','http');
                     so.write('${playerId}');

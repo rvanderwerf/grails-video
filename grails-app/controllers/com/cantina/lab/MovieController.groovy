@@ -58,7 +58,7 @@ class MovieController {
 		[movie : Movie.get(params.id)]
 	}
 
-	def display = {
+	def streamMp4 = {
 
 		def movie = Movie.get(params.id)
 		if (movie.status != movie.STATUS_CONVERTED) return
@@ -75,7 +75,7 @@ class MovieController {
 		response.outputStream << new File(movie.pathThumb).newInputStream()
 	}
 
-	def streamflv = {
+	def streamFlv = {
 
 		def movie = Movie.get(params.id)
 		if (movie.status != Movie.STATUS_CONVERTED) return
