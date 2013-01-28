@@ -1,0 +1,25 @@
+h1. vid:display Tag
+
+This tag is placed in the body of a gsp to display a video.
+
+{code:xml}
+<html>
+  <body>
+    <h1>My first video</h1>
+	  <vid:display id="1" player="jwflv"/>
+	</body>
+</html>
+{code}
+
+h2. Attributes.
+
+* id - Optional. id number of Movie object to show. One of id or movie must be provided.
+* movie - Optional. Movie object to show. One of id or movie must be provided.
+* player - Required. Must be one of @jwflv@ or @flowplayer@.
+* stream - Optional. If set to 'true', streaming will be used, otherwise a file download is performed.
+* width - Optional. Width of video. If not provided, then the value of @video.player.width@ is used, otherwise a default of 320.
+* height - Optional. Height of video. If not provided, then the value of the @video.player.height@ configuration variable is used, otherwise a default of 260.
+
+h2. Operation. 
+
+If the status of the @Movie@ object is not yet converted, a simple message about conversion in progress is displayed. If the @Movie@ has a converted status, then a player object is created to show the video.

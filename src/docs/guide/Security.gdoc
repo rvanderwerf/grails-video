@@ -1,0 +1,27 @@
+
+Security can provided for the the actions of the [MovieController|Controllers], the administrative interface, or specific [Movie|Domain] objects.
+
+h2. Securing MovieController Actions.
+
+It is important to secure the [MovieController|controllers] actions as these will be available by default when the @gvps@ plugin is installed. When using the SpringSecurity plugins, one method of doing this is to override the streamflv or streamMp4 actions and add an annotation:
+
+{code}
+    @Secured(["isAuthenticated()"])
+    def streamflv = {
+			def movie = Movie.get(params.id)
+			if (movie.status != Movie.STATUS_CONVERTED) return
+			videoService.streamflv(params,request,response,movie)
+		}
+{code}
+
+Other methods would be to secure these actions using a @Map@ in the @Config.groovy@ file (see [Simple Map in Config.groovy|http://grails-plugins.github.com/grails-spring-security-core/docs/manual/guide/5%20Configuring%20Request%20Mappings%20to%20Secure%20URLs.html#5.2%20Simple%20Map%20in%20Config.groovy]) or adding @RequestMap@ entries to the database (see [Requestmap Instances Stored in the Database|http://grails-plugins.github.com/grails-spring-security-core/docs/manual/guide/5%20Configuring%20Request%20Mappings%20to%20Secure%20URLs.html#5.3%20Requestmap%20Instances%20Stored%20in%20the%20Database].
+
+h2. Securing the Administrative Interface.
+
+While securing the @MovieController@ @streamflv@ or @streamMp4@ actions will prevent viewing of video content itself, it will often be important to secure even the listings of the available videos and their metadata. Since other actions on the @MovieController@, such as @list@, @edit@, and @show@ are available by default, it is also important to secure these actions. 
+
+Although overrides such as described above can be implemented with attached security annotations, the use of a @Map@ in @Config.groovy@ or @RequestMap@ objects in the database may be easier for most applications.
+
+h2. Securing Movie Objects.
+
+Securing access to specific @Movie@ objects will in general require the use of access control lists. The [spring-security-acl plugin|http://grails.org/plugin/spring-security-acl] plugin provides this level of fine-grained control.

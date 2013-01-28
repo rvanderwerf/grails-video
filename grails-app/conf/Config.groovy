@@ -1,3 +1,6 @@
+grails.doc.title = "GVPS (Grails Video Pseudo Streaming) Plugin"
+grails.doc.authors = 'Ryan Vanderwerf, Peter N. Steinmetz'
+
 log4j = {
 	error  'org.codehaus.groovy.grails',
 	       'org.springframework',
