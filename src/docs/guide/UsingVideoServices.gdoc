@@ -1,0 +1,6 @@
+
+The @gvps@ plugin provides a [VideoService|services] service object with methods to convert and serve video files. It can be injected into a controller with a statement like @def videoService@.
+
+You can stream the content for a @Movie@ object using either the @streamflv@ or @streamMp4@ methods. 
+
+The @putMovie@ method is used to add a new @Movie@ to the database and the @convertVideo@ method is used to convert the video to serve-able files on the file system. The @convertNewVideo@ method will convert all @Movies@ whose status @'new'@.

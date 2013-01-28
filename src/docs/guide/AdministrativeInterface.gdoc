@@ -1,0 +1,13 @@
+
+The @gvps@ plugin provides a [MovieController|controllers] and several views for an administrative interface to create, rename, update, and delete [Movie|domain] objects.
+
+To use this interface, access the @<ctx>/MovieController@ URL, which should direct you to the @Movie@ list. From here you can modify existing @Movie@ objects or create a new one. 
+
+The @show@ action for a @Movie@ object shows the fields of the object as well as 5 views of the movie:
+
+# A view shown with the JW-FLV player and pseudo-streaming flv content.
+# A view shown with the JW-FLV player and downloading flv content.
+# A view shown with Flowplayer and pseudo-streaming mp4 content.
+# A view shown with Flowplayer and downloading mp4 content.
+# A view shown with the JW-FLV player with captioning turned on.
+

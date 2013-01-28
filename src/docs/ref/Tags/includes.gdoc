@@ -1,0 +1,16 @@
+h1. vid:includes Tag
+
+This tag is placed in the head or body of a gsp to include the scripts for a particular player.
+
+{code:xml}
+<html>
+  <head>
+	  <vid:includes player="jwflv"/>
+	</head>
+</html>
+{code}
+
+h2. Attributes.
+
+* player - Required. Must be one of @jwflv@ or @flowplayer@.
+

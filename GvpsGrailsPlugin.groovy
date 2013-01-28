@@ -25,22 +25,16 @@ class GvpsGrailsPlugin {
 	def grailsVersion = '1.3.4 > *'
 	def author = "Ryan Vanderwerf"
 	def authorEmail = "rvanderwerf@gmail.com"
-	def title = "GVPS(Grails Video Pseudo Streamer) Plugin"
+	def title = "GVPS (Grails Video Pseudo Streamer) Plugin"
 	def documentation = "https://github.com/rvanderwerf/grails-video"
 	def description = '''\
-This plugin is written for the Grails web application framework, and intends to make it relatively easy to host videos. The goals of this plugin are as follows:
-
-* Host, manage and display video assets
-* Provide an easy mechanism to convert standard movie formats Quicktime, MPEG, etc. to the flash movie format FLV
-* Perform movie conversions (i.e. MPEG -> FLV) or (MPEG -> MP4) asynchronously
-* Provide options for JW-FLV or Flowplayer
-
-This plugin uses serveral utilities to work with video assets. Please see https://github.com/rvanderwerf/grails-video for more information.
+This Grails web application plugin makes it relatively easy to host videos.
 '''
 
 	def license = 'APACHE'
 	def developers = [
             [name:  'Ryan Vanderwerf', email: 'rvanderwerf@gmail.com'],
+			[name: 'Peter N. Steinmetz', email: 'ndoc3@steinmetz.org'],
             [name: 'Cantina Consulting <www.cantinaconsulting.com>', email: 'info@cantinaconsulting.com']]
 //	def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPGVPS'] TODO
 	def scm = [url: 'https://github.com/rvanderwerf/grails-video']
