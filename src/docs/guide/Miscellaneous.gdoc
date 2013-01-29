@@ -3,7 +3,7 @@ The following are a number of additional pieces of information which may be usef
 
 h2. Conversion parameters.
 
-The @gvps@ plugin used [ffmpeg|http://ffmpeg.org] to perform conversion to the video formats which are used to serve video content. The parameters for the conversions are defined in the @video.ffmpeg.conversionArgs@ setting, and are typically set as @'-b 600k -r 24 -ar 22050 -ab 96k'@.
+The @gvps@ plugin uses [ffmpeg|http://ffmpeg.org] to perform conversion to the video formats which are used to serve video content. The parameters for the conversions are defined in the @video.ffmpeg.conversionArgs@ setting, and are typically set as @'-b 600k -r 24 -ar 22050 -ab 96k'@.
 
 The meanings of these are as follows
 

@@ -80,7 +80,7 @@ class MovieController {
 		def movie = Movie.get(params.id)
 		if (movie.status != Movie.STATUS_CONVERTED) return
 
-		videoService.streamflv(params,request,response,movie)
+		videoService.streamFlv(params,request,response,movie)
 	}
 
 	def delete = {

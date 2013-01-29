@@ -1,7 +1,7 @@
 
 The @gvps@ plugin provides a tag library which is one of the primary methods of using the plugin after the [Movie|Domain] domain objects have been created. All tags for this plugin are available in the @vid:@ namespace.
 
-Two tags in a gsp are required to display a video. The first is the [includes|Tags] tag, which is placed in the @<head>@ of the page to pull in the appropriate video player library. The specific library used is specified with the @player@ attribute, which must be set to either @'jwflv'@ or @'flowplayer'@.
+Two tags in a gsp are required to display a video. The first is the [includes|Tags] tag, which is placed in the @<head>@ of the page to pull in the appropriate video player library. The specific library used is specified with the @player@ attribute, which must be set to either @'jwflv'@ or @'flowplayer'@. Use the @'jwflv'@ setting if the @'ffmpeg.fileExtension'@ configuration variable is set to @'flv'@ and the @'flowplayer'@ setting if @'ffmpeg.fileExtension'@ is set to @'mp4'@.
 
 The second tag is the [display|Tags] tag, which is inserted into the markup of the body to render the player object. The @player@ attribute is again used to specify the type of player and the @id@ or @movie@ attribute is used to specify the video to be displayed. Additional attributes are used to specify whether to stream the video and its size.
 
