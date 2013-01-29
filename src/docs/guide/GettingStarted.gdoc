@@ -42,7 +42,7 @@ video {
         version = "" // used for jw-flv player, empty to not specify version
     }
     qtfaststart {
-        path = "/usr/sbin/qtfaststart" // if type == mp4 used to rearrange metadata
+        path = "/usr/sbin/qt-faststart" // if ffmpeg.fileExtension == mp4 used to rearrange metadata
     }
 }
 {code}

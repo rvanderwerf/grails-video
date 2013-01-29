@@ -9,9 +9,9 @@ h2. Actions.
 *Action* | *Description*
 list | list the existing movie objects
 show | show a specific movie object, including views in different players
-display | stream the movie in mp4 format
+streamMp4 | stream the movie in mp4 format
 thumb | return the thumbnail image for the movie
-streamflv | stream the movie in flv format
+streamFlv | stream the movie in flv format
 delete | remove the movie from the database and the file system, if it exists
 create | create a new movie based on the parameters
 save | save an uploaded movie and begin the conversion process

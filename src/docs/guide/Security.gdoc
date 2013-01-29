@@ -3,7 +3,7 @@ Security can provided for the the actions of the [MovieController|Controllers], 
 
 h2. Securing MovieController Actions.
 
-It is important to secure the [MovieController|controllers] actions as these will be available by default when the @gvps@ plugin is installed. When using the SpringSecurity plugins, one method of doing this is to override the streamflv or streamMp4 actions and add an annotation:
+It is important to secure the [MovieController|controllers] actions as these will be available by default when the @gvps@ plugin is installed. When using the SpringSecurity plugins, one method of doing this is to override the @'streamFlv'@ or @'streamMp4'@ actions and add an annotation:
 
 {code}
     @Secured(["isAuthenticated()"])
@@ -18,7 +18,7 @@ Other methods would be to secure these actions using a @Map@ in the @Config.groo
 
 h2. Securing the Administrative Interface.
 
-While securing the @MovieController@ @streamflv@ or @streamMp4@ actions will prevent viewing of video content itself, it will often be important to secure even the listings of the available videos and their metadata. Since other actions on the @MovieController@, such as @list@, @edit@, and @show@ are available by default, it is also important to secure these actions. 
+While securing the @MovieController@ @streamFlv@ or @streamMp4@ actions will prevent viewing of video content itself, it will often be important to secure even the listings of the available videos and their metadata. Since other actions on the @MovieController@, such as @list@, @edit@, and @show@ are available by default, it is also important to secure these actions. 
 
 Although overrides such as described above can be implemented with attached security annotations, the use of a @Map@ in @Config.groovy@ or @RequestMap@ objects in the database may be easier for most applications.
 
