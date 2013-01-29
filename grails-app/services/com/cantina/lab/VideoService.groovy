@@ -44,14 +44,14 @@ class VideoService implements InitializingBean {
 		mvals = grailsApplication.config.video
 	}
 
-	void buildLocalPath() {
+	private void buildLocalPath() {
 		def f = new File(grailsApplication.config.video.location)
 		if (!f.exists()) {
 			f.mkdirs()
 		}
 	}
 
-	boolean performConversion(File sourceVideo, File targetVideo, File thumb) {
+	private boolean performConversion(File sourceVideo, File targetVideo, File thumb) {
 
 		String convertedMovieFileExtension = mvals.ffmpeg.fileExtension
 		boolean success = false
@@ -163,6 +163,9 @@ class VideoService implements InitializingBean {
         }
 	}
 
+	/**
+	 * Convert all videos whose status is 'new'.
+	 */
 	void convertNewVideo() {
 		log.debug "Querying for '$Movie.STATUS_NEW' movies."
 		def results = Movie.findAllByStatus(Movie.STATUS_NEW)
@@ -176,7 +179,7 @@ class VideoService implements InitializingBean {
 		}
 	}
 
-	boolean exec(String command) {
+	private boolean exec(String command) {
 		try {
 			log.debug "Executing $command"
 			def out = new StringBuilder()
@@ -197,7 +200,7 @@ class VideoService implements InitializingBean {
 		}
 	}
 
-	boolean extractVideoMetadata(Movie movie, String file) {
+	private boolean extractVideoMetadata(Movie movie, String file) {
 
 		// String command = "${mvals.ffprobe.path} -pretty -i " + file + " 2>&1 | grep \"Duration\" | cut -d ' ' -f 4 | sed s/,//"
 		String command = "${mvals.ffprobe.path} ${mvals.ffprobe.params}" + file
@@ -465,7 +468,7 @@ class VideoService implements InitializingBean {
     }
 
 
-    void streamflv(Map params, HttpServletRequest request, HttpServletResponse response, Movie movie) {
+    void streamFlv(Map params, HttpServletRequest request, HttpServletResponse response, Movie movie) {
         int buffer = 8192
         int start = 0
 

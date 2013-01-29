@@ -16,17 +16,7 @@ The main methods provided by this service for users are as follows:
 
 @convertNewVideo@. Converts videos for all @Movie@ objects in the database whose status is @'new'@.
 
-@streamflv@. Streams the flv video for a @Movie@ object. The first argument is @Map@ containing either a @pos@ entry for the jw-flv player or a @start@ entry for the flowplayer as the position to stream from. The second is the @HttpServletRequest@. The third is the @HttpServletResponse@. The fourth is the @Movie@ object whose content should be streamed.
+@streamFlv@. Streams the flv video for a @Movie@ object. The first argument is @Map@ containing either a @pos@ entry for the jw-flv player or a @start@ entry for the flowplayer as the position to stream from. The second is the @HttpServletRequest@. The third is the @HttpServletResponse@. The fourth is the @Movie@ object whose content should be streamed.
 
 @streamMp4@. Streams the mp4 video for a @Movie@ object. The first argument is an unused params maps. The second is the @HttpServletRequest@. The third is the @HttpServletResponse@. The fourth is the @Movie@ object whose content should be streamed.
-
-h2. Internal Methods.
-
-In addition, the service contains a number of other service methods which are intended primarily for internal use within the plugin:
-
-@performConversion@. This method takes three @File@ arguments, the source file, target file, and thumbnail file. Based on the extension of the target, it converts the source to that format and generates a thumbnail image file.
-
-@extractVideoMetadata@. Uses the @ffprobe@ command to extract the length of the given @file@ and updates the @playTime@ field of the given @Movie@ object. Returns @true@ if successful, @false@ otherwise.
-
-This list is not exhaustive and most of these methods should be converted to private in the future.
 
