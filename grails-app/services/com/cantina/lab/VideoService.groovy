@@ -1,4 +1,4 @@
-/* Copyright 2006-2012 the original author or authors.
+/* Copyright 2006-2013 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,12 @@ import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpServletRequest
 
 /**
- * Manages video assets.
+ * Manages Movies.
  *
  * @author Matt Chisholm
  * @author Adam Stachelek
  * @author Ryan Vanderwerf
+ * @author Peter N. Steinmetz
  */
 class VideoService implements InitializingBean {
 
@@ -35,15 +36,23 @@ class VideoService implements InitializingBean {
 
 	def grailsApplication
 
+	// copy of the video configuration settings
 	private mvals
 
 	// Todo: research video capture from flash ie, red5
 
+	/**
+	 * Update configuration settings and rebuild storage path, if needed.
+	 */
 	void afterPropertiesSet() {
 		buildLocalPath()
 		mvals = grailsApplication.config.video
 	}
 
+	/**
+	 * Construct local file storage if doesn't exist,
+	 * as configured by the video.location variable.
+	 */
 	private void buildLocalPath() {
 		def f = new File(grailsApplication.config.video.location)
 		if (!f.exists()) {
@@ -51,6 +60,14 @@ class VideoService implements InitializingBean {
 		}
 	}
 
+	/**
+	 * Convert video in a source file into a target file while generating a thumbnail image.
+	 * 
+	 * @param sourceVideo
+	 * @param targetVideo
+	 * @param thumb
+	 * @return true if conversions successful, false otherwise.
+	 */
 	private boolean performConversion(File sourceVideo, File targetVideo, File thumb) {
 
 		String convertedMovieFileExtension = mvals.ffmpeg.fileExtension
@@ -64,6 +81,7 @@ class VideoService implements InitializingBean {
 
 			File tmp = new File(tmpfile) //temp file for contents during conversion
 
+			// :TODO: this will fail if pathnames contain spaces and should be redone with the array argument form
 			String convertCmd = "${mvals.ffmpeg.path} -i ${sourceVideo.absolutePath} ${mvals.ffmpeg.conversionArgs} ${tmp.absolutePath}"
 			String metadataCmd = "${mvals.yamdi.path} -i ${tmp.absolutePath} -o ${targetVideo.absolutePath} -l"
 			String thumbCmd = "${mvals.ffmpeg.path} -i ${targetVideo.absolutePath} ${mvals.ffmpeg.makethumb} ${thumb.absolutePath}"
@@ -99,14 +117,23 @@ class VideoService implements InitializingBean {
 		success
 	}
 
-
+	/**
+	 * Save movie into database, marking as needing conversion.
+	 * 
+	 * @param movie to store
+	 */
 	void putMovie(Movie movie) {
-            Movie.withTransaction {
+        Movie.withTransaction {
             movie.status = Movie.STATUS_NEW
             movie.save()
         }
 	}
 
+	/**
+	 * Delete movie from database and storage files.
+	 * 
+	 * @param movie to delete
+	 */
 	void deleteMovie(Movie movie) {
 		delete(movie.pathMaster)
 		delete(movie.pathThumb)
@@ -114,12 +141,22 @@ class VideoService implements InitializingBean {
 		movie.delete()
 	}
 
+	/**
+	 * Delete a file at a path, working even if doesn't exist.
+	 * 
+	 * @param path to delete
+	 */
 	private void delete(String path) {
 		File file = new File(path)
 		if (file.exists()) file.delete()
 	}
 
 
+	/**
+	 * Convert movie to format specified by the video.ffmpeg.fileExtension variable.
+	 * 
+	 * @param movie to convert
+	 */
 	void convertVideo(Movie movie) {
 
         Movie.withTransaction {
@@ -172,13 +209,19 @@ class VideoService implements InitializingBean {
 
 		log.debug "Found ${results.size()} movie(s) to convert"
 
-		//TODO: kick off coversions in parallel   - create quartz job upon upload instead of polling
+		//TODO: kick off conversions in parallel   - create quartz job upon upload instead of polling
 		for (Movie movie in results) {
 			log.debug "Converting movie with key $movie.key"
 			convertVideo movie
 		}
 	}
 
+	/**
+	 * Execute a system command in a string.
+	 * 
+	 * @param command to execute
+	 * @return true if successful, false otherwise
+	 */
 	private boolean exec(String command) {
 		try {
 			log.debug "Executing $command"
@@ -200,6 +243,13 @@ class VideoService implements InitializingBean {
 		}
 	}
 
+	/**
+	 * Extract playtime for a movie's file and record as field.
+	 * 
+	 * @param movie to set playtime for
+	 * @param file to extract playtime for
+	 * @return true if successful, false otherwise
+	 */
 	private boolean extractVideoMetadata(Movie movie, String file) {
 
 		// String command = "${mvals.ffprobe.path} -pretty -i " + file + " 2>&1 | grep \"Duration\" | cut -d ' ' -f 4 | sed s/,//"
@@ -244,15 +294,13 @@ class VideoService implements InitializingBean {
 			return false
 		}
 	}
-
-
-
+	
     /**
      * Copy the contents of the specified input stream to the specified
      * output stream, and ensure that both streams are closed before returning
      * (even in the face of an exception).
      *
-     * @param cacheEntry The cache entry for the source resource
+     * @param istream to read stream data from
      * @param ostream The output stream to write to
      * @param ranges Enumeration of the ranges the client wanted to retrieve
      * @param contentType Content type of the resource
@@ -288,9 +336,7 @@ class VideoService implements InitializingBean {
             throw exception
         }
     }
-
-
-
+	
     /**
      * Copy the contents of the specified input stream to the specified
      * output stream, and ensure that both streams are closed before returning
@@ -453,6 +499,9 @@ class VideoService implements InitializingBean {
         return result
     }
 
+	/**
+	 * Range of content to serve.
+	 */
     private static class Range {
 
         long start
@@ -467,7 +516,14 @@ class VideoService implements InitializingBean {
         }
     }
 
-
+	/**
+	 * Stream contents of a movie as an flv file.
+	 * 
+	 * @param params which may contain pos or start attributes
+	 * @param request servlet request
+	 * @param response servlet response
+	 * @param movie to stream
+	 */
     void streamFlv(Map params, HttpServletRequest request, HttpServletResponse response, Movie movie) {
         int buffer = 8192
         int start = 0
@@ -525,7 +581,14 @@ class VideoService implements InitializingBean {
 
     }
 
-
+	/**
+	 * Stream contents of a movie as a mp4 file.
+	 *
+	 * @param params which are unused
+	 * @param request servlet request
+	 * @param response servlet response
+	 * @param movie to stream
+	 */
     void streamMp4(Map params, HttpServletRequest request, HttpServletResponse response, Movie movie) {
 
         File movieFile = new File(movie.pathFlv)
@@ -592,8 +655,6 @@ class VideoService implements InitializingBean {
                 }
             }
         }
-
-
 
     }
 }
