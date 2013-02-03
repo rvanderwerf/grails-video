@@ -58,7 +58,7 @@ class Movie {
 	String key = new UUID(System.currentTimeMillis(),
 		System.currentTimeMillis()*System.currentTimeMillis()).toString()
 
-	//status of the movie for the converstion process
+	//status of the movie for the conversion process
 	String status = STATUS_BLANK
 
 	static constraints = {
