@@ -35,6 +35,7 @@ class VideoService implements InitializingBean {
 	static transactional = false
 
 	def grailsApplication
+	def videoConversionService
 
 	// copy of the video configuration settings
 	private mvals
@@ -58,63 +59,6 @@ class VideoService implements InitializingBean {
 		if (!f.exists()) {
 			f.mkdirs()
 		}
-	}
-
-	/**
-	 * Convert video in a source file into a target file while generating a thumbnail image.
-	 * 
-	 * @param sourceVideo
-	 * @param targetVideo
-	 * @param thumb
-	 * @return true if conversions successful, false otherwise.
-	 */
-	private boolean performConversion(File sourceVideo, File targetVideo, File thumb) {
-
-		String convertedMovieFileExtension = mvals.ffmpeg.fileExtension
-		boolean success = false
-
-		if (convertedMovieFileExtension == "flv") {
-			String uniqueId = new UUID(System.currentTimeMillis(),
-				System.currentTimeMillis() * System.currentTimeMillis()).toString()
-
-			String tmpfile = mvals.location + uniqueId + "." + convertedMovieFileExtension
-
-			File tmp = new File(tmpfile) //temp file for contents during conversion
-
-			// :TODO: this will fail if pathnames contain spaces and should be redone with the array argument form
-			String convertCmd = "${mvals.ffmpeg.path} -i ${sourceVideo.absolutePath} ${mvals.ffmpeg.conversionArgs} ${tmp.absolutePath}"
-			String metadataCmd = "${mvals.yamdi.path} -i ${tmp.absolutePath} -o ${targetVideo.absolutePath} -l"
-			String thumbCmd = "${mvals.ffmpeg.path} -i ${targetVideo.absolutePath} ${mvals.ffmpeg.makethumb} ${thumb.absolutePath}"
-
-			success = exec(convertCmd) //kick off the command to convert movie to flv
-
-			if (success) success = exec(metadataCmd) //kick off the command to add the metadata
-
-			if (success) success = exec(thumbCmd) //kick off the command to create the thumb
-
-			tmp.delete() //delete the tmp file
-		}
-		else if (convertedMovieFileExtension == "mp4") {
-
-			def convertCmd = "${mvals.ffmpeg.path}"
-
-            convertCmd+= " -i ${sourceVideo.absolutePath} ${mvals.ffmpeg.conversionArgs} ${targetVideo.absolutePath}"
-			String metadataCmd = "${mvals.qtfaststart.path} ${targetVideo.absolutePath} ${targetVideo.absolutePath}.1"
-			String deleteCmd = "rm -rf ${targetVideo.absolutePath}"
-			String renameCmd = "mv ${targetVideo.absolutePath}.1 ${targetVideo.absolutePath}"
-			String thumbCmd = "${mvals.ffmpeg.path} -i ${targetVideo.absolutePath} ${mvals.ffmpeg.makethumb} ${thumb.absolutePath}"
-
-			success = exec(convertCmd) //kick off the command to convert movie to flv
-
-			if (success) success = exec(metadataCmd) //kick off the command to generate/manipulate the metadata
-
-			if (success) success = exec(deleteCmd) //kick off the command to generate/manipulate the metadata
-			if (success) success = exec(renameCmd) //kick off the command to generate/manipulate the metadata
-
-			if (success) success = exec(thumbCmd) //kick off the command to create the thumb
-		}
-
-		success
 	}
 
 	/**
@@ -151,9 +95,8 @@ class VideoService implements InitializingBean {
 		if (file.exists()) file.delete()
 	}
 
-
 	/**
-	 * Convert movie to format specified by the video.ffmpeg.fileExtension variable.
+	 * Convert Movie to format specified by the video.ffmpeg.fileExtension variable.
 	 * 
 	 * @param movie to convert
 	 */
@@ -175,7 +118,7 @@ class VideoService implements InitializingBean {
 		File flv = new File(convertedMovieFilePath)
 		File thumb = new File(convertedMovieThumbnailFilePath)
 
-		performConversion(vid, flv, thumb)
+		videoConversionService.performConversion(vid, flv, thumb)
 
 		movie.pathFlv = convertedMovieFilePath
 		movie.pathThumb = convertedMovieThumbnailFilePath
@@ -186,7 +129,11 @@ class VideoService implements InitializingBean {
 		movie.createDate = new Date()
 		movie.url = "/movie/display/" + movie.id
 
-		extractVideoMetadata(movie, convertedMovieFilePath)
+		try {
+			movie.playTime = extractVideoMetadata(movie, convertedMovieFilePath)
+		} catch (Exception e) {
+			log.warn("Can't extract video metadata for file " + convertedMovieFilePath)
+		}
 
 		if (flv.exists()) {
 			movie.status = Movie.STATUS_CONVERTED
@@ -201,7 +148,7 @@ class VideoService implements InitializingBean {
 	}
 
 	/**
-	 * Convert all videos whose status is 'new'.
+	 * Convert all movies whose status is 'new'.
 	 */
 	void convertNewVideo() {
 		log.debug "Querying for '$Movie.STATUS_NEW' movies."
@@ -216,85 +163,6 @@ class VideoService implements InitializingBean {
 		}
 	}
 
-	/**
-	 * Execute a system command in a string.
-	 * 
-	 * @param command to execute
-	 * @return true if successful, false otherwise
-	 */
-	private boolean exec(String command) {
-		try {
-			log.debug "Executing $command"
-			def out = new StringBuilder()
-			def err = new StringBuilder()
-			def proc = command.execute()
-
-			def exitStatus = proc.waitForProcessOutput(out, err)
-			if (out) log.debug "out:\n$out"
-			if (err) log.debug "err:\n$err"
-
-			log.debug "Process exited with status $exitStatus"
-
-			return exitStatus == null || exitStatus == 0
-		}
-		catch (Exception e) {
-			log.error("Error while executing command $command", e)
-			return false
-		}
-	}
-
-	/**
-	 * Extract playtime for a movie's file and record as field.
-	 * 
-	 * @param movie to set playtime for
-	 * @param file to extract playtime for
-	 * @return true if successful, false otherwise
-	 */
-	private boolean extractVideoMetadata(Movie movie, String file) {
-
-		// String command = "${mvals.ffprobe.path} -pretty -i " + file + " 2>&1 | grep \"Duration\" | cut -d ' ' -f 4 | sed s/,//"
-		String command = "${mvals.ffprobe.path} ${mvals.ffprobe.params}" + file
-
-		try {
-			log.debug "Executing $command"
-			def out = new StringBuilder()
-			def err = new StringBuilder()
-			def proc = command.execute()
-
-			def exitStatus = proc.waitForProcessOutput(out, err)
-			if (out) log.debug "out:\n$out"
-			if (err) log.debug "err:\n$err"
-
-			log.debug "Process exited with status $exitStatus"
-
-			if (exitStatus == null || exitStatus == 0) {
-				String originalOutput = out.append(err).toString()
-
-				def tokens = []
-				originalOutput.splitEachLine(": ,\n") { line ->
-					List list = line.toString().tokenize(": ,")
-					list.each { item -> tokens << item }
-				}
-
-				int i
-				int count = tokens.size()
-				for (i = 0; i < count; i++) {
-					if (tokens[i].toString().contains("Duration")) {
-						break
-					}
-				}
-
-				movie.playTime = tokens[i + 1].toString().toInteger() * 3600 + tokens[i + 2].toString().toInteger() * 60 + tokens[i + 3].toString().toFloat()
-				return true
-			}
-			return false
-		}
-		catch (Exception e) {
-			log.error("Error while executing command $command", e)
-			return false
-		}
-	}
-	
     /**
      * Copy the contents of the specified input stream to the specified
      * output stream, and ensure that both streams are closed before returning
@@ -517,7 +385,7 @@ class VideoService implements InitializingBean {
     }
 
 	/**
-	 * Stream contents of a movie as an flv file.
+	 * Stream contents of a Movie as an flv file.
 	 * 
 	 * @param params which may contain pos or start attributes
 	 * @param request servlet request
@@ -578,11 +446,10 @@ class VideoService implements InitializingBean {
             movieInputStream.close() // close the file stream
         }
 
-
     }
 
 	/**
-	 * Stream contents of a movie as a mp4 file.
+	 * Stream contents of a Movie as a mp4 file.
 	 *
 	 * @param params which are unused
 	 * @param request servlet request
