@@ -28,7 +28,16 @@ import java.io.File;
  * @author Peter N. Steinmetz
  */
 class VideoConversionService {
-	def log
+	
+	def grailsApplication
+	private def mvals
+	
+	/**
+	 * Update configuration settings.
+	 */
+	void afterPropertiesSet() {
+		mvals = grailsApplication.config.video
+	}
 
 	/**
 	 * Enumeration of the video types which can be converted to.
@@ -41,17 +50,22 @@ class VideoConversionService {
 	}
 	
 	/**
-	 * Execute a system command in a string.
+	 * Map of VideoType enumerations to ffmpeg type specifications.
+	 */
+	private def videoTypeExtensionMap = [(VideoType.FLV) : "flv", (VideoType.MP4) : "mp4"]
+	
+	/**
+	 * Execute a system command from an array of command and arguments
 	 *
 	 * @param command to execute
 	 * @return true if successful, false otherwise
 	 */
-	private boolean exec(String command) {
+	private boolean exec(List cmdArr) {
 		try {
-			log.debug "Executing $command"
+			log.debug "Executing $cmdArr"
 			def out = new StringBuilder()
 			def err = new StringBuilder()
-			def proc = command.execute()
+			def proc = Runtime.getRuntime().exec((String[])cmdArr)
 
 			def exitStatus = proc.waitForProcessOutput(out, err)
 			if (out) log.debug "out:\n$out"
@@ -62,7 +76,7 @@ class VideoConversionService {
 			return exitStatus == null || exitStatus == 0
 		}
 		catch (Exception e) {
-			log.error("Error while executing command $command", e)
+			log.error("Error while executing command $cmdArr", e)
 			return false
 		}
 	}
@@ -75,32 +89,34 @@ class VideoConversionService {
 	 * @param thumb
 	 * @return true if conversions successful, false otherwise.
 	 */
-	private boolean performConversion(File sourceVideo, File targetVideo, File thumb, VideoType targetType) {
+	boolean performConversion(File sourceVideo, File targetVideo, File thumb, VideoType targetType) {
 
-		String convertedMovieFileExtension = mvals.ffmpeg.fileExtension
 		boolean success = false
 
 		switch (targetType) {
 		
 		case VideoType.FLV:
-			String uniqueId = new UUID(System.currentTimeMillis(),
-				System.currentTimeMillis() * System.currentTimeMillis()).toString()
+			
+			File tmp = File.createTempFile("video","tmp")
 
-			String tmpfile = mvals.location + uniqueId + "." + convertedMovieFileExtension
-
-			File tmp = new File(tmpfile) //temp file for contents during conversion
-
-			// :TODO: this will fail if pathnames contain spaces and should be redone with the array argument form
-			String convertCmd = "${mvals.ffmpeg.path} -i ${sourceVideo.absolutePath} ${mvals.ffmpeg.conversionArgs} ${tmp.absolutePath}"
-			String metadataCmd = "${mvals.yamdi.path} -i ${tmp.absolutePath} -o ${targetVideo.absolutePath} -l"
-			String thumbCmd = "${mvals.ffmpeg.path} -i ${targetVideo.absolutePath} ${mvals.ffmpeg.makethumb} ${thumb.absolutePath}"
-
-			success = exec(convertCmd) //kick off the command to convert movie to flv
-
-			if (success) success = exec(metadataCmd) //kick off the command to add the metadata
-
-			if (success) success = exec(thumbCmd) //kick off the command to create the thumb
-
+			// ensure we have -y to override any existing file by the same name
+			def convertCmdArr = [mvals.ffmpeg.path,"-y","-i", sourceVideo.absolutePath]
+			mvals.ffmpeg.conversionArgs.tokenize(' ').each {arg -> convertCmdArr << arg }
+			convertCmdArr << "-f" << videoTypeExtensionMap[targetType] << tmp.absolutePath
+			success = exec(convertCmdArr)
+			
+			if (success) {
+				def metadataCmdArr = [mvals.yamdi.path, "-i", tmp.absolutePath, "-o",targetVideo.absolutePath,"-l"]
+				success = exec(metadataCmdArr)
+			}
+			
+			if (success) {
+				def thumbCmdArr = [mvals.ffmpeg.path,"-y","-i",targetVideo.absolutePath]
+				mvals.ffmpeg.makethumb.tokenize(' ').each { arg -> thumbCmdArr << arg }
+				thumbCmdArr << thumb.absolutePath
+				success = exec(thumbCmdArr)
+			}
+			
 			tmp.delete() //delete the tmp file
 			break;
 		
@@ -128,40 +144,75 @@ class VideoConversionService {
 	}
 
 	/**
+	 * Extract playtime from ffprobe output string.
+	 * 
+	 * Requires whitespace after last part of seconds.
+	 * 
+	 * @param outStr
+	 * @return playtime in seconds, or -1 if not in string
+	 */
+	private long getPlaytimeFromString(String outStr) {
+		def tokens = []
+		outStr.splitEachLine(": ,\n") { line ->
+			List list = line.toString().tokenize(": ,")
+			list.each { item -> tokens << item }
+		}
+
+		int i
+		int count = tokens.size()
+		for (i = 0; i < count; i++) {
+			if (tokens[i].toString().contains("Duration")) {
+				break
+			}
+		}
+		if (i>=count) return -1;	// can't find Duration
+
+		long res = tokens[i + 1].toString().toInteger() * 3600 + tokens[i + 2].toString().toInteger() * 60 + tokens[i + 3].toString().toFloat()
+		return res
+	}
+	
+	/**
 	 * Extract playtime for a video file.
 	 *
-	 * @param file to extract playtime for
+	 * @param videoFile to extract playtime for
 	 * @return playtime in seconds
 	 * @throws Exception if failed to extract
 	 */
-	long extractVideoMetadata(Movie movie, String file) throws Exception {
+	long extractVideoPlaytime(File videoFile) throws Exception {
 
-		String command = "${mvals.ffprobe.path} ${mvals.ffprobe.params}" + file
-
-		boolean success = exec(command)
-		
-		if (success) {
-			String originalOutput = out.append(err).toString()
-
-			def tokens = []
-			originalOutput.splitEachLine(": ,\n") { line ->
-				List list = line.toString().tokenize(": ,")
-				list.each { item -> tokens << item }
-			}
-
-			int i
-			int count = tokens.size()
-			for (i = 0; i < count; i++) {
-				if (tokens[i].toString().contains("Duration")) {
-					break
-				}
-			}
-
-			long res = tokens[i + 1].toString().toInteger() * 3600 + tokens[i + 2].toString().toInteger() * 60 + tokens[i + 3].toString().toFloat()
-			return res
+		String[] cmdArr
+		if (mvals.ffprobe.params != '') {
+			cmdArr = [mvals.ffprobe.path, mvals.ffprobe.params, videoFile.getAbsolutePath()]
+		} else {
+			cmdArr = [mvals.ffprobe.path, videoFile.getAbsolutePath()]
 		}
-		else {
-			throw new IOException("Can't extract metadata")
+		
+		try {
+			log.debug "Executing $cmdArr"
+			def out = new StringBuilder()
+			def err = new StringBuilder()
+			def proc = Runtime.getRuntime().exec(cmdArr)
+
+			def exitStatus = proc.waitForProcessOutput(out, err)
+			
+			if (log.isDebugEnabled()) {
+				if (out) log.debug "out:\n$out"
+				if (err) log.debug "err:\n$err"
+				log.debug "Process exited with status $exitStatus"
+			}
+			
+			if (exitStatus==null || exitStatus==0) {
+				String originalOutput = out.append(err).toString()
+				long res = getPlaytimeFromString(originalOutput)
+				if (res>=0) return res
+				else throw new IOException("Can't parse playtime from string: " + originalOutput)
+			} else {
+				throw new IOException("Error status from ffprobe = " + exitStatus)
+			}
+		}
+		catch (Exception e) {
+			log.error("Error while executing command $cmdArr", e)
+			throw e
 		}
 	}
 
