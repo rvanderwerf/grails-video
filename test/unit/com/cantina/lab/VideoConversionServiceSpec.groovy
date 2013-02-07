@@ -34,6 +34,15 @@ class VideoConversionServiceSpec extends Specification {
 		expect: 
 		service.extractVideoPlaytime(testInputFile) == 5
 	}
+	
+	def "test generation of thumbnail image"() {
+		setup:
+		def outputThumb = File.createTempFile("video", ".jpg")
+		
+		expect:
+		service.createThumbnail(testInputFile,outputThumb)
+		outputThumb.length() > 512 // at least 512 bytes for one frame
+	}
 		
 	def "test video conversion to flash video FLV"() {
 		setup:
@@ -49,4 +58,20 @@ class VideoConversionServiceSpec extends Specification {
 		outputFile.delete()
 		outputFile.delete()
 	}
+	
+	def "test video conversion to MP4 video"() {
+		setup:
+		def outputFile = File.createTempFile("video", ".mp4")
+		def outputThumb = File.createTempFile("video", ".jpg")
+		
+		expect:
+		service.performConversion(testInputFile,outputFile,outputThumb,VideoConversionService.VideoType.MP4)
+		outputFile.length() >= testInputFile.length() - 1e3 // not more than 1K shorter
+		outputThumb.length() > 512 // at least 512 bytes for one frame
+		
+		cleanup:
+		outputFile.delete()
+		outputFile.delete()
+	}
+
 }
