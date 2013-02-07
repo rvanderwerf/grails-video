@@ -82,6 +82,20 @@ class VideoConversionService {
 	}
 
 	/**
+	 * Create a thumbnail image from a source video file.
+	 * 
+	 * @param sourceVideo to create thumbnail from
+	 * @param 
+	 */
+	boolean createThumbnail(File sourceVideo, File thumbFile) {
+		def thumbCmdArr = [mvals.ffmpeg.path,"-y","-i",sourceVideo.absolutePath]
+		mvals.ffmpeg.makethumb.tokenize(' ').each { arg -> thumbCmdArr << arg }
+		thumbCmdArr << thumbFile.absolutePath
+		def success = exec(thumbCmdArr)
+		success
+	}
+	
+	/**
 	 * Convert video in a source file into a target file while generating a thumbnail image.
 	 *
 	 * @param sourceVideo
@@ -92,53 +106,36 @@ class VideoConversionService {
 	boolean performConversion(File sourceVideo, File targetVideo, File thumb, VideoType targetType) {
 
 		boolean success = false
-
-		switch (targetType) {
 		
-		case VideoType.FLV:
-			
-			File tmp = File.createTempFile("video","tmp")
-
-			// ensure we have -y to override any existing file by the same name
-			def convertCmdArr = [mvals.ffmpeg.path,"-y","-i", sourceVideo.absolutePath]
-			mvals.ffmpeg.conversionArgs.tokenize(' ').each {arg -> convertCmdArr << arg }
-			convertCmdArr << "-f" << videoTypeExtensionMap[targetType] << tmp.absolutePath
-			success = exec(convertCmdArr)
-			
-			if (success) {
-				def metadataCmdArr = [mvals.yamdi.path, "-i", tmp.absolutePath, "-o",targetVideo.absolutePath,"-l"]
-				success = exec(metadataCmdArr)
-			}
-			
-			if (success) {
-				def thumbCmdArr = [mvals.ffmpeg.path,"-y","-i",targetVideo.absolutePath]
-				mvals.ffmpeg.makethumb.tokenize(' ').each { arg -> thumbCmdArr << arg }
-				thumbCmdArr << thumb.absolutePath
-				success = exec(thumbCmdArr)
-			}
-			
-			tmp.delete() //delete the tmp file
-			break;
+		File tmp = File.createTempFile("video","tmp")
 		
-		case VideoType.MP4:
-			def convertCmd = "${mvals.ffmpeg.path}"
-
-			convertCmd+= " -i ${sourceVideo.absolutePath} ${mvals.ffmpeg.conversionArgs} ${targetVideo.absolutePath}"
-			String metadataCmd = "${mvals.qtfaststart.path} ${targetVideo.absolutePath} ${targetVideo.absolutePath}.1"
-			String deleteCmd = "rm -rf ${targetVideo.absolutePath}"
-			String renameCmd = "mv ${targetVideo.absolutePath}.1 ${targetVideo.absolutePath}"
-			String thumbCmd = "${mvals.ffmpeg.path} -i ${targetVideo.absolutePath} ${mvals.ffmpeg.makethumb} ${thumb.absolutePath}"
-
-			success = exec(convertCmd) //kick off the command to convert movie to flv
-
-			if (success) success = exec(metadataCmd) //kick off the command to generate/manipulate the metadata
-
-			if (success) success = exec(deleteCmd) //kick off the command to generate/manipulate the metadata
-			if (success) success = exec(renameCmd) //kick off the command to generate/manipulate the metadata
-
-			if (success) success = exec(thumbCmd) //kick off the command to create the thumb
-			break;
+		// ensure we have -y to override any existing file by the same name
+		def convertCmdArr = [mvals.ffmpeg.path,"-y","-i", sourceVideo.absolutePath]
+		mvals.ffmpeg.conversionArgs.tokenize(' ').each {arg -> convertCmdArr << arg }
+		convertCmdArr << "-f" << videoTypeExtensionMap[targetType] << tmp.absolutePath
+		success = exec(convertCmdArr)
+		
+		// generation of metadata depends on type of conversion
+		if (success) {
+			switch (targetType) {
+		
+				case VideoType.FLV:
+					def metadataCmdArr = [mvals.yamdi.path, "-i", tmp.absolutePath, "-o",targetVideo.absolutePath,"-l"]
+					success = exec(metadataCmdArr)
+				break;
+		
+				case VideoType.MP4:
+					def metadataCmdArr = [mvals.qtfaststart.path, tmp.absolutePath, targetVideo.absolutePath]
+					success = exec(metadataCmdArr)
+				break;
+			}
 		}
+
+		if (success) {
+			success = createThumbnail(targetVideo,thumb)
+		}
+		
+		tmp.delete() //delete the tmp file
 
 		success
 	}
