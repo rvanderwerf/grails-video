@@ -55,33 +55,6 @@ class VideoConversionService {
 	private def videoTypeExtensionMap = [(VideoType.FLV) : "flv", (VideoType.MP4) : "mp4"]
 	
 	/**
-	 * Execute a system command from an array of command and arguments
-	 *
-	 * @param command to execute
-	 * @return true if successful, false otherwise
-	 */
-	private boolean exec(List cmdArr) {
-		try {
-			log.debug "Executing $cmdArr"
-			def out = new StringBuilder()
-			def err = new StringBuilder()
-			def proc = Runtime.getRuntime().exec((String[])cmdArr)
-
-			def exitStatus = proc.waitForProcessOutput(out, err)
-			if (out) log.debug "out:\n$out"
-			if (err) log.debug "err:\n$err"
-
-			log.debug "Process exited with status $exitStatus"
-
-			return exitStatus == null || exitStatus == 0
-		}
-		catch (Exception e) {
-			log.error("Error while executing command $cmdArr", e)
-			return false
-		}
-	}
-
-	/**
 	 * Create a thumbnail image from a source video file.
 	 * 
 	 * @param sourceVideo to create thumbnail from
@@ -91,7 +64,7 @@ class VideoConversionService {
 		def thumbCmdArr = [mvals.ffmpeg.path,"-y","-i",sourceVideo.absolutePath]
 		mvals.ffmpeg.makethumb.tokenize(' ').each { arg -> thumbCmdArr << arg }
 		thumbCmdArr << thumbFile.absolutePath
-		def success = exec(thumbCmdArr)
+		def success = SysCmdUtils.exec(thumbCmdArr)
 		success
 	}
 	
@@ -113,7 +86,7 @@ class VideoConversionService {
 		def convertCmdArr = [mvals.ffmpeg.path,"-y","-i", sourceVideo.absolutePath]
 		mvals.ffmpeg.conversionArgs.tokenize(' ').each {arg -> convertCmdArr << arg }
 		convertCmdArr << "-f" << videoTypeExtensionMap[targetType] << tmp.absolutePath
-		success = exec(convertCmdArr)
+		success = SysCmdUtils.exec(convertCmdArr)
 		
 		// generation of metadata depends on type of conversion
 		if (success) {
@@ -121,12 +94,12 @@ class VideoConversionService {
 		
 				case VideoType.FLV:
 					def metadataCmdArr = [mvals.yamdi.path, "-i", tmp.absolutePath, "-o",targetVideo.absolutePath,"-l"]
-					success = exec(metadataCmdArr)
+					success = SysCmdUtils.exec(metadataCmdArr)
 				break;
 		
 				case VideoType.MP4:
 					def metadataCmdArr = [mvals.qtfaststart.path, tmp.absolutePath, targetVideo.absolutePath]
-					success = exec(metadataCmdArr)
+					success = SysCmdUtils.exec(metadataCmdArr)
 				break;
 			}
 		}
@@ -177,28 +150,19 @@ class VideoConversionService {
 	 */
 	long extractVideoPlaytime(File videoFile) throws Exception {
 
-		String[] cmdArr
+		def cmdArr = [mvals.ffprobe.path]
 		if (mvals.ffprobe.params != '') {
-			cmdArr = [mvals.ffprobe.path, mvals.ffprobe.params, videoFile.getAbsolutePath()]
-		} else {
-			cmdArr = [mvals.ffprobe.path, videoFile.getAbsolutePath()]
+			mvals.ffprobe.params(' ').each {arg -> cmdArr << arg }
 		}
+		cmdArr << videoFile.getAbsolutePath()
 		
 		try {
-			log.debug "Executing $cmdArr"
 			def out = new StringBuilder()
 			def err = new StringBuilder()
-			def proc = Runtime.getRuntime().exec(cmdArr)
-
-			def exitStatus = proc.waitForProcessOutput(out, err)
 			
-			if (log.isDebugEnabled()) {
-				if (out) log.debug "out:\n$out"
-				if (err) log.debug "err:\n$err"
-				log.debug "Process exited with status $exitStatus"
-			}
-			
-			if (exitStatus==null || exitStatus==0) {
+			def success = SysCmdUtils.exec(cmdArr,out,err)
+						
+			if (success) {
 				String originalOutput = out.append(err).toString()
 				long res = getPlaytimeFromString(originalOutput)
 				if (res>=0) return res
