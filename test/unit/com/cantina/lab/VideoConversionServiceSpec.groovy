@@ -50,7 +50,7 @@ class VideoConversionServiceSpec extends Specification {
 		def outputThumb = File.createTempFile("video", ".jpg")
 		
 		expect:
-		service.performConversion(testInputFile,outputFile,outputThumb,VideoConversionService.VideoType.FLV)
+		service.performConversion(testInputFile,outputFile,outputThumb,VideoType.FLV)
 		outputFile.length() >= testInputFile.length() - 1e3 // not more than 1K shorter
 		outputThumb.length() > 512 // at least 512 bytes for one frame
 		
@@ -65,7 +65,7 @@ class VideoConversionServiceSpec extends Specification {
 		def outputThumb = File.createTempFile("video", ".jpg")
 		
 		expect:
-		service.performConversion(testInputFile,outputFile,outputThumb,VideoConversionService.VideoType.MP4)
+		service.performConversion(testInputFile,outputFile,outputThumb,VideoType.MP4)
 		outputFile.length() >= testInputFile.length() - 1e3 // not more than 1K shorter
 		outputThumb.length() > 512 // at least 512 bytes for one frame
 		

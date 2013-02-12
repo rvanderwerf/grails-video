@@ -38,21 +38,6 @@ class VideoConversionService {
 	void afterPropertiesSet() {
 		mvals = grailsApplication.config.video
 	}
-
-	/**
-	 * Enumeration of the video types which can be converted to.
-	 * @author peter
-	 *
-	 */
-	public enum VideoType {
-		FLV,
-		MP4
-	}
-	
-	/**
-	 * Map of VideoType enumerations to ffmpeg type specifications.
-	 */
-	private def videoTypeExtensionMap = [(VideoType.FLV) : "flv", (VideoType.MP4) : "mp4"]
 	
 	/**
 	 * Create a thumbnail image from a source video file.
@@ -85,7 +70,7 @@ class VideoConversionService {
 		// ensure we have -y to override any existing file by the same name
 		def convertCmdArr = [mvals.ffmpeg.path,"-y","-i", sourceVideo.absolutePath]
 		mvals.ffmpeg.conversionArgs.tokenize(' ').each {arg -> convertCmdArr << arg }
-		convertCmdArr << "-f" << videoTypeExtensionMap[targetType] << tmp.absolutePath
+		convertCmdArr << "-f" << targetType.extension << tmp.absolutePath
 		success = SysCmdUtils.exec(convertCmdArr)
 		
 		// generation of metadata depends on type of conversion
