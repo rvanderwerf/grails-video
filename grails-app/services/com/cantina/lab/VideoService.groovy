@@ -98,7 +98,7 @@ class VideoService implements InitializingBean {
 	/**
 	 * Convert Movie to format specified by the video.ffmpeg.fileExtension variable.
 	 * 
-	 * @param movie to convert
+	 * @param Movie to convert, assumed to have valid pathMaster field.
 	 */
 	void convertVideo(Movie movie) {
 
@@ -111,17 +111,19 @@ class VideoService implements InitializingBean {
 
 		//create unique file paths for assets created during conversion (flv and thumb)
 		String convertedMovieFileExtension = mvals.ffmpeg.fileExtension
+		VideoType convertedVideoType = VideoType.findByExtension(convertedMovieFileExtension)
+		File mvalsLocationFile = new File(mvals.location)
 		String convertedMovieThumbnailExtension = "jpg"
-		String convertedMovieFilePath = mvals.location + movie.key + "." + convertedMovieFileExtension
-		String convertedMovieThumbnailFilePath = mvals.location + movie.key + "." + convertedMovieThumbnailExtension
+		String convertedMovieName = movie.key + "." + convertedMovieFileExtension
+		String convertedMovieThumbnailName = movie.key + "." + convertedMovieThumbnailExtension
 
-		File flv = new File(convertedMovieFilePath)
-		File thumb = new File(convertedMovieThumbnailFilePath)
+		File flv = new File(mvalsLocationFile, convertedMovieName)
+		File thumb = new File(mvalsLocationFile, convertedMovieThumbnailName)
 
-		videoConversionService.performConversion(vid, flv, thumb)
+		videoConversionService.performConversion(vid, flv, thumb, convertedVideoType)
 
-		movie.pathFlv = convertedMovieFilePath
-		movie.pathThumb = convertedMovieThumbnailFilePath
+		movie.pathFlv = flv.getCanonicalPath()
+		movie.pathThumb = thumb.getCanonicalPath()
 		movie.size = flv.length()
 		movie.contentType = mvals.ffmpeg.contentType
 
@@ -130,9 +132,9 @@ class VideoService implements InitializingBean {
 		movie.url = "/movie/display/" + movie.id
 
 		try {
-			movie.playTime = extractVideoMetadata(movie, convertedMovieFilePath)
+			movie.playTime = extractVideoPlaytime(movie, flv)
 		} catch (Exception e) {
-			log.warn("Can't extract video metadata for file " + convertedMovieFilePath)
+			log.warn("Can't extract video metadata for file " + flv.getAbsolutePath())
 		}
 
 		if (flv.exists()) {
