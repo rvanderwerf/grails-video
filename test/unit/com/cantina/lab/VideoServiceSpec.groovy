@@ -46,4 +46,28 @@ class VideoServiceSpec extends Specification {
 		cleanup:
 		service.deleteConversionProducts(mov)
 	}
+	
+	def "test import of video"() {
+		setup:
+		def testImportFile = new File("test/integration/resources/shortSampCopy.mp4")
+		testImportFile.withOutputStream { out -> out.write testInputFile.readBytes() }
+		
+		expect:
+		service.importConvertedVideo(testImportFile)
+		def foundMovies = Movie.findAllByStatus("converted")
+		foundMovies.size() == 1
+		
+		Movie found = foundMovies[0]
+		found.pathMaster == testImportFile.getAbsolutePath()
+		File flvFl = new File(found.pathFlv)
+		flvFl.exists()
+		File thumbFl = new File(found.pathThumb)
+		thumbFl.exists()
+		!testImportFile.exists()	// should have moved
+		
+		found.playTime == 5
+
+		cleanup:
+		service.deleteConversionProducts(found)
+	}
 }
