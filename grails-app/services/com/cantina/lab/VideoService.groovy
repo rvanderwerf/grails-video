@@ -104,6 +104,62 @@ class VideoService implements InitializingBean {
 	}
 
 	/**
+	 * Get VideoType that we are converting to based on configuration.
+	 */
+	VideoType getConversionVideoType() {
+		String convertedMovieFileExtension = mvals.ffmpeg.fileExtension
+		VideoType.findByExtension(convertedMovieFileExtension)
+	}
+	
+	/**
+	 * Setup paths for conversion from Movie.pathMaster
+	 * 
+	 * @param mov Movie to set conversions paths for
+	 */
+	private void setupConversionPaths(Movie mov) {
+		
+		//create unique file paths for assets created during conversion (flv and thumb)
+		String convertedMovieFileExtension = mvals.ffmpeg.fileExtension
+		File mvalsLocationFile = new File(mvals.location)
+		String convertedMovieThumbnailExtension = "jpg"
+		String convertedMovieName = mov.key + "." + convertedMovieFileExtension
+		String convertedMovieThumbnailName = mov.key + "." + convertedMovieThumbnailExtension
+
+		File flv = new File(mvalsLocationFile, convertedMovieName)
+		File thumb = new File(mvalsLocationFile, convertedMovieThumbnailName)
+		
+		mov.pathFlv = flv.getCanonicalPath()
+		mov.pathThumb = thumb.getCanonicalPath()
+	}
+	
+	/**
+	 * Fill in playTime from converted video.
+	 * 
+	 * @param movie to fill playTime in.
+	 */
+	private void fillPlayTime(Movie movie) {
+		File convVideo = new File(movie.pathFlv)
+		try {
+			movie.playTime = videoConversionService.extractVideoPlaytime(convVideo)
+		} catch (Exception e) {
+			log.warn("Can't extract video metadata for file " + convVideo.getAbsolutePath())
+		}
+	}
+	
+	/**
+	 * Fill in size, type, date and url for a Movie.
+	 */
+	private void fillSizeTypeDateUrl(Movie movie) {
+		movie.size = new File(movie.pathFlv).length()
+		movie.contentType = getConversionVideoType().extension
+
+		movie.createDate = new Date()
+		movie.url = "/movie/display/" + movie.id
+
+		fillPlayTime(movie)
+	}
+	
+	/**
 	 * Convert Movie to format specified by the video.ffmpeg.fileExtension variable.
 	 * 
 	 * @param Movie to convert, assumed to have valid pathMaster field.
@@ -116,36 +172,15 @@ class VideoService implements InitializingBean {
         }
 
 		File vid = new File(movie.pathMaster)
+		
+		setupConversionPaths(movie)
+		
+		File convVideo = new File(movie.pathFlv)
+		videoConversionService.performConversion(vid, convVideo, new File(movie.pathThumb), getConversionVideoType())
 
-		//create unique file paths for assets created during conversion (flv and thumb)
-		String convertedMovieFileExtension = mvals.ffmpeg.fileExtension
-		VideoType convertedVideoType = VideoType.findByExtension(convertedMovieFileExtension)
-		File mvalsLocationFile = new File(mvals.location)
-		String convertedMovieThumbnailExtension = "jpg"
-		String convertedMovieName = movie.key + "." + convertedMovieFileExtension
-		String convertedMovieThumbnailName = movie.key + "." + convertedMovieThumbnailExtension
-
-		File flv = new File(mvalsLocationFile, convertedMovieName)
-		File thumb = new File(mvalsLocationFile, convertedMovieThumbnailName)
-
-		videoConversionService.performConversion(vid, flv, thumb, convertedVideoType)
-
-		movie.pathFlv = flv.getCanonicalPath()
-		movie.pathThumb = thumb.getCanonicalPath()
-		movie.size = flv.length()
-		movie.contentType = mvals.ffmpeg.contentType
-
-		movie.playTime = 0
-		movie.createDate = new Date()
-		movie.url = "/movie/display/" + movie.id
-
-		try {
-			movie.playTime = videoConversionService.extractVideoPlaytime(flv)
-		} catch (Exception e) {
-			log.warn("Can't extract video metadata for file " + flv.getAbsolutePath())
-		}
-
-		if (flv.exists()) {
+		fillSizeTypeDateUrl(movie)
+		
+		if (convVideo.exists()) {
 			movie.status = Movie.STATUS_CONVERTED
 		}
 		else {
@@ -156,7 +191,58 @@ class VideoService implements InitializingBean {
 		    movie.save()
         }
 	}
+	
+	/**
+	 * Import a pre-converted video into the system, creating a Movie object.
+	 * 
+	 * Moves the file, creates a thumbnail, and updates the database.
+	 */
+	void importConvertedVideo(File convertedVideoFile) {
+		
+		def movie = new Movie()
+		movie.newFile(convertedVideoFile)
+		movie.save(flush:true)
+		
+		movie.withTransaction {
+			
+			movie.status = Movie.STATUS_INPROGRESS
+			movie.save(flush: true)
+			
+			setupConversionPaths(movie)
+			
+			// move file into storage area, which can run quickly if input 
+			// and storage area are on same volume
+			String[] cmdArr =[ "mv", convertedVideoFile.getAbsolutePath(), movie.pathFlv ]
+			Process proc = Runtime.getRuntime().exec(cmdArr)
+			proc.waitForProcessOutput()
+			
+			if (proc.exitValue()!=0) {
+				log.error("Unable to copy converted movie: " + movie.pathMaster)
+				movie.status = Movie.STATUS_FAILED
+				movie.save(flush:true)
+			}
+			
+			if (movie.status == Movie.STATUS_INPROGRESS) {
+				File thumbFile = new File(movie.pathThumb)
+				if (!videoConversionService.createThumbnail(new File(movie.pathFlv),thumbFile)) {
+					log.error("Can't create thumbnail file for video:"+movie.pathMaster)
+					movie.status = Movie.STATUS_FAILED
+					movie.save(flush:true)
+				}
+				movie.pathThumb = thumbFile.getCanonicalPath()
+			}
+			
+			if (movie.status == Movie.STATUS_INPROGRESS) {
+				fillSizeTypeDateUrl(movie)	
+				fillPlayTime(movie)
+			}
+			
+			movie.status = Movie.STATUS_CONVERTED
+			movie.save()
+		}
 
+	}
+	
 	/**
 	 * Convert all movies whose status is 'new'.
 	 */
@@ -172,7 +258,7 @@ class VideoService implements InitializingBean {
 			convertVideo movie
 		}
 	}
-
+	
     /**
      * Copy the contents of the specified input stream to the specified
      * output stream, and ensure that both streams are closed before returning
