@@ -47,7 +47,7 @@ class Movie {
 	Long size                  //size of content in bytes
 	Date createDate            //date the content was created
 	String createdBy           //the name of the person who created the content
-	String pathFlv             //path to the flv file
+	String pathFlv             //path to the converted file
 	String pathThumb           //the path to the thumb file - jpg
 	String pathMaster          //path to the digital master movie - i.e, mpeg, mov, etc...
 	String contentType          //the content type of the movie - usually flv
