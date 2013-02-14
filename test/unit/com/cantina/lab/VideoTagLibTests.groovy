@@ -1,13 +1,9 @@
 package com.cantina.lab
 
-import static org.junit.Assert.*
-
-import grails.test.mixin.*
-import grails.test.mixin.support.*
-import grails.test.mixin.web.*
 import org.grails.plugin.resource.ResourceProcessor
 import org.grails.plugin.resource.ResourceTagLib
-import org.junit.*
+
+import grails.test.mixin.TestFor
 
 import com.google.protobuf.ByteString.Output;
 
@@ -29,7 +25,7 @@ class VideoTagLibTests {
     void testIncludes() {
 		// setup mock of ResourceTagLib for r: namespace in our tagLib
 		def rTagLibControl = mockFor(ResourceTagLib)
-		rTagLibControl.demand.resource(4..4) { attrs -> return "/static/plugins/" + 
+		rTagLibControl.demand.resource(2..2) { attrs -> return "/static/plugins/" + 
 																 attrs.plugin + "/" +
 																 attrs.dir + "/" + attrs.file }
 		def rTagLib = rTagLibControl.createMock()
@@ -42,7 +38,7 @@ class VideoTagLibTests {
 		assert output.contains('src="/static/plugins/gvps/jw-flv/jwplayer.js"')
 		// Flowplayer
 		output = applyTemplate("<vid:includes player='flowplayer'/>")
-		assert output.contains('src="/static/plugins/gvps/flowplayer/flowplayer.min.js"')
+		assert output == ""
 		
 		rTagLibControl.verify()
     }
