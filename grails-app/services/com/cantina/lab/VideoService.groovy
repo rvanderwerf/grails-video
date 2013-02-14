@@ -212,11 +212,8 @@ class VideoService implements InitializingBean {
 			
 			// move file into storage area, which can run quickly if input 
 			// and storage area are on same volume
-			String[] cmdArr =[ "mv", convertedVideoFile.getAbsolutePath(), movie.pathFlv ]
-			Process proc = Runtime.getRuntime().exec(cmdArr)
-			proc.waitForProcessOutput()
-			
-			if (proc.exitValue()!=0) {
+			def cmdArr =[ "mv", convertedVideoFile.getAbsolutePath(), movie.pathFlv ]
+			if (!SysCmdUtils.exec(cmdArr)) {
 				log.error("Unable to copy converted movie: " + movie.pathMaster)
 				movie.status = Movie.STATUS_FAILED
 				movie.save(flush:true)
