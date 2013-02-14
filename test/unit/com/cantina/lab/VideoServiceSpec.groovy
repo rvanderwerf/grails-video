@@ -35,5 +35,15 @@ class VideoServiceSpec extends Specification {
 		service.convertVideo(mov)
 		def foundMovies = Movie.findAllByStatus("converted")
 		foundMovies.size() == 1
+		Movie found = foundMovies[0]
+		found.pathMaster == testInputFile.getAbsolutePath()
+		File flvFl = new File(found.pathFlv)
+		flvFl.exists()
+		File thumbFl = new File(found.pathThumb)
+		thumbFl.exists()
+		found.playTime == 5
+		
+		cleanup:
+		service.deleteConversionProducts(mov)
 	}
 }
