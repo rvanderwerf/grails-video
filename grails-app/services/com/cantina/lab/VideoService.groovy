@@ -80,17 +80,25 @@ class VideoService implements InitializingBean {
 	 */
 	void deleteMovie(Movie movie) {
 		delete(movie.pathMaster)
-		delete(movie.pathThumb)
-		delete(movie.pathFlv)
+		deleteConversionProducts(movie)
 		movie.delete()
 	}
-
+	
 	/**
-	 * Delete a file at a path, working even if doesn't exist.
+	 * Delete video products of conversion.
+	 */
+	void deleteConversionProducts(Movie movie) {
+		delete(movie.pathThumb)
+		delete(movie.pathFlv)
+	}
+	
+	/**
+	 * Delete a file at a path, working even if file doesn't exist.
 	 * 
 	 * @param path to delete
 	 */
 	private void delete(String path) {
+		if (path==null) return
 		File file = new File(path)
 		if (file.exists()) file.delete()
 	}
@@ -132,7 +140,7 @@ class VideoService implements InitializingBean {
 		movie.url = "/movie/display/" + movie.id
 
 		try {
-			movie.playTime = extractVideoPlaytime(movie, flv)
+			movie.playTime = videoConversionService.extractVideoPlaytime(flv)
 		} catch (Exception e) {
 			log.warn("Can't extract video metadata for file " + flv.getAbsolutePath())
 		}
