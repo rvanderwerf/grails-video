@@ -37,13 +37,15 @@ class SysCmdUtils {
 			log.debug "Executing $cmdArr"
 			def proc = Runtime.getRuntime().exec((String[])cmdArr)
 
-			def exitStatus = proc.waitForProcessOutput(out, err)
+			proc.waitForProcessOutput(out, err)
 			if (out) log.debug "out:\n$out"
 			if (err) log.debug "err:\n$err"
+      
+      def exitStatus = proc.exitValue()
 
 			log.debug "Process exited with status $exitStatus"
 
-			return exitStatus == null || exitStatus == 0
+			return exitStatus == 0
 		}
 		catch (Exception e) {
 			log.error("Error while executing command $cmdArr", e)
