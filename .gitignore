@@ -11,3 +11,6 @@ web-app/WEB-INF/tld
 /.classpath
 /.project
 /target-eclipse/
+/.idea/
+/grails-video.iml
+/grails-video-grailsPlugins.iml
