@@ -37,6 +37,12 @@ class VideoService implements InitializingBean {
 	def grailsApplication
 	def videoConversionService
 
+  // buffer size for servlet response buffer
+  static int responseBufferSize = 1024*16
+
+  // buffer size for transfer buffer
+  static int transferBufferSize = 1024*16
+
 	// copy of the video configuration settings
 	private mvals
 
@@ -351,7 +357,7 @@ class VideoService implements InitializingBean {
         IOException exception
         long bytesToRead = end - start + 1
 
-        byte[] buffer = new byte[INPUT_BUFFER_SIZE]
+        byte[] buffer = new byte[transferBufferSize]
         int len = buffer.length
         while ((bytesToRead > 0) && (len >= buffer.length)) {
             try {
@@ -554,6 +560,7 @@ class VideoService implements InitializingBean {
 	 * @param movie to stream
 	 */
     void streamMp4(Map params, HttpServletRequest request, HttpServletResponse response, Movie movie) {
+        logRequest(request)
 
         File movieFile = new File(movie.pathFlv)
 
@@ -561,13 +568,16 @@ class VideoService implements InitializingBean {
         response.setHeader "Cache-Control", "no-store, must-revalidate"
         response.setHeader "Expires", "Sat, 26 Jul 1997 05:00:00 GMT"
         response.setHeader "Accept-Ranges", "bytes"
-        List<groovy.lang.Range> ranges = parseRange(request, response, movieFile)
+        List<Range> ranges = parseRange(request, response, movieFile)
 
         ServletOutputStream oStream = response.outputStream
 
+        // :TODO: a temporary fixed value, which should reflect the movie.contentType
+        String contentType = "video/mp4"
+
         if (!ranges) {
             //Full content response
-            response.contentType = movie.contentType
+            response.contentType = contentType
             response.setHeader "Content-Length", movieFile.length().toString()
             oStream << movieFile.newInputStream()
         }
@@ -577,7 +587,7 @@ class VideoService implements InitializingBean {
 
             if (ranges.size() == 1) {
 
-                groovy.lang.Range range = ranges[0]
+                Range range = ranges[0]
                 response.addHeader "Content-Range", "bytes ${range.start}-${range.end}/$range.length"
                 long length = range.end - range.start + 1
                 if (length < Integer.MAX_VALUE) {
@@ -588,13 +598,13 @@ class VideoService implements InitializingBean {
                     response.setHeader "content-length", length.toString()
                 }
 
-                response.contentType = movie.contentType
+                response.contentType = contentType
 
                 try {
-                    response.setBufferSize(OUTPUT_BUFFER_SIZE)
+                    response.setBufferSize(responseBufferSize)
                 }
                 catch (IllegalStateException e) {
-                    // Silent catch
+                    log.warn("Can't set HttpServletResponse buffer size.",e)
                 }
 
                 if (oStream) {
@@ -605,10 +615,10 @@ class VideoService implements InitializingBean {
                 response.setContentType "multipart/byteranges; boundary=$mimeSeparation"
 
                 try {
-                    response.setBufferSize(OUTPUT_BUFFER_SIZE)
+                    response.setBufferSize(responseBufferSize)
                 }
                 catch (IllegalStateException e) {
-                    // Silent catch
+                  log.warn("Can't set HttpServletResponse buffer size.",e)
                 }
                 if (oStream) {
                     copy(movieFile.newInputStream(), oStream, ranges.iterator(), movie.contentType)
@@ -620,5 +630,22 @@ class VideoService implements InitializingBean {
             }
         }
 
+    }
+
+    /**
+     * Log contents of the request at debug level.
+     */
+    private void logRequest(HttpServletRequest request) {
+      log.fatal("RequestUrl:"+request.getRequestURL().toString())
+      Enumeration<String> headerNames = request.getHeaderNames()
+      headerNames.each{ String hdrName ->
+        Enumeration<String> headerVals = request.getHeaders(hdrName)
+        StringBuilder vals = new StringBuilder()
+        headerVals.eachWithIndex { String val, int i ->
+          if (i!=0) vals.append(',')
+          vals.append(val)
+        }
+        log.fatal("Header:" + hdrName + ":" + vals.toString())
+      }
     }
 }
