@@ -48,7 +48,11 @@ class VideoTagLib {
 """
         }
         if (player == TYPE_FLOWPLAYER) {
-			// do nothing because we are using version 3 files served off the file system in the display tag
+/*    out << """\
+            <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+            <script src="http://releases.flowplayer.org/5.3.2/flowplayer.min.js"></script>
+            <link rel="stylesheet" type="text/css" href="http://releases.flowplayer.org/5.3.2/skin/minimalist.css" />
+"""  */
         }
 
 	}
@@ -134,29 +138,17 @@ class VideoTagLib {
 
 			if (stream == 'true') {
 				out << """\
-                <object type="application/x-shockwave-flash" data="${r.resource(plugin:'gvps',dir:'flowplayer',file:'FlowPlayer.swf')}"
-                    width="${attrs.width}" height="${attrs.height}" id="${playerId}">
-                    <param name="allowScriptAccess" value="sameDomain" />
-                    <param name="movie" value="${r.resource(plugin:'gvps',dir:'flowplayer', file: 'FlowPlayer.swf')}" />
-                    <param name="quality" value="high" />
-                    <param name="scale" value="noScale" />
-                    <param name="wmode" value="transparent" />
-                    <param name="flashvars"
-                    value="config={streamingServer:'lighttpd',videoFile:'${g.createLink(action: 'streamMp4', id: movie.id, controller: 'movie')}',autoPlay:false,showPlayListButtons:true,initialScale:'fit'}" />
-                </object>"""
+                <div class="flowplayer" data-debug="true">
+                  <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: movie.id)}"></video>
+                </div>
+"""
 			}
 			else {
-				out << """\
-                <object type="application/x-shockwave-flash" data="${r.resource(plugin:'gvps',dir:'flowplayer',file:'FlowPlayer.swf')}"
-                    width="${attrs.width}" height="${attrs.height}" id="${playerId}">
-                    <param name="allowScriptAccess" value="sameDomain" />
-                    <param name="movie" value="${r.resource(plugin:'gvps',dir:'flowplayer',file:'FlowPlayer.swf')}" />
-                    <param name="quality" value="high" />
-                    <param name="scale" value="noScale" />
-                    <param name="wmode" value="transparent" />
-                    <param name="flashvars"
-                    value="config={autoPlay:false,showPlayListButtons:true,videoFile:'${g.createLink(action: 'streamMp4', id: movie.id)}',initialScale:'fit'}" />
-                </object>"""
+        out << """\
+                <div class="flowplayer" data-debug="true">
+                  <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: movie.id)}"></video>
+                </div>
+"""
 			}
 		}
 	}
