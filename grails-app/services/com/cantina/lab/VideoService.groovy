@@ -43,6 +43,9 @@ class VideoService implements InitializingBean {
   // buffer size for transfer buffer
   static int transferBufferSize = 1024*16
 
+  // :TODO: should really be chosen as a random or a UUID or check content to ensure no overlap
+  static String mimeSeparation = "gvps-mime-boundary"
+
 	// copy of the video configuration settings
 	private mvals
 
@@ -291,7 +294,7 @@ class VideoService implements InitializingBean {
                 ostream.println "Content-Type: $contentType"
             }
 
-            ostream.println "Content-Range: bytes ${currentRange.start}-${currentRange.end}/$currentRange.length"
+            ostream.println "Content-Range: bytes ${currentRange.start}-${currentRange.end}/${currentRange.length}"
             ostream.println()
 
             // Printing content
