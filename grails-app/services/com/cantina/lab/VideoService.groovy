@@ -643,7 +643,7 @@ class VideoService implements InitializingBean {
      * Log contents of the request at debug level.
      */
     private void logRequest(HttpServletRequest request) {
-      log.fatal("RequestUrl:"+request.getRequestURL().toString())
+      log.debug("RequestUrl:"+request.getRequestURL().toString())
       Enumeration<String> headerNames = request.getHeaderNames()
       headerNames.each{ String hdrName ->
         Enumeration<String> headerVals = request.getHeaders(hdrName)
@@ -652,7 +652,7 @@ class VideoService implements InitializingBean {
           if (i!=0) vals.append(',')
           vals.append(val)
         }
-        log.fatal("Header:" + hdrName + ":" + vals.toString())
+        log.debug("Header:" + hdrName + ":" + vals.toString())
       }
     }
 }
