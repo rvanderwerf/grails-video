@@ -267,12 +267,12 @@ class VideoService implements InitializingBean {
 	}
 	
     /**
-     * Copy the contents of the specified input stream to the specified
-     * output stream, and ensure that both streams are closed before returning
+     * Copy ranges of content of the specified input stream to the specified
+     * output stream, and ensure that the input stream is closed before returning
      * (even in the face of an exception).
      *
-     * @param istream to read stream data from
-     * @param ostream The output stream to write to
+     * @param istream InputStream to read data from
+     * @param ostream ServletOutputStream to write to
      * @param ranges Enumeration of the ranges the client wanted to retrieve
      * @param contentType Content type of the resource
      * @throws IOException if an input/output error occurs
@@ -291,7 +291,7 @@ class VideoService implements InitializingBean {
                 ostream.println "Content-Type: $contentType"
             }
 
-            ostream.println "Content-Range: bytes ${currentRange.start}-${currentRange.end}/currentRange.length"
+            ostream.println "Content-Range: bytes ${currentRange.start}-${currentRange.end}/$currentRange.length"
             ostream.println()
 
             // Printing content
@@ -309,12 +309,12 @@ class VideoService implements InitializingBean {
     }
 	
     /**
-     * Copy the contents of the specified input stream to the specified
-     * output stream, and ensure that both streams are closed before returning
+     * Copy a range of content of the specified input stream to the specified
+     * output stream, and ensure that the input stream is closed before returning
      * (even in the face of an exception).
      *
-     * @param cacheEntry The cache entry for the source resource
-     * @param ostream The output stream to write to
+     * @param instream InputStream to read from
+     * @param ostream ServletOutputStream to write to
      * @param range Range the client wanted to retrieve
      * @throws IOException if an input/output error occurs
      */
@@ -330,15 +330,14 @@ class VideoService implements InitializingBean {
     }
 
     /**
-     * Copy the contents of the specified input stream to the specified
-     * output stream, and ensure that both streams are closed before returning
-     * (even in the face of an exception).
+     * Copy a range of contents of the specified input stream to the specified
+     * output stream.
      *
      * @param istream The input stream to read from
      * @param ostream The output stream to write to
      * @param start Start of the range which will be copied
      * @param end End of the range which will be copied
-     * @return Exception which occurred during processing
+     * @return Exception which occurred during processing or null if none encountered
      */
     private IOException copyRange(InputStream istream, ServletOutputStream ostream, long start, long end) {
 
@@ -358,14 +357,20 @@ class VideoService implements InitializingBean {
         long bytesToRead = end - start + 1
 
         byte[] buffer = new byte[transferBufferSize]
-        int len = buffer.length
-        while ((bytesToRead > 0) && (len >= buffer.length)) {
+        int validBytes = buffer.length
+        while ((bytesToRead > 0) && (validBytes >= buffer.length)) {
             try {
-                len = istream.read(buffer)
-                if (bytesToRead >= len) {
-                    ostream.write(buffer, 0, len)
-                    bytesToRead -= len
+                validBytes = istream.read(buffer)
+                // if at end of input stream
+                if (validBytes<0) {
+                  exception = new IOException("Attempt to read past end of input.")
                 }
+                // if all bytes read should be written
+                else if (bytesToRead >= validBytes) {
+                    ostream.write(buffer, 0, validBytes)
+                    bytesToRead -= validBytes
+                }
+                // otherwise only write those requested
                 else {
                     ostream.write(buffer, 0, (int) bytesToRead)
                     bytesToRead = 0
@@ -373,10 +378,7 @@ class VideoService implements InitializingBean {
             }
             catch (IOException e) {
                 exception = e
-                len = -1
-            }
-            if (len < buffer.length) {
-                break
+                validBytes = -1
             }
         }
 
@@ -472,6 +474,8 @@ class VideoService implements InitializingBean {
 
 	/**
 	 * Range of content to serve.
+   *
+   * These ranges are inclusive, the byte at offset end is part of the range.
 	 */
     private static class Range {
 
