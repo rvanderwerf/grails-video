@@ -139,14 +139,14 @@ class VideoTagLib {
 			if (stream == 'true') {
 				out << """\
                 <div class="flowplayer" data-debug="true">
-                  <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: movie.id)}"></video>
+                  <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: movie.id)}" controls></video>
                 </div>
 """
 			}
 			else {
         out << """\
                 <div class="flowplayer" data-debug="true">
-                  <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: movie.id)}"></video>
+                  <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: movie.id)}" controls></video>
                 </div>
 """
 			}
