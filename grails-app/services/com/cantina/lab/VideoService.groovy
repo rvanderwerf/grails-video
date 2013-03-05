@@ -37,6 +37,15 @@ class VideoService implements InitializingBean {
 	def grailsApplication
 	def videoConversionService
 
+  // buffer size for servlet response buffer
+  static int responseBufferSize = 1024*16
+
+  // buffer size for transfer buffer
+  static int transferBufferSize = 1024*16
+
+  // :TODO: should really be chosen as a random or a UUID or check content to ensure no overlap
+  static String mimeSeparation = "gvps-mime-boundary"
+
 	// copy of the video configuration settings
 	private mvals
 
@@ -261,12 +270,12 @@ class VideoService implements InitializingBean {
 	}
 	
     /**
-     * Copy the contents of the specified input stream to the specified
-     * output stream, and ensure that both streams are closed before returning
+     * Copy ranges of content of the specified input stream to the specified
+     * output stream, and ensure that the input stream is closed before returning
      * (even in the face of an exception).
      *
-     * @param istream to read stream data from
-     * @param ostream The output stream to write to
+     * @param istream InputStream to read data from
+     * @param ostream ServletOutputStream to write to
      * @param ranges Enumeration of the ranges the client wanted to retrieve
      * @param contentType Content type of the resource
      * @throws IOException if an input/output error occurs
@@ -285,7 +294,7 @@ class VideoService implements InitializingBean {
                 ostream.println "Content-Type: $contentType"
             }
 
-            ostream.println "Content-Range: bytes ${currentRange.start}-${currentRange.end}/currentRange.length"
+            ostream.println "Content-Range: bytes ${currentRange.start}-${currentRange.end}/${currentRange.length}"
             ostream.println()
 
             // Printing content
@@ -303,12 +312,12 @@ class VideoService implements InitializingBean {
     }
 	
     /**
-     * Copy the contents of the specified input stream to the specified
-     * output stream, and ensure that both streams are closed before returning
+     * Copy a range of content of the specified input stream to the specified
+     * output stream, and ensure that the input stream is closed before returning
      * (even in the face of an exception).
      *
-     * @param cacheEntry The cache entry for the source resource
-     * @param ostream The output stream to write to
+     * @param instream InputStream to read from
+     * @param ostream ServletOutputStream to write to
      * @param range Range the client wanted to retrieve
      * @throws IOException if an input/output error occurs
      */
@@ -324,15 +333,14 @@ class VideoService implements InitializingBean {
     }
 
     /**
-     * Copy the contents of the specified input stream to the specified
-     * output stream, and ensure that both streams are closed before returning
-     * (even in the face of an exception).
+     * Copy a range of contents of the specified input stream to the specified
+     * output stream.
      *
      * @param istream The input stream to read from
      * @param ostream The output stream to write to
      * @param start Start of the range which will be copied
      * @param end End of the range which will be copied
-     * @return Exception which occurred during processing
+     * @return Exception which occurred during processing or null if none encountered
      */
     private IOException copyRange(InputStream istream, ServletOutputStream ostream, long start, long end) {
 
@@ -351,15 +359,21 @@ class VideoService implements InitializingBean {
         IOException exception
         long bytesToRead = end - start + 1
 
-        byte[] buffer = new byte[INPUT_BUFFER_SIZE]
-        int len = buffer.length
-        while ((bytesToRead > 0) && (len >= buffer.length)) {
+        byte[] buffer = new byte[transferBufferSize]
+        int validBytes = buffer.length
+        while ((bytesToRead > 0) && (validBytes >= buffer.length)) {
             try {
-                len = istream.read(buffer)
-                if (bytesToRead >= len) {
-                    ostream.write(buffer, 0, len)
-                    bytesToRead -= len
+                validBytes = istream.read(buffer)
+                // if at end of input stream
+                if (validBytes<0) {
+                  exception = new IOException("Attempt to read past end of input.")
                 }
+                // if all bytes read should be written
+                else if (bytesToRead >= validBytes) {
+                    ostream.write(buffer, 0, validBytes)
+                    bytesToRead -= validBytes
+                }
+                // otherwise only write those requested
                 else {
                     ostream.write(buffer, 0, (int) bytesToRead)
                     bytesToRead = 0
@@ -367,10 +381,7 @@ class VideoService implements InitializingBean {
             }
             catch (IOException e) {
                 exception = e
-                len = -1
-            }
-            if (len < buffer.length) {
-                break
+                validBytes = -1
             }
         }
 
@@ -466,6 +477,8 @@ class VideoService implements InitializingBean {
 
 	/**
 	 * Range of content to serve.
+   *
+   * These ranges are inclusive, the byte at offset end is part of the range.
 	 */
     private static class Range {
 
@@ -554,6 +567,7 @@ class VideoService implements InitializingBean {
 	 * @param movie to stream
 	 */
     void streamMp4(Map params, HttpServletRequest request, HttpServletResponse response, Movie movie) {
+        logRequest(request)
 
         File movieFile = new File(movie.pathFlv)
 
@@ -561,13 +575,16 @@ class VideoService implements InitializingBean {
         response.setHeader "Cache-Control", "no-store, must-revalidate"
         response.setHeader "Expires", "Sat, 26 Jul 1997 05:00:00 GMT"
         response.setHeader "Accept-Ranges", "bytes"
-        List<groovy.lang.Range> ranges = parseRange(request, response, movieFile)
+        List<Range> ranges = parseRange(request, response, movieFile)
 
         ServletOutputStream oStream = response.outputStream
 
+        // :TODO: a temporary fixed value, which should reflect the movie.contentType
+        String contentType = "video/mp4"
+
         if (!ranges) {
             //Full content response
-            response.contentType = movie.contentType
+            response.contentType = contentType
             response.setHeader "Content-Length", movieFile.length().toString()
             oStream << movieFile.newInputStream()
         }
@@ -577,7 +594,7 @@ class VideoService implements InitializingBean {
 
             if (ranges.size() == 1) {
 
-                groovy.lang.Range range = ranges[0]
+                Range range = ranges[0]
                 response.addHeader "Content-Range", "bytes ${range.start}-${range.end}/$range.length"
                 long length = range.end - range.start + 1
                 if (length < Integer.MAX_VALUE) {
@@ -588,13 +605,13 @@ class VideoService implements InitializingBean {
                     response.setHeader "content-length", length.toString()
                 }
 
-                response.contentType = movie.contentType
+                response.contentType = contentType
 
                 try {
-                    response.setBufferSize(OUTPUT_BUFFER_SIZE)
+                    response.setBufferSize(responseBufferSize)
                 }
                 catch (IllegalStateException e) {
-                    // Silent catch
+                    log.warn("Can't set HttpServletResponse buffer size.",e)
                 }
 
                 if (oStream) {
@@ -605,10 +622,10 @@ class VideoService implements InitializingBean {
                 response.setContentType "multipart/byteranges; boundary=$mimeSeparation"
 
                 try {
-                    response.setBufferSize(OUTPUT_BUFFER_SIZE)
+                    response.setBufferSize(responseBufferSize)
                 }
                 catch (IllegalStateException e) {
-                    // Silent catch
+                  log.warn("Can't set HttpServletResponse buffer size.",e)
                 }
                 if (oStream) {
                     copy(movieFile.newInputStream(), oStream, ranges.iterator(), movie.contentType)
@@ -620,5 +637,22 @@ class VideoService implements InitializingBean {
             }
         }
 
+    }
+
+    /**
+     * Log contents of the request at debug level.
+     */
+    private void logRequest(HttpServletRequest request) {
+      log.debug("RequestUrl:"+request.getRequestURL().toString())
+      Enumeration<String> headerNames = request.getHeaderNames()
+      headerNames.each{ String hdrName ->
+        Enumeration<String> headerVals = request.getHeaders(hdrName)
+        StringBuilder vals = new StringBuilder()
+        headerVals.eachWithIndex { String val, int i ->
+          if (i!=0) vals.append(',')
+          vals.append(val)
+        }
+        log.debug("Header:" + hdrName + ":" + vals.toString())
+      }
     }
 }
