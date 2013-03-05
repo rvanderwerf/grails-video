@@ -48,11 +48,11 @@ class VideoTagLib {
 """
         }
         if (player == TYPE_FLOWPLAYER) {
-/*    out << """\
+    out << """\
             <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
             <script src="http://releases.flowplayer.org/5.3.2/flowplayer.min.js"></script>
             <link rel="stylesheet" type="text/css" href="http://releases.flowplayer.org/5.3.2/skin/minimalist.css" />
-"""  */
+"""
         }
 
 	}
@@ -139,14 +139,14 @@ class VideoTagLib {
 			if (stream == 'true') {
 				out << """\
                 <div class="flowplayer" data-debug="true">
-                  <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: movie.id)}" controls></video>
+                  <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: movie.id)}" type="video/mp4" controls></video>
                 </div>
 """
 			}
 			else {
         out << """\
                 <div class="flowplayer" data-debug="true">
-                  <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: movie.id)}" controls></video>
+                  <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: movie.id)}" type="video/mp4" controls></video>
                 </div>
 """
 			}
