@@ -196,8 +196,10 @@ class VideoService implements InitializingBean {
 	 * Import a pre-converted video into the system, creating a Movie object.
 	 * 
 	 * Moves the file, creates a thumbnail, and updates the database.
+	 * 
+	 * @return Movie object
 	 */
-	void importConvertedVideo(File convertedVideoFile) {
+	Movie importConvertedVideo(File convertedVideoFile) {
 		
 		def movie = new Movie()
 		movie.newFile(convertedVideoFile)
@@ -226,18 +228,20 @@ class VideoService implements InitializingBean {
 					movie.status = Movie.STATUS_FAILED
 					movie.save(flush:true)
 				}
-				movie.pathThumb = thumbFile.getCanonicalPath()
-			}
+      }
 			
 			if (movie.status == Movie.STATUS_INPROGRESS) {
 				fillSizeTypeDateUrl(movie)	
 				fillPlayTime(movie)
 			}
 			
-			movie.status = Movie.STATUS_CONVERTED
-			movie.save()
+			if (movie.status == Movie.STATUS_INPROGRESS) {
+        movie.status = Movie.STATUS_CONVERTED
+        movie.save()
+			}
 		}
-
+  
+    return movie
 	}
 	
 	/**
