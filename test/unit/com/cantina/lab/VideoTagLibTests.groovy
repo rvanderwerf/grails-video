@@ -5,7 +5,8 @@ import org.grails.plugin.resource.ResourceTagLib
 
 import grails.test.mixin.TestFor
 
-import com.google.protobuf.ByteString.Output;
+import com.google.protobuf.ByteString.Output
+import org.junit.Before;
 
 /**
  * Unit tests of VideoTagLib in the gvps plugin.
@@ -14,7 +15,7 @@ import com.google.protobuf.ByteString.Output;
 class VideoTagLibTests {
 	
 	@Before
-	void setUp() {
+    void setUp() {
 		
 	}
 	
