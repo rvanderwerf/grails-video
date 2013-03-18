@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>3 Getting Started 0.3</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/Introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/Prerequisites.html"><strong>2</strong><span>Prerequisites</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/GettingStarted.html"><strong>3</strong><span>Getting Started</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/Configuration.html"><strong>4</strong><span>Configuration</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/UsingVideosWithTags.html"><strong>5</strong><span>Using Videos with Tags</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/UsingVideoServices.html"><strong>6</strong><span>Using the VideoService</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/AdministrativeInterface.html"><strong>7</strong><span>Administrative Interface</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/Security.html"><strong>8</strong><span>Security</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/Miscellaneous.html"><strong>9</strong><span>Miscellaneous</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>This Grails web application plugin makes it relatively easy to host videos.
+</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/Prerequisites.html">&lt;&lt; <strong>2</strong><span>Prerequisites</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/Configuration.html"><strong>4</strong><span>Configuration</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>3 Getting Started - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Ryan Vanderwerf, Peter N. Steinmetz</p>
+
+                    <p><strong>Version:</strong> 0.3</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h1 id="GettingStarted">3 Getting Started</h1>
+
+This section will guide you through creating a basic application to store and stream videos. It assumes that the <a href="../guide/single.html#Prerequisites" class="guide">Prerequesites</a> are installed on the server where the Grails application is running.<p class="paragraph"/><h2>Installing the plugin.</h2><p class="paragraph"/>For Grails 2.x add the following to <code>BuildConfig.groovy</code>:<p class="paragraph"/><div class="code"><pre>grails.project.dependency.resolution = &#123;
+  plugins &#123;
+    compile <span class="java&#45;quote<a href="gvps:0.3"</span>">></a>
+  &#125;
+&#125;</pre></div><p class="paragraph"/>For earlier versions, execute <code>install-plugin gvps</code>.<p class="paragraph"/><h2>Configuration.</h2><p class="paragraph"/>The plugin is configured using a block in the <code>Config.groovy</code> file. Insert the following:<p class="paragraph"/><div class="code"><pre>video &#123;
+    location = <span class="java&#45;quote">"/tmp/"</span>  // location <span class="java&#45;keyword">for</span> storage of videos, can be on a shared drive
+    yamdi &#123;
+        path = <span class="java&#45;quote">"/usr/bin/yamdi"</span>    // FLV metadata injector (IF TYPE= FLV)
+    &#125;
+    ffmpeg &#123;
+        fileExtension = <span class="java&#45;quote">"flv"</span>  // use flv or mp4
+        conversionArgs = <span class="java&#45;quote">"&#45;b 600k &#45;r 24 &#45;ar 22050 &#45;ab 96k"</span>
+        path = <span class="java&#45;quote">"/usr/bin/ffmpeg"</span>
+        makethumb = <span class="java&#45;quote">"&#45;an &#45;ss 00:00:03 &#45;an &#45;r 2 &#45;vframes 1 &#45;y &#45;f mjpeg"</span>
+    &#125;
+    ffprobe &#123;
+        path = <span class="java&#45;quote">"/usr/bin/ffprobe"</span> // finds length of movie
+        params = <span class="java&#45;quote">""</span>
+    &#125;
+    flowplayer &#123;
+        version = <span class="java&#45;quote">"3.1.2"</span> // use empty string <span class="java&#45;keyword">for</span> no version on file
+    &#125;
+    swfobject &#123;
+        version = <span class="java&#45;quote">""</span> // used <span class="java&#45;keyword">for</span> jw&#45;flv player, empty to not specify version
+    &#125;
+    qtfaststart &#123;
+        path = <span class="java&#45;quote">"/usr/sbin/qt&#45;faststart"</span> // <span class="java&#45;keyword">if</span> ffmpeg.fileExtension == mp4 used to rearrange metadata
+    &#125;
+&#125;</pre></div><p class="paragraph"/>This may require several adjustments depending on your operating system. Be sure to set the yamdi, ffmpeg, ffprobe, and qtfaststart paths to point to the binary executables on your system. Also set the location property to a directory which you have write privileges on (the system tmp directory will normally have global write permissions).<p class="paragraph"/><h3>Run the application.</h3><p class="paragraph"/>At this point, you should have a basic running application which will allow creation, conversion, and viewing of videos. First run the application with <code>grails run-app</code>, then access the MovieController to create a video. This should then appear in the <code>Movie List</code> and be viewable.<p class="paragraph"/><p class="paragraph"/>
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/Prerequisites.html">&lt;&lt; <strong>2</strong><span>Prerequisites</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/Configuration.html"><strong>4</strong><span>Configuration</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Controllers</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/Controllers/MovieController.html">MovieController</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Domain</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/Domain/Movie.html">Movie</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Services</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/Services/VideoService.html">VideoService</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Tags</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/Tags/convertVideoPlaytime.html">convertVideoPlaytime</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/Tags/display.html">display</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/Tags/includes.html">includes</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <head>
+        <title>GVPS (Grails Video Pseudo Streaming) Plugin 0.3</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
+        <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
+    <script type="text/javascript">
+function addJsClass(el) {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+    </head>
+
+    <body class="body" onload="addJsClass();">
+        <div id="navigation">
+            <ul>
+                <li>
+                    <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                        <a href="../guide/index.html" class="button">Table of contents</a>
+                        <div id="nav-summary-childs" style="display:none;">
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#Introduction"><strong>1</strong><span>Introduction</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#Prerequisites"><strong>2</strong><span>Prerequisites</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#GettingStarted"><strong>3</strong><span>Getting Started</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#Configuration"><strong>4</strong><span>Configuration</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#UsingVideosWithTags"><strong>5</strong><span>Using Videos with Tags</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#UsingVideoServices"><strong>6</strong><span>Using the VideoService</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#AdministrativeInterface"><strong>7</strong><span>Administrative Interface</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#Security"><strong>8</strong><span>Security</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#Miscellaneous"><strong>9</strong><span>Miscellaneous</span></a></div>
+                            
+                        </div>
+                    </div>
+                </li>
+                <li class="separator selected">
+                    <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+                </li>
+            </ul>
+        </div>
+        <div id="header">
+            <div class="images clearfix">
+                
+                
+            </div>
+            <p>This Grails web application plugin makes it relatively easy to host videos.
+</p>
+        </div>
+
+
+        <table id="colset" border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td id="col1">
+                    <div id="main" class="corner-all">
+
+                        <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                        <div class="project">
+                            <h1>GVPS (Grails Video Pseudo Streaming) Plugin - Reference Documentation</h1>
+                            <p><strong>Authors:</strong> Ryan Vanderwerf, Peter N. Steinmetz</p>
+                            <p><strong>Version:</strong> 0.3</p>
+                            
+                        </div>
+
+                        
+                        <div id="table-of-content">
+                            <h2>Table of Contents</h2>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#Introduction"><strong>1</strong><span>Introduction</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#Prerequisites"><strong>2</strong><span>Prerequisites</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#GettingStarted"><strong>3</strong><span>Getting Started</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#Configuration"><strong>4</strong><span>Configuration</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#UsingVideosWithTags"><strong>5</strong><span>Using Videos with Tags</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#UsingVideoServices"><strong>6</strong><span>Using the VideoService</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#AdministrativeInterface"><strong>7</strong><span>Administrative Interface</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#Security"><strong>8</strong><span>Security</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#Miscellaneous"><strong>9</strong><span>Miscellaneous</span></a></div>
+                            
+                            <div style="clear:both" ></div>
+                        </div>
+                        
+                        
+
+<h1 id="Introduction">1 Introduction</h1>
+
+This plugin provides facilities for converting video formats and streaming videos from a Grails application.<p class="paragraph"/>To do so, it provides the following primary functions:
+<ol>
+<li>A <code>Movie</code> domain object to represent movies which are stored on the local file system.</li>
+<li>A tag library to display videos on a page as well as include required libraries.</li>
+<li>Controllers and views for uploading, managing, and showing movies.</li>
+<li>A <code>VideoService</code> to manage movie files stored on the file system, convert movie formats, and stream their contents to clients.</li>
+</ol><p class="paragraph"/>These functions provide a ready-to-use package for uploading and streaming videos from your Grails application.<p class="paragraph"/>Two video player libraries are presently supported. The 
+<a href="http://www.longtailvideo.com/players/jw-flv-player/" target="blank">JW-FLV player</a> is used to serve content in flv files, whereas the <a href="http://flowplayer.org/" target="blank">Flowplayer</a> is used to serve content in mp4 files.<p class="paragraph"/>Most video formats which are understood by the <a href="http://ffmpeg.org" target="blank">ffmpeg</a> program can be uploaded and will be converted into the flv and mp4 formats used by the plugin to serve content.<p class="paragraph"/><h3>Credits.</h3><p class="paragraph"/>This plugin was originally developed as the Cantina Consulting pre-1.0 Grails Plugin, and was converted to be compatible with Grails 2 by Ryan Vanderwerf and Burt Beckwith.
+
+
+
+<h1 id="Prerequisites">2 Prerequisites</h1>
+
+The <code>gvps</code> plugin uses several helper applications to perform functions such as converting videos or retrieving information about the video files. 
+<ol>
+<li><code>ffmpeg</code>. This is a widely used video format conversion program which is available at <a href="http://ffmpeg.org" target="blank">ffmpeg.org</a>. It is available in package format for most major operating systems and distributions. This program is required to convert videos using the gvps plugin.</li>
+<li><code>ffprobe</code>. This program, which is normally installed along with <code>ffmpeg</code>, retrieves metadata, such as length, for a video file. It is required to convert videos using the gvps plugin.</li>
+<li><code>qt-faststart</code>. This program is an optional install included with the source of the ffmpeg program. It is often available as a separate package. It is required if the <code>gvps</code> plugin will be serving MP4 files.</li>
+<li><code>yamdi</code>. This program injects metadata into FLV video files. It is available at <a href="http://yamdi.sourceforge.net" target="blank">yamdi.sourceforge.net</a> and is often available in packaged form. It is required if the <code>gvps</code> plugin will be serving FLV files.</li>
+</ol><p class="paragraph"/>The location of each of these helper programs in configured in a stanza of the BuildConfig.groovy file. See <a href="../guide/single.html#configuration" class="guide">Configuration</a> for details.<p class="paragraph"/>The functions of the <code>gvps</code> plugin can be used without these helper programs if no video file conversions will be performed by the plugin. An example would be when files are uploaded by a separate mechanism onto the server in the correct format.
+
+
+<h1 id="GettingStarted">3 Getting Started</h1>
+
+This section will guide you through creating a basic application to store and stream videos. It assumes that the <a href="../guide/single.html#Prerequisites" class="guide">Prerequesites</a> are installed on the server where the Grails application is running.<p class="paragraph"/><h2>Installing the plugin.</h2><p class="paragraph"/>For Grails 2.x add the following to <code>BuildConfig.groovy</code>:<p class="paragraph"/><div class="code"><pre>grails.project.dependency.resolution = &#123;
+  plugins &#123;
+    compile <span class="java&#45;quote<a href="gvps:0.3"</span>">></a>
+  &#125;
+&#125;</pre></div><p class="paragraph"/>For earlier versions, execute <code>install-plugin gvps</code>.<p class="paragraph"/><h2>Configuration.</h2><p class="paragraph"/>The plugin is configured using a block in the <code>Config.groovy</code> file. Insert the following:<p class="paragraph"/><div class="code"><pre>video &#123;
+    location = <span class="java&#45;quote">"/tmp/"</span>  // location <span class="java&#45;keyword">for</span> storage of videos, can be on a shared drive
+    yamdi &#123;
+        path = <span class="java&#45;quote">"/usr/bin/yamdi"</span>    // FLV metadata injector (IF TYPE= FLV)
+    &#125;
+    ffmpeg &#123;
+        fileExtension = <span class="java&#45;quote">"flv"</span>  // use flv or mp4
+        conversionArgs = <span class="java&#45;quote">"&#45;b 600k &#45;r 24 &#45;ar 22050 &#45;ab 96k"</span>
+        path = <span class="java&#45;quote">"/usr/bin/ffmpeg"</span>
+        makethumb = <span class="java&#45;quote">"&#45;an &#45;ss 00:00:03 &#45;an &#45;r 2 &#45;vframes 1 &#45;y &#45;f mjpeg"</span>
+    &#125;
+    ffprobe &#123;
+        path = <span class="java&#45;quote">"/usr/bin/ffprobe"</span> // finds length of movie
+        params = <span class="java&#45;quote">""</span>
+    &#125;
+    flowplayer &#123;
+        version = <span class="java&#45;quote">"3.1.2"</span> // use empty string <span class="java&#45;keyword">for</span> no version on file
+    &#125;
+    swfobject &#123;
+        version = <span class="java&#45;quote">""</span> // used <span class="java&#45;keyword">for</span> jw&#45;flv player, empty to not specify version
+    &#125;
+    qtfaststart &#123;
+        path = <span class="java&#45;quote">"/usr/sbin/qt&#45;faststart"</span> // <span class="java&#45;keyword">if</span> ffmpeg.fileExtension == mp4 used to rearrange metadata
+    &#125;
+&#125;</pre></div><p class="paragraph"/>This may require several adjustments depending on your operating system. Be sure to set the yamdi, ffmpeg, ffprobe, and qtfaststart paths to point to the binary executables on your system. Also set the location property to a directory which you have write privileges on (the system tmp directory will normally have global write permissions).<p class="paragraph"/><h3>Run the application.</h3><p class="paragraph"/>At this point, you should have a basic running application which will allow creation, conversion, and viewing of videos. First run the application with <code>grails run-app</code>, then access the MovieController to create a video. This should then appear in the <code>Movie List</code> and be viewable.<p class="paragraph"/><p class="paragraph"/>
+
+
+
+<h1 id="Configuration">4 Configuration</h1>
+
+The operation of the <code>gvps</code> plugin is configured in a stanza within the <code>Config.groovy</code> file. The primary items to be configured are whether the plugin will work with FLV or MP4 files and the locations of the helper programs (see <a href="../guide/single.html#prerequisites" class="guide">Prerequisites</a>.<p class="paragraph"/>A sample configuration is as follows.<p class="paragraph"/><div class="code"><pre>video &#123;
+    location = <span class="java&#45;quote">"/tmp/"</span>  // location <span class="java&#45;keyword">for</span> storage of videos, can be on a shared drive
+    yamdi &#123;
+        path = <span class="java&#45;quote">"/usr/bin/yamdi"</span>    // FLV metadata injector (IF TYPE= FLV)
+    &#125;
+    ffmpeg &#123;
+        fileExtension = <span class="java&#45;quote">"flv"</span>  // use flv or mp4
+        conversionArgs = <span class="java&#45;quote">"&#45;b 600k &#45;r 24 &#45;ar 22050 &#45;ab 96k"</span>
+        path = <span class="java&#45;quote">"/usr/bin/ffmpeg"</span>
+        makethumb = <span class="java&#45;quote">"&#45;an &#45;ss 00:00:03 &#45;an &#45;r 2 &#45;vframes 1 &#45;y &#45;f mjpeg"</span>
+    &#125;
+    ffprobe &#123;
+        path = <span class="java&#45;quote">"/usr/bin/ffprobe"</span> // finds length of movie
+        params = <span class="java&#45;quote">""</span>
+    &#125;
+    flowplayer &#123;
+        version = <span class="java&#45;quote">"3.1.2"</span> // use empty string <span class="java&#45;keyword">for</span> no version on file
+    &#125;
+    swfobject &#123;
+        version = <span class="java&#45;quote">""</span> // used <span class="java&#45;keyword">for</span> jw&#45;flv player, empty to not specify version
+    &#125;
+    qtfaststart &#123;
+        path = <span class="java&#45;quote">"/usr/sbin/qtfaststart"</span> // <span class="java&#45;keyword">if</span> type == mp4 used to rearrange metadata
+    &#125;
+&#125;</pre></div><p class="paragraph"/>
+
+
+<h1 id="UsingVideosWithTags">5 Using Videos with Tags</h1>
+
+The <code>gvps</code> plugin provides a tag library which is one of the primary methods of using the plugin after the <a href="../ref/Domain/Movie.html" class="Domain">Movie</a> domain objects have been created. All tags for this plugin are available in the <code>vid:</code> namespace.<p class="paragraph"/>Two tags in a gsp are required to display a video. The first is the <a href="../ref/Tags/includes.html" class="Tags">includes</a> tag, which is placed in the <code>&#60;head&#62;</code> of the page to pull in the appropriate video player library. The specific library used is specified with the <code>player</code> attribute, which must be set to either <code>'jwflv'</code> or <code>'flowplayer'</code>. Use the <code>'jwflv'</code> setting if the <code>'ffmpeg.fileExtension'</code> configuration variable is set to <code>'flv'</code> and the <code>'flowplayer'</code> setting if <code>'ffmpeg.fileExtension'</code> is set to <code>'mp4'</code>.<p class="paragraph"/>The second tag is the <a href="../ref/Tags/display.html" class="Tags">display</a> tag, which is inserted into the markup of the body to render the player object. The <code>player</code> attribute is again used to specify the type of player and the <code>id</code> or <code>movie</code> attribute is used to specify the video to be displayed. Additional attributes are used to specify whether to stream the video and its size.<p class="paragraph"/>Lastly, the <a href="../ref/Tags/convertVideoPlaytime.html" class="Tags">convertVideoPlaytime</a> tag is used to render video play times in readable form.
+
+
+<h1 id="UsingVideoServices">6 Using the VideoService</h1>
+
+The <code>gvps</code> plugin provides a <a href="../ref/Services/VideoService.html" class="services">VideoService</a> object with methods to convert and serve video files. It can be injected into a controller with a statement like <code>def videoService</code>.<p class="paragraph"/>You can stream the content for a <code>Movie</code> object using either the <code>streamFlv</code> or <code>streamMp4</code> methods.<p class="paragraph"/>The <code>putMovie</code> method is used to add a new <code>Movie</code> to the database and the <code>convertVideo</code> method is used to convert the video to serve-able files on the file system. The <code>convertNewVideo</code> method will convert all <code>Movies</code> whose status <code>'new'</code>.
+
+
+<h1 id="AdministrativeInterface">7 Administrative Interface</h1>
+
+The <code>gvps</code> plugin provides a <a href="../ref/Controllers/MovieController.html" class="controllers">MovieController</a> and several views for an administrative interface to create, rename, update, and delete <a href="../ref/Domain/Movie.html" class="domain">Movie</a> objects.<p class="paragraph"/>To use this interface, access the <code>&#60;ctx&#62;/MovieController</code> URL, which should direct you to the <code>Movie</code> list. From here you can modify existing <code>Movie</code> objects or create a new one.<p class="paragraph"/>The <code>show</code> action for a <code>Movie</code> object shows the fields of the object as well as 5 views of the movie:
+<ol>
+<li>A view shown with the JW-FLV player and pseudo-streaming flv content.</li>
+<li>A view shown with the JW-FLV player and downloading flv content.</li>
+<li>A view shown with Flowplayer and pseudo-streaming mp4 content.</li>
+<li>A view shown with Flowplayer and downloading mp4 content.</li>
+<li>A view shown with the JW-FLV player with captioning turned on.</li>
+</ol><p class="paragraph"/>
+
+
+<h1 id="Security">8 Security</h1>
+
+Security can provided for the the actions of the <a href="../ref/Controllers/MovieController.html" class="Controllers">MovieController</a>, the administrative interface, or specific <a href="../ref/Domain/Movie.html" class="Domain">Movie</a> objects.<p class="paragraph"/><h2>Securing MovieController Actions.</h2><p class="paragraph"/>It is important to secure the <a href="../ref/Controllers/MovieController.html" class="controllers">MovieController</a> actions as these will be available by default when the <code>gvps</code> plugin is installed. When using the SpringSecurity plugins, one method of doing this is to override the <code>'streamFlv'</code> or <code>'streamMp4'</code> actions and add an annotation:<p class="paragraph"/><div class="code"><pre>@Secured(&#91;<span class="java&#45;quote">"isAuthenticated()"</span>&#93;)
+    def streamflv = &#123;
+			def movie = Movie.get(params.id)
+			<span class="java&#45;keyword">if</span> (movie.status != Movie.STATUS_CONVERTED) <span class="java&#45;keyword">return</span>
+			videoService.streamflv(params,request,response,movie)
+		&#125;</pre></div><p class="paragraph"/>Other methods would be to secure these actions using a <code>Map</code> in the <code>Config.groovy</code> file (see <a href="http://grails-plugins.github.com/grails-spring-security-core/docs/manual/guide/5%20Configuring%20Request%20Mappings%20to%20Secure%20URLs.html#5.2%20Simple%20Map%20in%20Config.groovy" target="blank">Simple Map in Config.groovy</a>) or adding <code>RequestMap</code> entries to the database (see <a href="http://grails-plugins.github.com/grails-spring-security-core/docs/manual/guide/5%20Configuring%20Request%20Mappings%20to%20Secure%20URLs.html#5.3%20Requestmap%20Instances%20Stored%20in%20the%20Database" target="blank">Requestmap Instances Stored in the Database</a>.<p class="paragraph"/><h2>Securing the Administrative Interface.</h2><p class="paragraph"/>While securing the <code>MovieController</code> <code>streamFlv</code> or <code>streamMp4</code> actions will prevent viewing of video content itself, it will often be important to secure even the listings of the available videos and their metadata. Since other actions on the <code>MovieController</code>, such as <code>list</code>, <code>edit</code>, and <code>show</code> are available by default, it is also important to secure these actions.<p class="paragraph"/>Although overrides such as described above can be implemented with attached security annotations, the use of a <code>Map</code> in <code>Config.groovy</code> or <code>RequestMap</code> objects in the database may be easier for most applications.<p class="paragraph"/><h2>Securing Movie Objects.</h2><p class="paragraph"/>Securing access to specific <code>Movie</code> objects will in general require the use of access control lists. The <a href="http://grails.org/plugin/spring-security-acl" target="blank">spring-security-acl plugin</a> plugin provides this level of fine-grained control.
+
+
+<h1 id="Miscellaneous">9 Miscellaneous</h1>
+
+The following are a number of additional pieces of information which may be useful to users or developers of the <code>gvps</code> plugin.<p class="paragraph"/><h2>Conversion parameters.</h2><p class="paragraph"/>The <code>gvps</code> plugin uses <a href="http://ffmpeg.org" target="blank">ffmpeg</a> to perform conversion to the video formats which are used to serve video content. The parameters for the conversions are defined in the <code>video.ffmpeg.conversionArgs</code> setting, and are typically set as <code>'-b 600k -r 24 -ar 22050 -ab 96k'</code>.<p class="paragraph"/>The meanings of these are as follows<p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Setting</strong></th><th><strong class="bold">Meaning</strong></th></tr><tr class="table-odd"><td>-b 600k</td><td>set video bitrate of video to 600kbps</td></tr><tr class="table-even"><td>-r 24</td><td>set framerate to 24 fps</td></tr><tr class="table-odd"><td>-ar 22050</td><td>audio sampling frequency rate</td></tr><tr class="table-even"><td>-ab 96k</td><td>audio bit rate</td></tr></table><p class="paragraph"/>The specific values required may depend on the version of <code>ffmpeg</code> you have installed.<p class="paragraph"/><h2>How to Help</h2><p class="paragraph"/>Currently we need someone more familiar with flowplayer to upgrade the taglib to use the current version, which has changed significantly.<p class="paragraph"/>Other items to be improved:
+<ol>
+<li>toggle related binary-based domain object so actual videos can be stored in DB (or no-SQL db) instead of FS</li>
+<li>toggle temp files being stored in working table in database, to avoid needing shared filesystem to process videos</li>
+<li>update html and styles on admin screens</li>
+<li>write actual unit tests</li>
+<li>convert taglibs to use gsp includes for flowplayer/jw-flv html</li>
+<li>add support for latest flowplayer versions</li>
+</ol><p class="paragraph"/><h2>Sources of Additional Information</h2><p class="paragraph"/>    Updated slides from SpringOne2GX.
+    https://github.com/rvanderwerf/grails-video/doc/streaming-grails-slides-v2.pdf<p class="paragraph"/>    Source.
+    https://github.com/rvanderwerf/grails-video<p class="paragraph"/>    Terracotta.
+    http://terracotta.org/downloads/open-source/catalog<p class="paragraph"/>    Flowplayer. 
+    http://flowplayer.org/<p class="paragraph"/>    JWPlayer. 
+    http://www.longtailvideo.com/players/jw-flv-player/<p class="paragraph"/>    FFMpeg. 
+    http://ffmpeg.org/<p class="paragraph"/>    Flowplayer plugins. 
+    http://code.google.com/p/flowplayer-plugins/<p class="paragraph"/><h2>Contacting the Author</h2><p class="paragraph"/>Via twitter: https://twitter.com/RyanVanderwerf<p class="paragraph"/>Google+/email: rvanderwerf@gmail.com<p class="paragraph"/>Blog: http://rvanderwerf.blogspot.com<p class="paragraph"/>
+
+
+                    </div>
+                </td>
+                <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Controllers</h1><div class="menu-sub">
+                        
+                        
+                        <div class="menu-item"><a href="../ref/Controllers/MovieController.html">MovieController</a>
+                        </div>
+                        
+                        </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Domain</h1><div class="menu-sub">
+                        
+                        
+                        <div class="menu-item"><a href="../ref/Domain/Movie.html">Movie</a>
+                        </div>
+                        
+                        </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Services</h1><div class="menu-sub">
+                        
+                        
+                        <div class="menu-item"><a href="../ref/Services/VideoService.html">VideoService</a>
+                        </div>
+                        
+                        </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Tags</h1><div class="menu-sub">
+                        
+                        
+                        <div class="menu-item"><a href="../ref/Tags/convertVideoPlaytime.html">convertVideoPlaytime</a>
+                        </div>
+                        
+                        <div class="menu-item"><a href="../ref/Tags/display.html">display</a>
+                        </div>
+                        
+                        <div class="menu-item"><a href="../ref/Tags/includes.html">includes</a>
+                        </div>
+                        
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+            </tr>
+        </table>
+
+        <div id="footer">
+            
+            
+        </div>
+
+
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+    </body>
+</html>

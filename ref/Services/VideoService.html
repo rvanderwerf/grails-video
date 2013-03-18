@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>GVPS (Grails Video Pseudo Streaming) Plugin 0.3</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass(el) {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/Introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/Prerequisites.html"><strong>2</strong><span>Prerequisites</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/GettingStarted.html"><strong>3</strong><span>Getting Started</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/Configuration.html"><strong>4</strong><span>Configuration</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/UsingVideosWithTags.html"><strong>5</strong><span>Using Videos with Tags</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/UsingVideoServices.html"><strong>6</strong><span>Using the VideoService</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/AdministrativeInterface.html"><strong>7</strong><span>Administrative Interface</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/Security.html"><strong>8</strong><span>Security</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/Miscellaneous.html"><strong>9</strong><span>Miscellaneous</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>This Grails web application plugin makes it relatively easy to host videos.
+</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="reference corner-all">
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                <h1>VideoService.</h1><p class="paragraph"/>The <code>com.cantina.lab.VideoService</code> provides methods for managing <code>Movie</code> objects and corresponding files on the filesystem.<p class="paragraph"/><blockquote class="note">This service is non-transactional.</blockquote><p class="paragraph"/><h2>Primary Methods.</h2><p class="paragraph"/>The main methods provided by this service for users are as follows:<p class="paragraph"/><code>putMovie</code>. Saves a new <code>Movie</code> domain object, setting its status to <code>'new'</code>.<p class="paragraph"/><code>deleteMovie</code>. Deletes the files on disk for the master movie file, converted movie file, and thumbnail image, then deletes the <code>Movie</code> object in the database.<p class="paragraph"/><code>convertVideo</code>. Converts the master video file for a <code>Movie</code> object into the format set in the <code>'config.video'</code> property and generates a thumbnail image. Sets the <code>pathFlv</code>, <code>pathThumb</code>, <code>size</code>, <code>contentType</code>, <code>playTime</code>, <code>createDate</code>, and <code>url</code> fields of the <code>Movie</code> object. Updates the <code>status</code> field to 'converted' if successful and 'failed' if not.<p class="paragraph"/><code>convertNewVideo</code>. Converts videos for all <code>Movie</code> objects in the database whose status is <code>'new'</code>.<p class="paragraph"/><code>streamFlv</code>. Streams the flv video for a <code>Movie</code> object. The first argument is <code>Map</code> containing either a <code>pos</code> entry for the jw-flv player or a <code>start</code> entry for the flowplayer as the position to stream from. The second is the <code>HttpServletRequest</code>. The third is the <code>HttpServletResponse</code>. The fourth is the <code>Movie</code> object whose content should be streamed.<p class="paragraph"/><code>streamMp4</code>. Streams the mp4 video for a <code>Movie</code> object. The first argument is an unused params maps. The second is the <code>HttpServletRequest</code>. The third is the <code>HttpServletResponse</code>. The fourth is the <code>Movie</code> object whose content should be streamed.<p class="paragraph"/>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block">
+                        <h1 class="menu-title" onclick="toggleRef(nextElement(this))">Controllers</h1>
+                        <div class="menu-sub">
+                            
+                            
+                            <div class="menu-item"><a href="../../ref/Controllers/MovieController.html">MovieController</a>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                    <div class="menu-block">
+                        <h1 class="menu-title" onclick="toggleRef(nextElement(this))">Domain</h1>
+                        <div class="menu-sub">
+                            
+                            
+                            <div class="menu-item"><a href="../../ref/Domain/Movie.html">Movie</a>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                    <div class="menu-block">
+                        <h1 class="menu-title" onclick="toggleRef(nextElement(this))">Services</h1>
+                        <div class="menu-sub selected">
+                            
+                            
+                            <div class="menu-item"><a href="../../ref/Services/VideoService.html">VideoService</a>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                    <div class="menu-block">
+                        <h1 class="menu-title" onclick="toggleRef(nextElement(this))">Tags</h1>
+                        <div class="menu-sub">
+                            
+                            
+                            <div class="menu-item"><a href="../../ref/Tags/convertVideoPlaytime.html">convertVideoPlaytime</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/Tags/display.html">display</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../../ref/Tags/includes.html">includes</a>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+
+<script type="text/javascript" src="../../js/docs.js"></script>
+
+</body>
+</html>

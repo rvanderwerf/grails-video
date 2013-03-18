@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>5 Using Videos with Tags 0.3</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/Introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/Prerequisites.html"><strong>2</strong><span>Prerequisites</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/GettingStarted.html"><strong>3</strong><span>Getting Started</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/Configuration.html"><strong>4</strong><span>Configuration</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/UsingVideosWithTags.html"><strong>5</strong><span>Using Videos with Tags</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/UsingVideoServices.html"><strong>6</strong><span>Using the VideoService</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/AdministrativeInterface.html"><strong>7</strong><span>Administrative Interface</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/Security.html"><strong>8</strong><span>Security</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/Miscellaneous.html"><strong>9</strong><span>Miscellaneous</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>This Grails web application plugin makes it relatively easy to host videos.
+</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/Configuration.html">&lt;&lt; <strong>4</strong><span>Configuration</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/UsingVideoServices.html"><strong>6</strong><span>Using the VideoService</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>5 Using Videos with Tags - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Ryan Vanderwerf, Peter N. Steinmetz</p>
+
+                    <p><strong>Version:</strong> 0.3</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h1 id="UsingVideosWithTags">5 Using Videos with Tags</h1>
+
+The <code>gvps</code> plugin provides a tag library which is one of the primary methods of using the plugin after the <a href="../ref/Domain/Movie.html" class="Domain">Movie</a> domain objects have been created. All tags for this plugin are available in the <code>vid:</code> namespace.<p class="paragraph"/>Two tags in a gsp are required to display a video. The first is the <a href="../ref/Tags/includes.html" class="Tags">includes</a> tag, which is placed in the <code>&#60;head&#62;</code> of the page to pull in the appropriate video player library. The specific library used is specified with the <code>player</code> attribute, which must be set to either <code>'jwflv'</code> or <code>'flowplayer'</code>. Use the <code>'jwflv'</code> setting if the <code>'ffmpeg.fileExtension'</code> configuration variable is set to <code>'flv'</code> and the <code>'flowplayer'</code> setting if <code>'ffmpeg.fileExtension'</code> is set to <code>'mp4'</code>.<p class="paragraph"/>The second tag is the <a href="../ref/Tags/display.html" class="Tags">display</a> tag, which is inserted into the markup of the body to render the player object. The <code>player</code> attribute is again used to specify the type of player and the <code>id</code> or <code>movie</code> attribute is used to specify the video to be displayed. Additional attributes are used to specify whether to stream the video and its size.<p class="paragraph"/>Lastly, the <a href="../ref/Tags/convertVideoPlaytime.html" class="Tags">convertVideoPlaytime</a> tag is used to render video play times in readable form.
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/Configuration.html">&lt;&lt; <strong>4</strong><span>Configuration</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/UsingVideoServices.html"><strong>6</strong><span>Using the VideoService</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Controllers</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/Controllers/MovieController.html">MovieController</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Domain</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/Domain/Movie.html">Movie</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Services</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/Services/VideoService.html">VideoService</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Tags</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/Tags/convertVideoPlaytime.html">convertVideoPlaytime</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/Tags/display.html">display</a>
+                            </div>
+                            
+                            <div class="menu-item"><a href="../ref/Tags/includes.html">includes</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>
