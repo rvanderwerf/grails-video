@@ -18,19 +18,29 @@ class VideoTagLibTests {
     void setUp() {
 		
 	}
-	
-    void tearDown() {
-        // Tear down logic here
-    }
 
-    void testIncludes() {
-		// setup mock of ResourceTagLib for r: namespace in our tagLib
-		def rTagLibControl = mockFor(ResourceTagLib)
-		rTagLibControl.demand.resource(2..2) { attrs -> return "/static/plugins/" + 
-																 attrs.plugin + "/" +
-																 attrs.dir + "/" + attrs.file }
-		def rTagLib = rTagLibControl.createMock()
-		tagLib.metaClass.getR = { return rTagLib }
+  void testIncludes() {
+    // setup mock of ResourceTagLib for r: namespace in our tagLib
+    def rTagLibControl = mockFor(ResourceTagLib)
+    rTagLibControl.demand.resource(2..2) { attrs -> return "/static/plugins/" +
+       attrs.plugin + "/" +
+       attrs.dir + "/" + attrs.file }
+    def rTagLib = rTagLibControl.createMock()
+    tagLib.metaClass.getR = { return rTagLib }
+
+    // no player defined
+    assertOutputEquals('','<vid:includes/>')
+    // JW-FLV
+    def output = applyTemplate("<vid:includes player='jwflv'/>")
+    assert output.contains('src="/static/plugins/gvps/jw-flv/jwplayer.js"')
+    // Flowplayer
+    output = applyTemplate("<vid:includes player='flowplayer'/>")
+    assert output.contains('<script src="http://releases.flowplayer.org/5.3.2/flowplayer.min.js"')
+
+    rTagLibControl.verify()
+  }
+
+  void testJwflvDisplay() {
 		
 		// no player defined
 		assertOutputEquals('','<vid:includes/>')
