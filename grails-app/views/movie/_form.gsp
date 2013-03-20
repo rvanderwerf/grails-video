@@ -74,7 +74,7 @@
     <g:textField name="pathThumb" value="${movieInstance?.pathThumb}"/>
 </div>
 
-<div class="fieldcontain ${hasErrors(bean: movieInstance, field: 'size', 'error')} ">
+<div class="fieldcontain ${hasErrors(bean: movieInstance, field: 'fileSize', 'error')} ">
     <label for="size">
         <g:message code="movie.size.label" default="Size"/>
 

@@ -159,7 +159,7 @@ class VideoService implements InitializingBean {
 	 * Fill in size, type, date and url for a Movie.
 	 */
 	private void fillSizeTypeDateUrl(Movie movie) {
-		movie.size = new File(movie.pathFlv).length()
+		movie.fileSize = new File(movie.pathFlv).length()
 		movie.contentType = getConversionVideoType().extension
 
 		movie.createDate = new Date()

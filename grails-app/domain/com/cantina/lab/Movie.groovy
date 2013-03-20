@@ -44,7 +44,7 @@ class Movie {
 	String fileName            //name of the file
 	String description         //description of the content or abstract. should be short
 	byte[] theFile             //binary data for the file
-	Long size                  //size of content in bytes
+	Long fileSize                  //fileSize of content in bytes
 	Date createDate            //date the content was created
 	String createdBy           //the name of the person who created the content
 	String pathFlv             //path to the converted file
@@ -72,7 +72,7 @@ class Movie {
 		pathFlv(nullable:true)
 		pathMaster(nullable:true)
 		pathThumb(nullable:true)
-		size(nullable:true)
+		fileSize(nullable:true)
 		createDate(nullable:true)
 		createdBy(nullable:true)
 		playTime(nullable:true)
@@ -81,7 +81,7 @@ class Movie {
 	void newFile(File masterFile) {
 		//get the submitted file
 		pathMaster = masterFile.canonicalPath
-		size = masterFile.length()
+		fileSize = masterFile.length()
 		status = STATUS_NEW
 	}
 }

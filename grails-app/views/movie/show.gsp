@@ -125,7 +125,7 @@
                             <td valign="top" class="name">Size:</td>
                             
                             <td valign="top" class="value">
-                                <g:formatNumber number="${movie.size.toFloat()/1024.0/1024.0}" type="number" maxFractionDigits="2"/> Mb
+                                <g:formatNumber number="${movie.fileSize.toFloat()/1024.0/1024.0}" type="number" maxFractionDigits="2"/> Mb
                             </td>
                             
                         </tr>

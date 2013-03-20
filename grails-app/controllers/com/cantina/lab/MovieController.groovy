@@ -29,12 +29,12 @@ import javax.servlet.http.HttpServletResponse
 class MovieController {
 
 	/**
-	 * The input buffer size to use when serving resources.
+	 * The input buffer fileSize to use when serving resources.
 	 */
 	private static final int INPUT_BUFFER_SIZE = 2048
 
 	/**
-	 * The output buffer size to use when serving resources.
+	 * The output buffer fileSize to use when serving resources.
 	 */
 	protected static final int OUTPUT_BUFFER_SIZE = 2048
 

@@ -38,9 +38,11 @@ video {
         version = ""
     }
     qtfaststart {
-        path = "/usr/local/bin/qtfaststart"
+        path = "/usr/bin/qt-faststart"
     }
 }
 
 // if you install this into several apps on the same database and only want some to process video, you can turn off here
 video.enabled=true
+grails.views.default.codec="none" // none, html, base64
+grails.views.gsp.encoding="UTF-8"
