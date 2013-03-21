@@ -31,7 +31,13 @@ class VideoTagLib {
 	private static final String TYPE_FLOWPLAYER = "flowplayer"
 	private static final String TYPE_JWFLV = "jwflv"
 
-	/**
+  private static final List flowplayerDivSettings = ['debug','disabled','engine','flashfit',
+     'fullscreen','errors','keyboard','muted',
+     'native_fullscreen','ratio','rtmp','speeds',
+     'swf','splash','tooltip','volume']
+  private static final List flowplayerVideoSettings = ['autoplay','loop','preload','poster']
+
+  /**
 	 * Render scripts and links to include appropriate player libraries.
 	 * 
 	 * @attr player (required). one of 'jwflv' or 'flowplayer'
@@ -102,6 +108,11 @@ class VideoTagLib {
    */
   private void outputFlowplayer(Movie mov, attrs) {
     def stream = attrs.stream
+
+    // determine attributes which belong in the div tag and the video tag
+    def divSettings = attrs.findAll { attr -> flowplayerDivSettings.contains(attr.key)}
+    divSettings = divSettings.collect {attr -> [key:'data-' + attr.key, value:attr.value]}
+    def videoSettings = attrs.findAll { attr -> flowplayerVideoSettings.contains(attr.key)}
 
     if (stream == 'true') {
       out << """\
