@@ -4,6 +4,7 @@ import org.grails.plugin.resource.ResourceProcessor
 import org.grails.plugin.resource.ResourceTagLib
 
 import grails.test.mixin.TestFor
+import grails.test.mixin.Mock
 
 import com.google.protobuf.ByteString.Output
 import org.junit.Before;
@@ -12,6 +13,7 @@ import org.junit.Before;
  * Unit tests of VideoTagLib in the gvps plugin.
  */
 @TestFor(VideoTagLib)
+@Mock(Movie)
 class VideoTagLibTests {
 	
 	@Before
@@ -41,11 +43,30 @@ class VideoTagLibTests {
   }
 
   void testJwflvDisplay() {
-		
-    }
+    // setup mock of ResourceTagLib for r: namespace in our tagLib
+    def rTagLibControl = mockFor(ResourceTagLib)
+    rTagLibControl.demand.resource(1..1) { attrs ->
+       return "/static/plugins/" +  attrs.plugin + "/" + attrs.dir + "/" + attrs.file }
+    def rTagLib = rTagLibControl.createMock()
+    tagLib.metaClass.getR = { return rTagLib }
 
-	void testFlowplayerDisplay() {
+    Movie mov = new Movie(title: "Test Movie",status:Movie.STATUS_CONVERTED).save()
+    assertNotNull mov
 
+    def output = applyTemplate("<vid:display player='jwflv' id='${mov.id}'/>")
+    assert output.contains("<p id='playerjwflv1null'>")
+    assert output.contains("""so.addVariable('file','/movieController/streamMp4/${mov.id}')""")
+
+    rTagLibControl.verify()
+  }
+
+  void testFlowplayerDisplayWithoutAttributes() {
+    Movie mov = new Movie(title: "Test Movie",status:Movie.STATUS_CONVERTED).save()
+    assertNotNull mov
+
+    def output = applyTemplate("<vid:display player='flowplayer' id='${mov.id}'/>")
+    assert output.contains('<div class="flowplayer">')
+    assert output.contains("""<video src="/movie/streamMp4/${mov.id}" type="video/mp4" controls></video>""")
   }
 	
 	void testConvertVideoPlaytime() {
