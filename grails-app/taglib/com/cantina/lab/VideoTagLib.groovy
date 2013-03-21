@@ -105,10 +105,10 @@ class VideoTagLib {
                     </p>
                     <script type='text/javascript'>
                     var so = new SWFObject('${r.resource(plugin:'gvps',dir:'jw-flv',file:'player.swf')}','${playerId}',${attrs.width},${attrs.height},'7');
-                    so.addVariable('file','${g.createLink(action: 'streamFlv', id: movie.id)}');
+                    so.addVariable('file','${g.createLink(controller: 'movieController', action: 'streamFlv', id: movie.id)}');
                     so.addParam('allowfullscreen','true');
-                    so.addVariable('streamscript','${g.createLink(action: 'streamFlv', id: movie.id)}');
-                    so.addVariable('image','${g.createLink(action: 'thumb', id: movie.id)}');
+                    so.addVariable('streamscript','${g.createLink(controller: 'movieController', action: 'streamFlv', id: movie.id)}');
+                    so.addVariable('image','${g.createLink(controller: 'movieController', action: 'thumb', id: movie.id)}');
                     so.addVariable('provider','http');
                     so.write('${playerId}');
                    </script>"""
@@ -121,8 +121,8 @@ class VideoTagLib {
                     <script type='text/javascript'>
                     var so = new SWFObject('${r.resource(plugin:'gvps',dir:'jw-flv',file:'player.swf')}','${playerId}',${attrs.width},${attrs.height},'7');
                     so.addParam('allowfullscreen','true');
-                    so.addVariable('file','${g.createLink(action: 'streamMp4', id: movie.id)}');
-                    so.addVariable('image','${g.createLink(action: 'thumb', id: movie.id)}');
+                    so.addVariable('file','${g.createLink(controller: 'movieController', action: 'streamMp4', id: movie.id)}');
+                    so.addVariable('image','${g.createLink(controller: 'movieController', action: 'thumb', id: movie.id)}');
                     so.addVariable('provider','http');
                     so.write('${playerId}');
                    </script>"""
@@ -138,14 +138,14 @@ class VideoTagLib {
 
 			if (stream == 'true') {
 				out << """\
-                <div class="flowplayer" data-debug="true">
+                <div class="flowplayer">
                   <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: movie.id)}" type="video/mp4" controls></video>
                 </div>
 """
 			}
 			else {
         out << """\
-                <div class="flowplayer" data-debug="true">
+                <div class="flowplayer">
                   <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: movie.id)}" type="video/mp4" controls></video>
                 </div>
 """
