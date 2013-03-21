@@ -4,6 +4,7 @@ import org.grails.plugin.resource.ResourceProcessor
 import org.grails.plugin.resource.ResourceTagLib
 
 import grails.test.mixin.TestFor
+import grails.test.mixin.Mock
 
 import com.google.protobuf.ByteString.Output
 import org.junit.Before;
@@ -12,45 +13,61 @@ import org.junit.Before;
  * Unit tests of VideoTagLib in the gvps plugin.
  */
 @TestFor(VideoTagLib)
+@Mock(Movie)
 class VideoTagLibTests {
 	
 	@Before
     void setUp() {
 		
 	}
-	
-    void tearDown() {
-        // Tear down logic here
-    }
 
-    void testIncludes() {
-		// setup mock of ResourceTagLib for r: namespace in our tagLib
-		def rTagLibControl = mockFor(ResourceTagLib)
-		rTagLibControl.demand.resource(2..2) { attrs -> return "/static/plugins/" + 
-																 attrs.plugin + "/" +
-																 attrs.dir + "/" + attrs.file }
-		def rTagLib = rTagLibControl.createMock()
-		tagLib.metaClass.getR = { return rTagLib }
-		
-		// no player defined
-		assertOutputEquals('','<vid:includes/>')
-		// JW-FLV
-		def output = applyTemplate("<vid:includes player='jwflv'/>")
-		assert output.contains('src="/static/plugins/gvps/jw-flv/jwplayer.js"')
-		// Flowplayer
-		output = applyTemplate("<vid:includes player='flowplayer'/>")
-		assert output == ""
-		
-		rTagLibControl.verify()
-    }
-	
-	void testJwflvDisplay() {
-		
-	}
-	
-	void testFlowplayerDisplay() {
-		
-	}
+  void testIncludes() {
+    // setup mock of ResourceTagLib for r: namespace in our tagLib
+    def rTagLibControl = mockFor(ResourceTagLib)
+    rTagLibControl.demand.resource(2..2) { attrs -> return "/static/plugins/" +
+       attrs.plugin + "/" +
+       attrs.dir + "/" + attrs.file }
+    def rTagLib = rTagLibControl.createMock()
+    tagLib.metaClass.getR = { return rTagLib }
+
+    // no player defined
+    assertOutputEquals('','<vid:includes/>')
+    // JW-FLV
+    def output = applyTemplate("<vid:includes player='jwflv'/>")
+    assert output.contains('src="/static/plugins/gvps/jw-flv/jwplayer.js"')
+    // Flowplayer
+    output = applyTemplate("<vid:includes player='flowplayer'/>")
+    assert output.contains('<script src="http://releases.flowplayer.org/5.3.2/flowplayer.min.js"')
+
+    rTagLibControl.verify()
+  }
+
+  void testJwflvDisplay() {
+    // setup mock of ResourceTagLib for r: namespace in our tagLib
+    def rTagLibControl = mockFor(ResourceTagLib)
+    rTagLibControl.demand.resource(1..1) { attrs ->
+       return "/static/plugins/" +  attrs.plugin + "/" + attrs.dir + "/" + attrs.file }
+    def rTagLib = rTagLibControl.createMock()
+    tagLib.metaClass.getR = { return rTagLib }
+
+    Movie mov = new Movie(title: "Test Movie",status:Movie.STATUS_CONVERTED).save()
+    assertNotNull mov
+
+    def output = applyTemplate("<vid:display player='jwflv' id='${mov.id}'/>")
+    assert output.contains("<p id='playerjwflv1null'>")
+    assert output.contains("""so.addVariable('file','/movieController/streamMp4/${mov.id}')""")
+
+    rTagLibControl.verify()
+  }
+
+  void testFlowplayerDisplayWithoutAttributes() {
+    Movie mov = new Movie(title: "Test Movie",status:Movie.STATUS_CONVERTED).save()
+    assertNotNull mov
+
+    def output = applyTemplate("<vid:display player='flowplayer' id='${mov.id}'/>")
+    assert output.contains('<div class="flowplayer">')
+    assert output.contains("""<video src="/movie/streamMp4/${mov.id}" type="video/mp4" controls></video>""")
+  }
 	
 	void testConvertVideoPlaytime() {
 		// test if provided with fractional number

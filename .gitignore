@@ -14,3 +14,4 @@ web-app/WEB-INF/tld
 /.idea/
 /grails-video.iml
 /grails-video-grailsPlugins.iml
+/out/
