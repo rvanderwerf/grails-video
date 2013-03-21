@@ -42,25 +42,11 @@ class VideoTagLibTests {
 
   void testJwflvDisplay() {
 		
-		// no player defined
-		assertOutputEquals('','<vid:includes/>')
-		// JW-FLV
-		def output = applyTemplate("<vid:includes player='jwflv'/>")
-		assert output.contains('src="/static/plugins/gvps/jw-flv/jwplayer.js"')
-		// Flowplayer
-		output = applyTemplate("<vid:includes player='flowplayer'/>")
-		assert output == ""
-		
-		rTagLibControl.verify()
     }
-	
-	void testJwflvDisplay() {
-		
-	}
-	
+
 	void testFlowplayerDisplay() {
-		
-	}
+
+  }
 	
 	void testConvertVideoPlaytime() {
 		// test if provided with fractional number
