@@ -57,6 +57,69 @@ class VideoTagLib {
 
 	}
 
+  /**
+   * Output for jwflv player type.
+   */
+  private void outputJwflv(Movie mov, attrs) {
+    def stream = attrs.stream
+
+    String playerId = "player" + "jwflv" + mov.id + stream
+
+    if (stream == 'true') {
+      out << """\
+                    <p id='${playerId}'>
+                    <a href='http://www.macromedia.com/go/getflashplayer'>Get Flash</a> to see this player.
+                    </p>
+                    <script type='text/javascript'>
+                    var so = new SWFObject('${r.resource(plugin:'gvps',dir:'jw-flv',file:'player.swf')}','${playerId}',${attrs.width},${attrs.height},'7');
+                    so.addVariable('file','${g.createLink(controller: 'movieController', action: 'streamFlv', id: mov.id)}');
+                    so.addParam('allowfullscreen','true');
+                    so.addVariable('streamscript','${g.createLink(controller: 'movieController', action: 'streamFlv', id: mov.id)}');
+                    so.addVariable('image','${g.createLink(controller: 'movieController', action: 'thumb', id: mov.id)}');
+                    so.addVariable('provider','http');
+                    so.write('${playerId}');
+                   </script>"""
+    }
+    else {
+      out << """\
+                    <p id='${playerId}'>
+                    <a href='http://www.macromedia.com/go/getflashplayer'>Get Flash</a> to see this player.
+                    </p>
+                    <script type='text/javascript'>
+                    var so = new SWFObject('${r.resource(plugin:'gvps',dir:'jw-flv',file:'player.swf')}','${playerId}',${attrs.width},${attrs.height},'7');
+                    so.addParam('allowfullscreen','true');
+                    so.addVariable('file','${g.createLink(controller: 'movieController', action: 'streamMp4', id: mov.id)}');
+                    so.addVariable('image','${g.createLink(controller: 'movieController', action: 'thumb', id: mov.id)}');
+                    so.addVariable('provider','http');
+                    so.write('${playerId}');
+                   </script>"""
+    }
+
+  }
+
+  /**
+   * Output for flowplayer player type.
+   */
+  private void outputFlowplayer(Movie mov, attrs) {
+    def stream = attrs.stream
+
+    if (stream == 'true') {
+      out << """\
+                <div class="flowplayer">
+                  <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: mov.id)}" type="video/mp4" controls></video>
+                </div>
+"""
+    }
+    else {
+      out << """\
+                <div class="flowplayer">
+                  <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: mov.id)}" type="video/mp4" controls></video>
+                </div>
+"""
+    }
+
+  }
+
 	/**
 	 * Render script to display movie.
 	 * 
@@ -70,87 +133,32 @@ class VideoTagLib {
 		def movieId = attrs.id
 		Movie movie = attrs.movie ?: Movie.get(movieId)
 		def player = attrs.player
-		def stream = attrs.stream
 
+    // Compute width and height from attrs, configuration variable, or use default values
+    if (!attrs.width) {
+      if (grailsApplication?.config?.video?.player?.width) {
+        attrs.width = grailsApplication?.config?.video?.player?.width
+      } else {
+        attrs.width = '320'
+      }
 
-        if (!attrs.width) {
-            if (grailsApplication?.config?.video?.player?.width) {
-                attrs.width = grailsApplication?.config?.video?.player?.width
-            } else {
-                attrs.width = '320'
-            }
+    }
+    if (!attrs.height) {
+      if (grailsApplication?.config?.video?.player?.height) {
+        attrs.height = grailsApplication?.config?.video?.player?.height
+      } else {
+        attrs.height = '260'
+      }
 
-        }
-        if (!attrs.height) {
-            if (grailsApplication?.config?.video?.player?.height) {
-                attrs.height = grailsApplication?.config?.video?.player?.height
-            } else {
-                attrs.height = '260'
-            }
+    }
 
-        }
-		
-		if (player == TYPE_JWFLV) {
-			if (movie.status != Movie.STATUS_CONVERTED) {
-				out << "<p><b>FLV CONVERSION IN PROGRESS - Please refresh page</b></p>"
-				return
-			}
+    if (movie.status != Movie.STATUS_CONVERTED) {
+      out << "<p><b>FLV CONVERSION IN PROGRESS - Please refresh page</b></p>"
+      return
+    }
 
-			String playerId = "player" + player + movie.id + stream
-
-			if (stream == 'true') {
-				out << """\
-                    <p id='${playerId}'>
-                    <a href='http://www.macromedia.com/go/getflashplayer'>Get Flash</a> to see this player.
-                    </p>
-                    <script type='text/javascript'>
-                    var so = new SWFObject('${r.resource(plugin:'gvps',dir:'jw-flv',file:'player.swf')}','${playerId}',${attrs.width},${attrs.height},'7');
-                    so.addVariable('file','${g.createLink(controller: 'movieController', action: 'streamFlv', id: movie.id)}');
-                    so.addParam('allowfullscreen','true');
-                    so.addVariable('streamscript','${g.createLink(controller: 'movieController', action: 'streamFlv', id: movie.id)}');
-                    so.addVariable('image','${g.createLink(controller: 'movieController', action: 'thumb', id: movie.id)}');
-                    so.addVariable('provider','http');
-                    so.write('${playerId}');
-                   </script>"""
-			}
-			else {
-				out << """\
-                    <p id='${playerId}'>
-                    <a href='http://www.macromedia.com/go/getflashplayer'>Get Flash</a> to see this player.
-                    </p>
-                    <script type='text/javascript'>
-                    var so = new SWFObject('${r.resource(plugin:'gvps',dir:'jw-flv',file:'player.swf')}','${playerId}',${attrs.width},${attrs.height},'7');
-                    so.addParam('allowfullscreen','true');
-                    so.addVariable('file','${g.createLink(controller: 'movieController', action: 'streamMp4', id: movie.id)}');
-                    so.addVariable('image','${g.createLink(controller: 'movieController', action: 'thumb', id: movie.id)}');
-                    so.addVariable('provider','http');
-                    so.write('${playerId}');
-                   </script>"""
-			}
-		}
-		else if (player == TYPE_FLOWPLAYER) {
-			if (movie.status != Movie.STATUS_CONVERTED) {
-				out << "<p><b>MP4 CONVERSION IN PROGRESS - Please refresh page</b></p>"
-				return
-			}
-
-			String playerId = "player" + player + movie.id + stream
-
-			if (stream == 'true') {
-				out << """\
-                <div class="flowplayer">
-                  <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: movie.id)}" type="video/mp4" controls></video>
-                </div>
-"""
-			}
-			else {
-        out << """\
-                <div class="flowplayer">
-                  <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: movie.id)}" type="video/mp4" controls></video>
-                </div>
-"""
-			}
-		}
+    if (player == TYPE_JWFLV) outputJwflv(movie,attrs)
+		else if (player == TYPE_FLOWPLAYER) outputFlowplayer(movie,attrs)
 	}
 
 	/**
