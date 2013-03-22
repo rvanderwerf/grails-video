@@ -107,28 +107,17 @@ class VideoTagLib {
    * Output for flowplayer player type.
    */
   private void outputFlowplayer(Movie mov, attrs) {
-    def stream = attrs.stream
 
     // determine attributes which belong in the div tag and the video tag
     def divSettings = attrs.findAll { attr -> flowplayerDivSettings.contains(attr.key)}
     divSettings = divSettings.collect {attr -> [key:'data-' + attr.key, value:attr.value]}
     def videoSettings = attrs.findAll { attr -> flowplayerVideoSettings.contains(attr.key)}
 
-    if (stream == 'true') {
       out << """\
                 <div class="flowplayer">
                   <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: mov.id)}" type="video/mp4" controls></video>
                 </div>
 """
-    }
-    else {
-      out << """\
-                <div class="flowplayer">
-                  <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: mov.id)}" type="video/mp4" controls></video>
-                </div>
-"""
-    }
-
   }
 
 	/**
