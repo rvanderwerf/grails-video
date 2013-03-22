@@ -19,16 +19,12 @@ The specific values required may depend on the version of @ffmpeg@ you have inst
 
 h2. How to Help
 
-Currently we need someone more familiar with flowplayer to upgrade the taglib to use the current version, which has changed significantly.
-
-Other items to be improved:
+Items to be improved:
 
 # toggle related binary-based domain object so actual videos can be stored in DB (or no-SQL db) instead of FS
 # toggle temp files being stored in working table in database, to avoid needing shared filesystem to process videos
 # update html and styles on admin screens
-# write actual unit tests
 # convert taglibs to use gsp includes for flowplayer/jw-flv html
-# add support for latest flowplayer versions
 
 
 h2. Sources of Additional Information

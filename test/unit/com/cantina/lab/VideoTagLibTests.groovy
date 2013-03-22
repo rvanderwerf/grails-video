@@ -65,11 +65,27 @@ class VideoTagLibTests {
     assertNotNull mov
 
     def output = applyTemplate("<vid:display player='flowplayer' id='${mov.id}'/>")
-    assert output.contains('<div class="flowplayer">')
-    assert output.contains("""<video src="/movie/streamMp4/${mov.id}" type="video/mp4" controls></video>""")
+    assert output.contains('<div class="flowplayer" >')
+    assert output.contains("""<video src="/movie/streamMp4/${mov.id}" type="video/mp4" />""")
   }
-	
-	void testConvertVideoPlaytime() {
+
+  void testFlowplayerWithDivAttributes() {
+    Movie mov = new Movie(title: "Test Movie",status:Movie.STATUS_CONVERTED).save()
+
+    def output = applyTemplate("<vid:display player='flowplayer' id='${mov.id}' data-ratio='0.75'/>")
+    assert output.contains('<div class="flowplayer" data-ratio="0.75" >')
+    assert output.contains("""<video src="/movie/streamMp4/${mov.id}" type="video/mp4" />""")
+  }
+
+  void testFlowplayerWithVideoAttributes() {
+    Movie mov = new Movie(title: "Test Movie",status:Movie.STATUS_CONVERTED).save()
+
+    def output = applyTemplate("<vid:display player='flowplayer' id='${mov.id}' autoplay='' preload=''/>")
+    assert output.contains('<div class="flowplayer" >')
+    assert output.contains("""<video src="/movie/streamMp4/${mov.id}" type="video/mp4" autoplay preload />""")
+  }
+
+  void testConvertVideoPlaytime() {
 		// test if provided with fractional number
 		double val = (((1 * 24) + 3)*60 + 15)*60 + 27.5
 		def tagStr = "<vid:convertVideoPlaytime time='${val}'/>"
