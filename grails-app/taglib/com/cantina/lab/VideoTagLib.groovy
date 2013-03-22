@@ -129,7 +129,7 @@ class VideoTagLib {
     videoSettings.each { attr ->
       sbld << attr.key << ' '
     }
-    sbld << """controls></video>"""
+    sbld << """/>"""
     sbld << """
                 </div>"""
 

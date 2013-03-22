@@ -66,7 +66,7 @@ class VideoTagLibTests {
 
     def output = applyTemplate("<vid:display player='flowplayer' id='${mov.id}'/>")
     assert output.contains('<div class="flowplayer" >')
-    assert output.contains("""<video src="/movie/streamMp4/${mov.id}" type="video/mp4" controls></video>""")
+    assert output.contains("""<video src="/movie/streamMp4/${mov.id}" type="video/mp4" />""")
   }
 
   void testFlowplayerWithDivAttributes() {
@@ -74,7 +74,7 @@ class VideoTagLibTests {
 
     def output = applyTemplate("<vid:display player='flowplayer' id='${mov.id}' data-ratio='0.75'/>")
     assert output.contains('<div class="flowplayer" data-ratio="0.75" >')
-    assert output.contains("""<video src="/movie/streamMp4/${mov.id}" type="video/mp4" controls></video>""")
+    assert output.contains("""<video src="/movie/streamMp4/${mov.id}" type="video/mp4" />""")
   }
 
   void testFlowplayerWithVideoAttributes() {
@@ -82,7 +82,7 @@ class VideoTagLibTests {
 
     def output = applyTemplate("<vid:display player='flowplayer' id='${mov.id}' autoplay='' preload=''/>")
     assert output.contains('<div class="flowplayer" >')
-    assert output.contains("""<video src="/movie/streamMp4/${mov.id}" type="video/mp4" autoplay preload controls></video>""")
+    assert output.contains("""<video src="/movie/streamMp4/${mov.id}" type="video/mp4" autoplay preload />""")
   }
 
   void testConvertVideoPlaytime() {
