@@ -113,11 +113,16 @@ class VideoTagLib {
     divSettings = divSettings.collect {attr -> [key:'data-' + attr.key, value:attr.value]}
     def videoSettings = attrs.findAll { attr -> flowplayerVideoSettings.contains(attr.key)}
 
-      out << """\
-                <div class="flowplayer">
-                  <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: mov.id)}" type="video/mp4" controls></video>
-                </div>
-"""
+    StringBuilder sbld = new StringBuilder()
+
+    sbld << """\
+                <div class="flowplayer">"""
+    sbld << """
+                  <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: mov.id)}" type="video/mp4" controls></video>"""
+    sbld << """
+                </div>"""
+
+    out << sbld.toString()
   }
 
 	/**
