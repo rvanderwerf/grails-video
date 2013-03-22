@@ -15,7 +15,7 @@ Other fields of the object are:
  title | title of the movie
  fileName | name of the file on disk
  description | brief description of the movie
- size | size of movie in bytes
+ fileSize | size of movie in bytes
  createDate | date the movie was created
  createdBy | author of the movie
  pathFlv | path to converted version of the file

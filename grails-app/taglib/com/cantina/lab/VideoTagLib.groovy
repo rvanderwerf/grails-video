@@ -31,7 +31,13 @@ class VideoTagLib {
 	private static final String TYPE_FLOWPLAYER = "flowplayer"
 	private static final String TYPE_JWFLV = "jwflv"
 
-	/**
+  private static final List flowplayerDivSettings = ['debug','disabled','engine','flashfit',
+     'fullscreen','errors','keyboard','muted',
+     'native_fullscreen','ratio','rtmp','speeds',
+     'swf','splash','tooltip','volume']
+  private static final List flowplayerVideoSettings = ['autoplay','loop','preload','poster']
+
+  /**
 	 * Render scripts and links to include appropriate player libraries.
 	 * 
 	 * @attr player (required). one of 'jwflv' or 'flowplayer'
@@ -101,32 +107,48 @@ class VideoTagLib {
    * Output for flowplayer player type.
    */
   private void outputFlowplayer(Movie mov, attrs) {
-    def stream = attrs.stream
 
-    if (stream == 'true') {
-      out << """\
-                <div class="flowplayer">
-                  <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: mov.id)}" type="video/mp4" controls></video>
-                </div>
-"""
-    }
-    else {
-      out << """\
-                <div class="flowplayer">
-                  <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: mov.id)}" type="video/mp4" controls></video>
-                </div>
-"""
-    }
+    // determine attributes which belong in the div tag and the video tag
+    final List removedAttrs = ['id','movie','player','width','height']
+    def limitedAttrs = attrs.findAll { attr -> !removedAttrs.contains(attr.key)}
+    def divSettings = limitedAttrs.findAll { attr -> !flowplayerVideoSettings.contains(attr.key)}
+    def videoSettings = limitedAttrs.findAll { attr -> flowplayerVideoSettings.contains(attr.key)}
 
+    StringBuilder sbld = new StringBuilder()
+
+    sbld << """\
+                <div class="flowplayer" """
+
+    divSettings.each { attr ->
+      sbld << attr.key << '="' << attr.value << '" '
+    }
+    sbld << '>'
+    sbld << """
+                  <video src="${g.createLink(controller: 'movie', action: 'streamMp4', id: mov.id)}" type="video/mp4" """
+
+    videoSettings.each { attr ->
+      sbld << attr.key << ' '
+    }
+    sbld << """/>"""
+    sbld << """
+                </div>"""
+
+    out << sbld.toString()
   }
 
 	/**
-	 * Render script to display movie.
+	 * Render tags or script to display movie.
 	 * 
 	 * @attr id (optional) id of Movie object to render script for.
 	 * @attr movie (optional) object to render script for. movie or id must be provided.
-	 * @attr player (required) which player to use, must be 'jwflv' or 'flowplayer'
-	 * @attr stream (optional) true if should stream data, otherwise will be downloaded
+	 * @attr player (required) which player to use, must be 'jwflv' or 'flowplayer'.
+	 * @attr stream (optional) true if should stream data, otherwise will be downloaded. Applies only
+   *   if player = 'jwflv'.
+   * @attr other attributes will depend on player.
+   *   If 'flowplayer' then the keys for 'autoplay','loop','preload', and 'poster' will be
+   *   added to the inner <video> tag (these must be supplied with an unused value),
+   *   all others will be added to the outer <div> tag.
+   *   Configuration settings, such as ratio, must have a 'data-' prefix.
 	 */
 	def display = { attrs ->
 
