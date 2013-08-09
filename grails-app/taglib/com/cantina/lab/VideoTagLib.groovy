@@ -31,10 +31,14 @@ class VideoTagLib {
 	private static final String TYPE_FLOWPLAYER = "flowplayer"
 	private static final String TYPE_JWFLV = "jwflv"
 
-  private static final List flowplayerDivSettings = ['debug','disabled','engine','flashfit',
-     'fullscreen','errors','keyboard','muted',
-     'native_fullscreen','ratio','rtmp','speeds',
-     'swf','splash','tooltip','volume']
+  private static final List flowplayerDivSettings = ['data-debug','data-disabled','data-embed', 'data-engine',
+     'data-flashfit', 'data-fullscreen','data-errors','data-keyboard','data-muted',
+     'data-native_fullscreen','data-ratio','data-rtmp','data-speeds',
+     'data-swf','data-splash','data-tooltip','data-volume']
+  private final List modifierClasses = ['fixed-controls','aside-time','color-alt','color-alt2',
+     'color-light','no-background','no-hover-event','no-mute',
+     'no-time','no-toggle','no-volume','play-button']
+
   private static final List flowplayerVideoSettings = ['autoplay','loop','preload','poster']
 
   /**
@@ -111,15 +115,19 @@ class VideoTagLib {
     // determine attributes which belong in the div tag and the video tag
     final List removedAttrs = ['id','movie','player','width','height']
     def limitedAttrs = attrs.findAll { attr -> !removedAttrs.contains(attr.key)}
-    def divSettings = limitedAttrs.findAll { attr -> !flowplayerVideoSettings.contains(attr.key)}
+    def divAttrs = limitedAttrs.findAll { attr -> flowplayerDivSettings.contains(attr.key)}
+    def divClasses = limitedAttrs.findAll { attr -> modifierClasses.contains(attr.key) }
     def videoSettings = limitedAttrs.findAll { attr -> flowplayerVideoSettings.contains(attr.key)}
 
     StringBuilder sbld = new StringBuilder()
 
     sbld << """\
-                <div class="flowplayer" """
-
-    divSettings.each { attr ->
+                <div class="flowplayer """
+    divClasses.each { cls ->
+      sbld << cls.key << ' '
+    }
+    sbld << '" '
+    divAttrs.each { attr ->
       sbld << attr.key << '="' << attr.value << '" '
     }
     sbld << '>'
