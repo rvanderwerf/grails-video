@@ -71,7 +71,7 @@ class VideoConversionServiceSpec extends Specification {
 		
 		cleanup:
 		outputFile.delete()
-		outputFile.delete()
+		outputThumb.delete()
 	}
 
 }
