@@ -165,7 +165,6 @@ class VideoService implements InitializingBean {
 		movie.createDate = new Date()
 		movie.url = "/movie/display/" + movie.id
 
-		fillPlayTime(movie)
 	}
 	
 	/**
@@ -175,30 +174,31 @@ class VideoService implements InitializingBean {
 	 */
 	void convertVideo(Movie movie) {
 
-        Movie.withTransaction {
-            movie.status = Movie.STATUS_INPROGRESS
-            movie.save(flush: true)
-        }
+    Movie.withTransaction {
+      movie.status = Movie.STATUS_INPROGRESS
+      movie.save(flush: true)
+    }
 
-		File vid = new File(movie.pathMaster)
-		
-		setupConversionPaths(movie)
-		
-		File convVideo = new File(movie.pathFlv)
-		videoConversionService.performConversion(vid, convVideo, new File(movie.pathThumb), getConversionVideoType())
+    File vid = new File(movie.pathMaster)
 
-		fillSizeTypeDateUrl(movie)
-		
-		if (convVideo.exists()) {
-			movie.status = Movie.STATUS_CONVERTED
-		}
-		else {
-			movie.status = Movie.STATUS_FAILED
-		}
+    setupConversionPaths(movie)
 
-        Movie.withTransaction() {
-		    movie.save()
-        }
+    File convVideo = new File(movie.pathFlv)
+    videoConversionService.performConversion(vid, convVideo, new File(movie.pathThumb), getConversionVideoType())
+
+    fillSizeTypeDateUrl(movie)
+    fillPlayTime(movie)
+
+    if (convVideo.exists()) {
+      movie.status = Movie.STATUS_CONVERTED
+    }
+    else {
+      movie.status = Movie.STATUS_FAILED
+    }
+
+    Movie.withTransaction() {
+      movie.save()
+    }
 	}
 	
 	/**
@@ -228,26 +228,27 @@ class VideoService implements InitializingBean {
 				log.error("Unable to copy converted movie: " + movie.pathMaster)
 				movie.status = Movie.STATUS_FAILED
 				movie.save(flush:true)
+        return movie
 			}
-			
-			if (movie.status == Movie.STATUS_INPROGRESS) {
-				File thumbFile = new File(movie.pathThumb)
-				if (!videoConversionService.createThumbnail(new File(movie.pathFlv),thumbFile)) {
-					log.error("Can't create thumbnail file for video:"+movie.pathMaster)
-					movie.status = Movie.STATUS_FAILED
-					movie.save(flush:true)
-				}
+
+      def convMovieFile = new File(movie.pathFlv)
+      VideoMetadata metadata = videoConversionService.extractMetadata(convMovieFile)
+
+      if (metadata.hasVideo) {
+        File thumbFile = new File(movie.pathThumb)
+        if (!videoConversionService.createThumbnail(convMovieFile,thumbFile)) {
+          log.error("Can't create thumbnail file for video:"+movie.pathMaster)
+          movie.status = Movie.STATUS_FAILED
+          movie.save(flush:true)
+          return movie
+        }
       }
-			
-			if (movie.status == Movie.STATUS_INPROGRESS) {
-				fillSizeTypeDateUrl(movie)	
-				fillPlayTime(movie)
-			}
-			
-			if (movie.status == Movie.STATUS_INPROGRESS) {
-        movie.status = Movie.STATUS_CONVERTED
-        movie.save()
-			}
+
+		  fillSizeTypeDateUrl(movie)
+      movie.playTime = metadata.duration
+
+      movie.status = Movie.STATUS_CONVERTED
+      movie.save(flush:true)
 		}
   
     return movie
