@@ -12,6 +12,12 @@ class VideoMetadata {
   long duration
   boolean hasVideo
 
+  public boolean equals(Object argo) {
+    if (!(argo instanceof VideoMetadata)) return false
+    VideoMetadata rhs = (VideoMetadata)argo
+    return rhs.duration == duration && rhs.hasVideo == hasVideo
+  }
+
   /**
    * Extract playtime from ffprobe output string.
    *
