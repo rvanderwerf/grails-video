@@ -19,17 +19,6 @@ class VideoConversionServiceSpec extends Specification {
 		service.afterPropertiesSet()
 	}
 	
-	def "test conversion of duration string"() {
-		expect:
-		service.getPlaytimeFromString(str) == val
-		
-		where:
-		str<< ["  Duration: 00:00:05.01, start: 0.000000, bitrate: 536 kb/s",
-			   "  Duration: 00:10:05.01 ",
-		       "  Duration: 01:02:05 "]
-		val<< [5, 605, 3725]		
-	}
-	
 	def "test extractVideoPlaytime"() {
 		expect: 
 		service.extractVideoPlaytime(testInputFile) == 5
