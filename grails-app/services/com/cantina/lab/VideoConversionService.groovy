@@ -46,6 +46,7 @@ class VideoConversionService {
 	 * @param 
 	 */
 	boolean createThumbnail(File sourceVideo, File thumbFile) {
+    afterPropertiesSet()
 		def thumbCmdArr = [mvals.ffmpeg.path,"-y","-i",sourceVideo.absolutePath]
 		mvals.ffmpeg.makethumb.tokenize(' ').each { arg -> thumbCmdArr << arg }
 		thumbCmdArr << thumbFile.absolutePath
@@ -62,7 +63,7 @@ class VideoConversionService {
 	 * @return true if conversions successful, false otherwise.
 	 */
 	boolean performConversion(File sourceVideo, File targetVideo, File thumb, VideoType targetType) {
-
+    afterPropertiesSet()
 		boolean success = false
 		
 		File tmp = File.createTempFile("video","tmp")
@@ -134,7 +135,7 @@ class VideoConversionService {
 	 * @throws Exception if failed to extract
 	 */
 	long extractVideoPlaytime(File videoFile) throws Exception {
-
+    afterPropertiesSet()
 		def cmdArr = [mvals.ffprobe.path]
 		if (mvals.ffprobe.params != '') {
 			mvals.ffprobe.params(' ').each {arg -> cmdArr << arg }
