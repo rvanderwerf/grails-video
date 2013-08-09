@@ -135,4 +135,43 @@ class VideoConversionService {
 		}
 	}
 
+  /**
+   * Extract VideoMetadata for a file.
+   *
+   * @param videoFile to extract metadata for
+   * @return VideoMetadata
+   * @throws Exception if failed to extract
+   */
+  VideoMetadata extractMetadata(File videoFile) throws Exception {
+    afterPropertiesSet()
+    def cmdArr = [mvals.ffprobe.path]
+    if (mvals.ffprobe.params != '') {
+      mvals.ffprobe.params(' ').each {arg -> cmdArr << arg }
+    }
+    cmdArr << videoFile.getAbsolutePath()
+
+    try {
+      def out = new StringBuilder()
+      def err = new StringBuilder()
+
+      def success = SysCmdUtils.exec(cmdArr,out,err)
+
+      if (success) {
+        String originalOutput = out.append(err).toString()
+        VideoMetadata res = new VideoMetadata()
+        res.duration = VideoMetadata.getPlaytimeFromString(originalOutput)
+        if (res.duration<0) log.info("Can't parse playtime from string: " + originalOutput)
+        res.hasVideo = VideoMetadata.hasVideoStream(originalOutput)
+        return res
+      } else {
+        throw new IOException("Error status from ffprobe = " + exitStatus)
+      }
+    }
+    catch (Exception e) {
+      log.error("Error while executing command $cmdArr", e)
+      throw e
+    }
+
+  }
+
 }

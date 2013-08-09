@@ -1,6 +1,7 @@
 package com.cantina.lab
 
 import grails.test.mixin.TestFor
+import spock.lang.Shared
 import spock.lang.Specification
 
 /**
@@ -13,7 +14,8 @@ import spock.lang.Specification
 @TestFor(VideoConversionService)
 class VideoConversionServiceSpec extends Specification {
 	
-	def testInputFile = new File("test/integration/resources/shortSamp.mp4")
+	@Shared
+  def testInputFile = new File("test/integration/resources/shortSamp.mp4")
 	
 	def setup() {
 		service.afterPropertiesSet()
@@ -63,4 +65,13 @@ class VideoConversionServiceSpec extends Specification {
 		outputThumb.delete()
 	}
 
+  def "test extractMetadata"() {
+    expect:
+    service.extractMetadata(inputFile) == vmd
+
+    where:
+    inputFile << [ testInputFile, new File("test/integration/resources/audioOnly.mp4") ]
+    vmd << [ new VideoMetadata(duration: 5, hasVideo: true),
+             new VideoMetadata(duration:5, hasVideo:false) ]
+  }
 }
