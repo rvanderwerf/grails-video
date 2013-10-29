@@ -99,7 +99,83 @@ class VideoConversionService {
 		success
 	}
 
-	/**
+  /**
+   * Concatenate multiple input video files and convert to a single output video, which is made
+   * quick-startable.
+   *
+   * @param inputs List of input Files
+   * @param output output file
+   * @param targetType enumeration of desired output type
+   * @return true if concatenation successful, false otherwise
+   */
+  boolean concatVideos(List inputs,File output,VideoType targetType) {
+
+    afterPropertiesSet()
+    boolean success = false
+
+    File tmp = File.createTempFile("video","tmp")
+
+    // construct arguments for ffmpeg command, which uses a complex filter
+    String istreamsSpec = ""
+    for (i in 0..(inputs.size-1)) istreamsSpec = istreamsSpec + "[" + i + ":0] [" + i + ":1] "
+    String filterSpec = istreamsSpec + "concat=n=" + inputs.size + ":v=1:a=1 [v] [a]"
+
+    def args = [mvals.ffmpeg.path]
+    inputs.each { entry ->
+      args.push "-i"
+      args.push entry.getAbsolutePath()
+    }
+    if (inputs.size > 1) {
+      args.push "-filter_complex"
+      args.push filterSpec
+      args.push "-map"
+      args.push "[v]"
+      args.push "-map"
+      args.push "[a]"
+    }
+    args.push "-vcodec"
+    args.push "libx264"
+    args.push "-y"   // use -y to override any existing file by the same name
+
+    if (mvals.ffmpeg.concatArgs != '') {
+      mvals.ffmpeg.concatArgs.tokenize(' ').each {arg -> args << arg }
+    }
+
+    args.push "-f"
+    args.push targetType.extension
+    args.push tmp.absolutePath
+
+    success = SysCmdUtils.exec(args)
+
+    // making quick startable depends on type of conversion
+    if (success) {
+      switch (targetType) {
+
+        case VideoType.FLV:
+          def metadataCmdArr = [mvals.yamdi.path, "-i", tmp.absolutePath, "-o",output.absolutePath,"-l"]
+          success = SysCmdUtils.exec(metadataCmdArr)
+          break;
+
+        case VideoType.MP4:
+          def metadataCmdArr = [mvals.qtfaststart.path, tmp.absolutePath, output.absolutePath]
+          success = SysCmdUtils.exec(metadataCmdArr)
+          break;
+      }
+    }
+
+    tmp.delete() //delete the tmp file
+
+    success
+  }
+
+  /**
+   * Concatenate videos with Map of arguments.
+   */
+  boolean concatVideos(Map args) {
+    concatVideos(args.inputs,args.output,args.targetType)
+  }
+
+  /**
 	 * Extract playtime for a video file.
 	 *
 	 * @param videoFile to extract playtime for

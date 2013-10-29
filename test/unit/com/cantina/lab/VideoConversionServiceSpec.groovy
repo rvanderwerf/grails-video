@@ -85,26 +85,27 @@ class VideoConversionServiceSpec extends Specification {
     def in2 = File.createTempFile("video",".mp4")
     def in3 = File.createTempFile("video",".mp4")
 
-    ant.copy(file:testInputFile,tofile:in1,overwrite:true,force:true)
-    ant.copy(file:testInputFile,tofile:in2,overwrite:true,force:true)
-    ant.copy(file:testInputFile,tofile:in3,overwrite:true,force:true)
+    def shortTestFile = new File("test/integration/resources/shortTestVideo.mp4")
+    ant.copy(file:shortTestFile,tofile:in1,overwrite:true,force:true)
+    ant.copy(file:shortTestFile,tofile:in2,overwrite:true,force:true)
+    ant.copy(file:shortTestFile,tofile:in3,overwrite:true,force:true)
 
     def catOut = File.createTempFile("vidOut",".mp4")
-    catOut.delete()
 
     expect:
-    in1.length() == 336620
-    in2.length() == 336620
-    in3.length() == 336620
+    in1.length() == 49001
+    in2.length() == 49001
+    in3.length() == 49001
 
     service.concatVideos(inputs:[in1,in2,in3],output:catOut,targetType:VideoType.MP4)
 
-    catOut.length() == 336620 * 3 // incorrect for now
+    catOut.length() == 122930  // less than 3X the input lengths
 
     cleanup:
     ant.delete(file:in1)
     ant.delete(file:in2)
     ant.delete(file:in3)
+    ant.delete(file:catOut)
 
   }
 }
