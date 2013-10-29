@@ -29,6 +29,7 @@ video {
     ffmpeg {
       fileExtension = "mp4"  // should be mp4 or flv
       conversionArgs = "-b 600k -r 24 -ar 44100 -ab 128k"
+      concatArgs = "-crf 27 -threads 4"
       path="/usr/local/bin/ffmpeg"
       makethumb = "-an -ss 00:00:03 -an -r 2 -vframes 1 -y -f mjpeg"
     }
