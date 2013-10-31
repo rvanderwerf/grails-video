@@ -68,6 +68,32 @@ class VideoServiceSpec extends Specification {
 		found.playTime == 5
 
 		cleanup:
-		service.deleteConversionProducts(found)
+		if (found!=null) service.deleteConversionProducts(found)
 	}
+
+  def "test import of audio only video file"() {
+    setup:
+    def testImportFile = new File("test/integration/resources/audioOnlyCopy.mp4")
+    def audioOnlyFile = new File("test/integration/resources/audioOnly.mp4")
+    testImportFile.withOutputStream { out -> out.write audioOnlyFile.readBytes() }
+
+    expect:
+    service.importConvertedVideo(testImportFile)
+    def foundMovies = Movie.findAllByStatus("converted")
+    foundMovies.size() == 1
+
+    Movie found = foundMovies[0]
+    found.pathMaster == testImportFile.getAbsolutePath()
+    File flvFl = new File(found.pathFlv)
+    flvFl.exists()
+    File thumbFl = new File(found.pathThumb)
+    !thumbFl.exists()  // no thumbnail created
+    !testImportFile.exists()	// should have moved
+
+    found.playTime == 5
+
+    cleanup:
+    if (found!=null) service.deleteConversionProducts(found)
+
+  }
 }

@@ -1,6 +1,7 @@
 package com.cantina.lab
 
 import grails.test.mixin.TestFor
+import spock.lang.Shared
 import spock.lang.Specification
 
 /**
@@ -13,21 +14,11 @@ import spock.lang.Specification
 @TestFor(VideoConversionService)
 class VideoConversionServiceSpec extends Specification {
 	
-	def testInputFile = new File("test/integration/resources/shortSamp.mp4")
+	@Shared
+  def testInputFile = new File("test/integration/resources/shortSamp.mp4")
 	
 	def setup() {
 		service.afterPropertiesSet()
-	}
-	
-	def "test conversion of duration string"() {
-		expect:
-		service.getPlaytimeFromString(str) == val
-		
-		where:
-		str<< ["  Duration: 00:00:05.01, start: 0.000000, bitrate: 536 kb/s",
-			   "  Duration: 00:10:05.01 ",
-		       "  Duration: 01:02:05 "]
-		val<< [5, 605, 3725]		
 	}
 	
 	def "test extractVideoPlaytime"() {
@@ -42,6 +33,9 @@ class VideoConversionServiceSpec extends Specification {
 		expect:
 		service.createThumbnail(testInputFile,outputThumb)
 		outputThumb.length() > 512 // at least 512 bytes for one frame
+
+    cleanup:
+    outputThumb.delete()
 	}
 		
 	def "test video conversion to flash video FLV"() {
@@ -56,7 +50,7 @@ class VideoConversionServiceSpec extends Specification {
 		
 		cleanup:
 		outputFile.delete()
-		outputFile.delete()
+		outputThumb.delete()
 	}
 	
 	def "test video conversion to MP4 video"() {
@@ -71,7 +65,47 @@ class VideoConversionServiceSpec extends Specification {
 		
 		cleanup:
 		outputFile.delete()
-		outputFile.delete()
+		outputThumb.delete()
 	}
 
+  def "test extractMetadata"() {
+    expect:
+    service.extractMetadata(inputFile) == vmd
+
+    where:
+    inputFile << [ testInputFile, new File("test/integration/resources/audioOnly.mp4") ]
+    vmd << [ new VideoMetadata(duration: 5, hasVideo: true),
+             new VideoMetadata(duration:5, hasVideo:false) ]
+  }
+
+  def "test concatenation of files"() {
+    setup:
+    def ant = new AntBuilder()
+    def in1 = File.createTempFile("video",".mp4")
+    def in2 = File.createTempFile("video",".mp4")
+    def in3 = File.createTempFile("video",".mp4")
+
+    def shortTestFile = new File("test/integration/resources/shortTestVideo.mp4")
+    ant.copy(file:shortTestFile,tofile:in1,overwrite:true,force:true)
+    ant.copy(file:shortTestFile,tofile:in2,overwrite:true,force:true)
+    ant.copy(file:shortTestFile,tofile:in3,overwrite:true,force:true)
+
+    def catOut = File.createTempFile("vidOut",".mp4")
+
+    expect:
+    in1.length() == 49001
+    in2.length() == 49001
+    in3.length() == 49001
+
+    service.concatVideos(inputs:[in1,in2,in3],output:catOut,targetType:VideoType.MP4)
+
+    catOut.length() == 122930  // less than 3X the input lengths
+
+    cleanup:
+    ant.delete(file:in1)
+    ant.delete(file:in2)
+    ant.delete(file:in3)
+    ant.delete(file:catOut)
+
+  }
 }

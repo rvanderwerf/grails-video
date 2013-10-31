@@ -15,10 +15,11 @@ import org.junit.Before;
 @TestFor(VideoTagLib)
 @Mock(Movie)
 class VideoTagLibTests {
-	
+
+  Movie mov
 	@Before
     void setUp() {
-		
+    mov = new Movie(title: "Test Movie",status:Movie.STATUS_CONVERTED).save()
 	}
 
   void testIncludes() {
@@ -50,9 +51,6 @@ class VideoTagLibTests {
     def rTagLib = rTagLibControl.createMock()
     tagLib.metaClass.getR = { return rTagLib }
 
-    Movie mov = new Movie(title: "Test Movie",status:Movie.STATUS_CONVERTED).save()
-    assertNotNull mov
-
     def output = applyTemplate("<vid:display player='jwflv' id='${mov.id}'/>")
     assert output.contains("<p id='playerjwflv1null'>")
     assert output.contains("""so.addVariable('file','/movieController/streamMp4/${mov.id}')""")
@@ -61,28 +59,27 @@ class VideoTagLibTests {
   }
 
   void testFlowplayerDisplayWithoutAttributes() {
-    Movie mov = new Movie(title: "Test Movie",status:Movie.STATUS_CONVERTED).save()
-    assertNotNull mov
-
     def output = applyTemplate("<vid:display player='flowplayer' id='${mov.id}'/>")
-    assert output.contains('<div class="flowplayer" >')
+    assert output.contains('<div class="flowplayer " >')
     assert output.contains("""<video src="/movie/streamMp4/${mov.id}" type="video/mp4" />""")
   }
 
   void testFlowplayerWithDivAttributes() {
-    Movie mov = new Movie(title: "Test Movie",status:Movie.STATUS_CONVERTED).save()
-
     def output = applyTemplate("<vid:display player='flowplayer' id='${mov.id}' data-ratio='0.75'/>")
-    assert output.contains('<div class="flowplayer" data-ratio="0.75" >')
+    assert output.contains('<div class="flowplayer " data-ratio="0.75" >')
     assert output.contains("""<video src="/movie/streamMp4/${mov.id}" type="video/mp4" />""")
   }
 
   void testFlowplayerWithVideoAttributes() {
-    Movie mov = new Movie(title: "Test Movie",status:Movie.STATUS_CONVERTED).save()
-
     def output = applyTemplate("<vid:display player='flowplayer' id='${mov.id}' autoplay='' preload=''/>")
-    assert output.contains('<div class="flowplayer" >')
+    assert output.contains('<div class="flowplayer " >')
     assert output.contains("""<video src="/movie/streamMp4/${mov.id}" type="video/mp4" autoplay preload />""")
+  }
+
+  void testFlowplayerWithDivClasses() {
+    def output = applyTemplate("<vid:display player='flowplayer' id='${mov.id}' fixed-controls='' color-alt=''/>")
+    assert output.contains('<div class="flowplayer fixed-controls color-alt " >')
+    assert output.contains("""<video src="/movie/streamMp4/${mov.id}" type="video/mp4" />""")
   }
 
   void testConvertVideoPlaytime() {

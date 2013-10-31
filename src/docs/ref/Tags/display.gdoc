@@ -22,9 +22,15 @@ h2. Attributes.
 * height - Optional. Height of video, which applies only if player=='jwflv'. If not provided,\
  then the value of the @video.player.height@ configuration variable is used, otherwise a default of 260.
 * if player == 'flowplayer', the attributes @autoplay@, @loop@, @preload@, and @poster@ will be attached,\
- with name only, to the inner @<video>@ tag (A dummy value must be provided). Other attributes will\
- attached to the outer @div@ tag. Note that flowplayer configuration options must be prefixed with\
- @data-@.
+ with name only, to the inner @<video>@ tag (A dummy value must be provided).
+ Attributes of
+ @fixed-controls@,@aside-time@,@color-alt@,@color-alt2@,@color-light@,@no-background@,@no-hover-event@,
+ @no-mute@,@no-time@,@no-toggle@,@no-volume@, and @play-button@ will be added as modifying classes to the 
+ outer @<div>@ tag (A dummy value must be provided).
+ Attributes @data-debug@,@data-disabled@,@data-embed@, @data-engine@,@data-flashfit@,
+ @data-fullscreen@,@data-errors@,@data-keyboard@,@data-muted@,@data-native_fullscreen@,@data-ratio@,
+ @data-rtmp@,@data-speeds@,@data-swf@,@data-splash@,@data-tooltip@, and @data-volume@ are flowplayer
+ configuration attributes which will be added as attributes to the outer @<div>@ tag.
 
 h2. Operation. 
 
