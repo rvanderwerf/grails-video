@@ -518,7 +518,7 @@ class VideoService implements InitializingBean {
         response.contentType = movie.contentType
         response.setHeader "Cache-Control", "no-store, must-revalidate"
         response.setHeader "Expires", "Sat, 26 Jul 1997 05:00:00 GMT"
-        response.setHeader "Content-Length", movie.size.toString() //without this, firefox wont allow pseudostreaming
+        response.setHeader "Content-Length", movie.fileSize.toString() //without this, firefox wont allow pseudostreaming
         def data = new byte[buffer]
 
         FileInputStream movieInputStream = new FileInputStream(movieFile)
