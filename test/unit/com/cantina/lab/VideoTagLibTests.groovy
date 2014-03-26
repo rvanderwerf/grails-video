@@ -53,7 +53,7 @@ class VideoTagLibTests {
 
     def output = applyTemplate("<vid:display player='jwflv' id='${mov.id}'/>")
     assert output.contains("<p id='playerjwflv1null'>")
-    assert output.contains("""so.addVariable('file','/movieController/streamMp4/${mov.id}')""")
+    assert output.contains("""so.addVariable('file','/movie/streamMp4/${mov.id}')""")
 
     rTagLibControl.verify()
   }

@@ -82,10 +82,10 @@ class VideoTagLib {
                     </p>
                     <script type='text/javascript'>
                     var so = new SWFObject('${r.resource(plugin:'gvps',dir:'jw-flv',file:'player.swf')}','${playerId}',${attrs.width},${attrs.height},'7');
-                    so.addVariable('file','${g.createLink(controller: 'movieController', action: 'streamFlv', id: mov.id)}');
+                    so.addVariable('file','${g.createLink(controller: 'movie', action: 'streamFlv', id: mov.id)}');
                     so.addParam('allowfullscreen','true');
-                    so.addVariable('streamscript','${g.createLink(controller: 'movieController', action: 'streamFlv', id: mov.id)}');
-                    so.addVariable('image','${g.createLink(controller: 'movieController', action: 'thumb', id: mov.id)}');
+                    so.addVariable('streamscript','${g.createLink(controller: 'movie', action: 'streamFlv', id: mov.id)}');
+                    so.addVariable('image','${g.createLink(controller: 'movie', action: 'thumb', id: mov.id)}');
                     so.addVariable('provider','http');
                     so.write('${playerId}');
                    </script>"""
@@ -98,8 +98,8 @@ class VideoTagLib {
                     <script type='text/javascript'>
                     var so = new SWFObject('${r.resource(plugin:'gvps',dir:'jw-flv',file:'player.swf')}','${playerId}',${attrs.width},${attrs.height},'7');
                     so.addParam('allowfullscreen','true');
-                    so.addVariable('file','${g.createLink(controller: 'movieController', action: 'streamMp4', id: mov.id)}');
-                    so.addVariable('image','${g.createLink(controller: 'movieController', action: 'thumb', id: mov.id)}');
+                    so.addVariable('file','${g.createLink(controller: 'movie', action: 'streamMp4', id: mov.id)}');
+                    so.addVariable('image','${g.createLink(controller: 'movie', action: 'thumb', id: mov.id)}');
                     so.addVariable('provider','http');
                     so.write('${playerId}');
                    </script>"""
